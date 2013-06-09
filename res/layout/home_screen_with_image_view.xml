@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/homeGrey"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <!--
+    <include
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true"
+        layout="@layout/footer" />
+    -->
+
+    <ImageView
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_launcher" />
+    <ListView
+        android:id="@+id/lvHomeScreen______DELETE_IT"
+        android:layout_above="@id/footer"
+        android:layout_alignParentTop="true" >
+    </ListView>
+
+</RelativeLayout>
