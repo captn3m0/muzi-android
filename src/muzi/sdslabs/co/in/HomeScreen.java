@@ -3,21 +3,20 @@ package muzi.sdslabs.co.in;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class HomeScreen extends Activity implements OnItemClickListener {
 
 	ListView lv;
-	TextView a, b, c, d;
 	ArrayAdapter<String> adapter;
-	String listItems[] = { "Albums", "Artists", "Genre", "Top Tracks", "Top Albums",
-			"Language" };
+	String listItems[] = { "Albums", "Artists", "Genre", "Top Tracks",
+			"Top Albums", "Language" };
 	char stringlist[] = new char[26];
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -28,8 +27,8 @@ public class HomeScreen extends Activity implements OnItemClickListener {
 		lv.setOnItemClickListener(HomeScreen.this);
 
 		adapter = new ArrayAdapter<String>(this,
-				R.layout.list_item_with_one_tv, R.id.tv_in_list_item_with_one_tv,
-				listItems);
+				R.layout.list_item_with_one_tv,
+				R.id.tv_in_list_item_with_one_tv, listItems);
 
 		lv.setAdapter(adapter);
 
@@ -52,8 +51,9 @@ public class HomeScreen extends Activity implements OnItemClickListener {
 		if (av.getId() == R.id.lvHomeScreen) {
 			try {
 				Intent i = new Intent(HomeScreen.this,
-						Class.forName("muzi.sdslabs.co.in.FilteredListAfterQuery"));
+						FilteredListAfterQuery.class);
 				i.putExtra("filter_type", listItems[position]);
+				Log.i("extra", listItems[position]);
 				startActivity(i);
 			} catch (Exception e) {
 				e.printStackTrace();
