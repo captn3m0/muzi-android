@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,28 +17,46 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class Genre extends Activity {
+public class FilteredListAfterQuery extends Activity {
 
 	// url to make request
 	// remember that its album & not albums
-	private static String url = "http://192.168.1.5/muzi/ajax/genre/list.php";
+	private static String url;
 
 	// JSON Node names
 	private static final String TAG_ID = "id";
 	private static final String TAG_NAME = "name";
 	private static final String TAG_LANGUAGE = "language";
 
-	// Genre JSONArray
-	JSONArray Genre = null;
+	// FilteredListAfterQuery JSONArray
+	JSONArray FilteredList = null;
 	ListView lv;
 	ArrayList<String> arrayList_artists;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.genre);
-		lv = (ListView) findViewById(R.id.lvGenre);
+		setContentView(R.layout.filtered_list_after_query);
+		lv = (ListView) findViewById(R.id.lvFilteredList);
 		lv.setFastScrollEnabled(true);
+
+		Bundle extras = getIntent().getExtras();
+		/*
+		 * if (extras == null) { return; }
+		 */
+
+		// Get data via the key
+		String value1 = extras.getString("filter_type");
+
+		// Do something with the data
+		if (value1.equals("FilteredListAfterQuery")) {
+			url = "http://192.168.1.5/muzi/ajax/album/list.php";
+		} else if (value1.equals("Artists")) {
+			url = "http://192.168.1.5/muzi/ajax/band/list.php";
+		} else if (value1.equals("Genre")) {
+			url = "http://192.168.1.5/muzi/ajax/genre/list.php";
+		}
+
 		// Hashmap for ListView
 		arrayList_artists = new ArrayList<String>();
 		ArrayList<HashMap<String, String>> ArtistList = new ArrayList<HashMap<String, String>>();
@@ -46,20 +65,19 @@ public class Genre extends Activity {
 		// getting JSON string from URL
 		GetMethodEx test = new GetMethodEx();
 		try {
-			Log.i("Trying", "done");
 			try {
 				// json = new JSONObject();
-				Genre = new JSONArray(test.getInternetData(url));
+				FilteredList = new JSONArray(test.getInternetData(url));
 			} catch (JSONException e) {
 				Log.e("JSON Parser", "Error parsing data " + e.toString());
 			} finally {
-				if (Genre != null) {
-					// Getting Array of Genre
-					// looping through All Genre
+				if (FilteredList != null) {
+					// Getting Array of FilteredListAfterQuery
+					// looping through All FilteredListAfterQuery
 					// the code saves much more than required for now as we may
 					// require it later
-					for (int i = 0; i < Genre.length(); i++) {
-						JSONObject c = Genre.getJSONObject(i);
+					for (int i = 0; i < FilteredList.length(); i++) {
+						JSONObject c = FilteredList.getJSONObject(i);
 
 						// Storing each json item in variable
 						String id = c.getString(TAG_ID);
@@ -96,7 +114,7 @@ public class Genre extends Activity {
 			if (ArtistList.isEmpty()) {
 				lv.setAdapter(null);
 			} else {
-				ListAdapter adapter = new SimpleAdapter(Genre.this,
+				ListAdapter adapter = new SimpleAdapter(FilteredListAfterQuery.this,
 						ArtistList, R.layout.list_item_with_one_tv,
 						new String[] { TAG_NAME },
 						new int[] { R.id.tv_in_list_item_with_one_tv });
@@ -107,7 +125,7 @@ public class Genre extends Activity {
 	}
 
 	public void onClick(View v) {
-		Toast.makeText(Genre.this, "Clicked", Toast.LENGTH_SHORT).show();
+		Toast.makeText(FilteredListAfterQuery.this, "Clicked", Toast.LENGTH_SHORT).show();
 		String firstLetter = (String) v.getTag();
 		int index = 0;
 		for (index = 0; index < arrayList_artists.size(); index++) {

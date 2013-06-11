@@ -26,22 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Artists"
-            android:label="@string/app_name" >
-        </activity>
-        
-        <activity
-            android:name=".Albums"
-            android:label="@string/app_name" >
-        </activity>
-        
-        <activity
-            android:name=".Language"
-            android:label="@string/app_name" >
-        </activity>
-        
-        <activity
-            android:name=".Genre"
+            android:name=".FilteredListAfterQuery"
             android:label="@string/app_name" >
         </activity>
     </application>

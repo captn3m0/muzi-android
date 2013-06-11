@@ -46,13 +46,14 @@ public class HomeScreen extends Activity implements OnItemClickListener {
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
+	public void onItemClick(AdapterView<?> av, View v, int position, long arg3) {
 		// TODO Auto-generated method stub
 
 		if (av.getId() == R.id.lvHomeScreen) {
 			try {
 				Intent i = new Intent(HomeScreen.this,
-						Class.forName("muzi.sdslabs.co.in." + listItems[arg2]));
+						Class.forName("muzi.sdslabs.co.in.FilteredListAfterQuery"));
+				i.putExtra("filter_type", listItems[position]);
 				startActivity(i);
 			} catch (Exception e) {
 				e.printStackTrace();
