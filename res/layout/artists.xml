@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/homeGrey"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <!--
+    <include
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true"
+        layout="@layout/footer" />
+    -->
+
+    <ImageView
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/icon" />
+
+    <ListView
+        android:id="@+id/lvArtists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
+        android:layout_alignParentTop="true"
+        android:cacheColorHint="#00000000"
+        android:fadeScrollbars="true"
+        android:scrollbars="none" >
+    </ListView>
+
+    <TextView
+        android:id="@+id/A"
+        style="@style/tvAlphabets"
+        android:tag="A"
+        android:text="A" />
+
+    <TextView
+        android:id="@+id/B"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/A"
+        android:tag="B"
+        android:text="B" />
+
+    <TextView
+        android:id="@+id/C"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/B"
+        android:tag="C"
+        android:text="C" />
+
+    <TextView
+        android:id="@+id/D"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/C"
+        android:tag="D"
+        android:text="D" />
+
+    <TextView
+        android:id="@+id/E"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/D"
+        android:tag="E"
+        android:text="E" />
+
+    <TextView
+        android:id="@+id/F"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/E"
+        android:tag="F"
+        android:text="F" />
+
+    <TextView
+        android:id="@+id/G"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/F"
+        android:tag="G"
+        android:text="G" />
+
+    <TextView
+        android:id="@+id/H"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/G"
+        android:tag="H"
+        android:text="H" />
+
+    <TextView
+        android:id="@+id/I"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/H"
+        android:tag="I"
+        android:text="I" />
+
+    <TextView
+        android:id="@+id/J"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/I"
+        android:tag="J"
+        android:text="J" />
+
+    <TextView
+        android:id="@+id/K"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/J"
+        android:tag="K"
+        android:text="K" />
+
+    <TextView
+        android:id="@+id/L"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/K"
+        android:tag="L"
+        android:text="L" />
+
+    <TextView
+        android:id="@+id/M"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/L"
+        android:tag="M"
+        android:text="M" />
+
+    <TextView
+        android:id="@+id/N"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/M"
+        android:tag="N"
+        android:text="N" />
+
+    <TextView
+        android:id="@+id/O"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/N"
+        android:tag="O"
+        android:text="O" />
+
+    <TextView
+        android:id="@+id/P"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/O"
+        android:tag="P"
+        android:text="P" />
+
+    <TextView
+        android:id="@+id/Q"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/P"
+        android:tag="Q"
+        android:text="Q" />
+
+    <TextView
+        android:id="@+id/R"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/Q"
+        android:tag="R"
+        android:text="R" />
+
+    <TextView
+        android:id="@+id/S"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/R"
+        android:tag="S"
+        android:text="S" />
+
+    <TextView
+        android:id="@+id/T"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/S"
+        android:tag="T"
+        android:text="T" />
+
+    <TextView
+        android:id="@+id/U"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/T"
+        android:tag="U"
+        android:text="U" />
+
+    <TextView
+        android:id="@+id/V"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/U"
+        android:tag="V"
+        android:text="V" />
+
+    <TextView
+        android:id="@+id/W"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/V"
+        android:tag="W"
+        android:text="W" />
+
+    <TextView
+        android:id="@+id/X"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/W"
+        android:tag="X"
+        android:text="X" />
+
+    <TextView
+        android:id="@+id/Y"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/X"
+        android:tag="Y"
+        android:text="Y" />
+
+    <TextView
+        android:id="@+id/Z"
+        style="@style/tvAlphabets"
+        android:layout_below="@id/Y"
+        android:tag="Z"
+        android:text="Z" />
+
+</RelativeLayout>
