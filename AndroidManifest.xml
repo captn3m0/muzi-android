@@ -29,6 +29,10 @@
             android:name=".FilteredListAfterQuery"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".SearchResults"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 
 </manifest>

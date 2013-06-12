@@ -6,6 +6,21 @@
     android:orientation="vertical"
     android:padding="10dp" >
 
+    <EditText
+        android:id="@+id/etSearchBoxHomeScreen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:hint="Search..." />
+
+    <ImageButton
+        android:id="@+id/ibSearchInHomeScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/icon" />
     <!--
     <include
         android:id="@+id/footer"
@@ -13,6 +28,9 @@
         android:layout_alignParentBottom="true"
         layout="@layout/footer" />
     -->
+
+
+    <!-- Footer is for the player icons later -->
 
     <ImageView
         android:id="@+id/footer"
@@ -26,9 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/footer"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/etSearchBoxHomeScreen"
         android:cacheColorHint="#00000000"
-        android:fadeScrollbars="true"
         android:scrollbars="none" >
     </ListView>
 
