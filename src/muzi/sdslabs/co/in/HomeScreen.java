@@ -19,7 +19,7 @@ public class HomeScreen extends Activity implements OnItemClickListener,
 
 	ListView lv;
 	ArrayAdapter<String> adapter;
-	String listItems[] = { "Albums", "Artists", "Genre", "Top Tracks",
+	String listItems[] = { "Albums", "Artists", "Top Tracks",
 			"Top Albums", "Language" };
 	char stringlist[] = new char[26];
 	ImageButton ibSearch;
