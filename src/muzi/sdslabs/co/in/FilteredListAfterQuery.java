@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,11 +19,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class FilteredListAfterQuery extends Activity implements OnItemClickListener {
+public class FilteredListAfterQuery extends Activity implements
+		OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
-	private static String root;
+	private static String type;
 
 	private ProgressDialog pDialog;
 
@@ -48,13 +49,10 @@ public class FilteredListAfterQuery extends Activity implements OnItemClickListe
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
 		String value1 = getIntent().getStringExtra("filter_type");
 
-		if (value1.equals("Artists")) {
-			root = GlobalVariables.api_root + "album/";
-		} else if (value1.equals("Artists")) {
-			root = GlobalVariables.api_root + "band/";
-		} else if (value1.equals("Genre")) {
-			root = GlobalVariables.api_root + "genre/";
-		}
+		if (value1.equals("Albums"))
+			type = "album/";
+		else if (value1.equals("Artists"))
+			type = "band/";
 
 		new LoadAllProducts().execute();
 	}
@@ -100,54 +98,46 @@ public class FilteredListAfterQuery extends Activity implements OnItemClickListe
 			// getting JSON string from URL
 			GetMethodEx test = new GetMethodEx();
 			try {
-				Log.i("Trying", "done");
-				try {
-					FilteredJSONArray = new JSONArray(test.getInternetData(root + "list.php"));
-				} catch (JSONException e) {
-					Log.e("JSON Parser", "Error parsing data " + e.toString());
-				} finally {
-					if (FilteredJSONArray != null) {
-						// Getting Array of FilteredJSONArray
-						// looping through All FilteredJSONArray
-						// the code saves much more than required for now as we
-						// may
-						Log.i("Working", "good");
-						// require it later
-						for (int i = 0; i < FilteredJSONArray.length(); i++) {
-							JSONObject c = FilteredJSONArray.getJSONObject(i);
+				FilteredJSONArray = new JSONArray(
+						test.getInternetData(GlobalVariables.api_root + type
+								+ "list.php"));
+				Log.i("url", GlobalVariables.api_root + type + "list.php");
 
-							// Storing each json item in variable
-							String id = c.getString(TAG_ID);
-							String name = c.getString(TAG_NAME);
-							String language = c.getString(TAG_LANGUAGE);
+				if (FilteredJSONArray != null) {
+					// Getting Array of FilteredJSONArray
+					// looping through All FilteredJSONArray
+					// the code saves much more than required for now as we
+					// may
+					// require it later
+					for (int i = 0; i < FilteredJSONArray.length(); i++) {
+						JSONObject c = FilteredJSONArray.getJSONObject(i);
 
-							FilteredNamesList.add(name);
-							// creating new HashMap
-							HashMap<String, String> map = new HashMap<String, String>();
+						// Storing each json item in variable
+						String id = c.getString(TAG_ID);
+						String name = c.getString(TAG_NAME);
+						String language = c.getString(TAG_LANGUAGE);
 
-							// adding each child node to HashMap key => value
-							map.put(TAG_ID, id);
-							map.put(TAG_NAME, name);
-							map.put(TAG_LANGUAGE, language);
+						FilteredNamesList.add(name);
+						// creating new HashMap
+						HashMap<String, String> map = new HashMap<String, String>();
 
-							//Log.i((i + 1) + "", name);
+						// adding each child node to HashMap key => value
+						map.put(TAG_ID, id);
+						map.put(TAG_NAME, name);
+						map.put(TAG_LANGUAGE, language);
 
-							// adding HashList to ArrayList
-							FilteredArrayList.add(map);
-						}
-						// if php query doesn't give sorted results comment out
-						// the
+						// Log.i((i + 1) + "", name);
+
+						// adding HashList to ArrayList
+						FilteredArrayList.add(map);
 					}
-
+					// if php query doesn't give sorted results comment out
+					// the
 				}
-			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			} finally {
-
 			}
 			return null;
 		}
@@ -179,10 +169,26 @@ public class FilteredListAfterQuery extends Activity implements OnItemClickListe
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> av, View arg1, int position, long arg3) {
+	public void onItemClick(AdapterView<?> av, View arg1, int position,
+			long arg3) {
 		// TODO Auto-generated method stub
-		HashMap<String, String> map = new HashMap<String, String>();
-		map = FilteredArrayList.get(position);
-		map.get(TAG_ID);
+
+		if (type == "album/") {
+			HashMap<String, String> map = new HashMap<String, String>();
+			map = FilteredArrayList.get(position);
+			Intent i = new Intent(FilteredListAfterQuery.this,
+					SongsFromAlbums.class);
+
+			i.putExtra("search_id", type + "?id=" + map.get(TAG_ID));
+			startActivity(i);
+		} else if (type == "band/") {
+			HashMap<String, String> map = new HashMap<String, String>();
+			map = FilteredArrayList.get(position);
+			Intent i = new Intent(FilteredListAfterQuery.this,
+					SongsFromArtists.class);
+
+			i.putExtra("search_id", type + "?id=" + map.get(TAG_ID));
+			startActivity(i);
+		}
 	}
 }
