@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class SongsFromArtists extends Activity implements OnItemClickListener {
+public class SongsFromArtists extends ListActivity implements
+		OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -36,9 +38,12 @@ public class SongsFromArtists extends Activity implements OnItemClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.filtered_list_after_query);
-		lv = (ListView) findViewById(R.id.lvFilteredList);
+		lv = getListView();
+		lv.getRootView().setBackgroundColor(
+				getResources().getColor(R.color.homeGrey));
+		getListView().setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
+		
 		SongsList = new ArrayList<String>();
 		String value = getIntent().getStringExtra("search_id");
 

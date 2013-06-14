@@ -1,7 +1,8 @@
 package muzi.sdslabs.co.in;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-public class HomeScreen extends Activity implements OnItemClickListener {
+public class HomeScreen extends ListActivity implements OnItemClickListener {
 
 	ListView lv;
 	ArrayAdapter<String> adapter;
@@ -27,10 +28,16 @@ public class HomeScreen extends Activity implements OnItemClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.home_screen);
+		lv = getListView();
+		lv.getRootView().setBackgroundColor(
+				getResources().getColor(R.color.homeGrey));
+		getListView().setCacheColorHint(Color.TRANSPARENT);
+		lv.setFastScrollEnabled(true);
 
-		lv = (ListView) findViewById(R.id.lvHomeScreen);
 		lv.setOnItemClickListener(HomeScreen.this);
+
+		View header = getLayoutInflater().inflate(R.layout.header_for_homescreen, null);
+		lv.addHeaderView(header);
 		etSearch = (EditText) findViewById(R.id.etSearchBoxHomeScreen);
 
 		adapter = new ArrayAdapter<String>(this,
@@ -78,19 +85,16 @@ public class HomeScreen extends Activity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> av, View v, int position, long arg3) {
 		// TODO Auto-generated method stub
 
-		if (av.getId() == R.id.lvHomeScreen) {
-
-			// if clicked on artist or album
-			if (position == 1 || position == 0) {
-				try {
-					Intent i = new Intent(HomeScreen.this,
-							FilteredListAfterQuery.class);
-					i.putExtra("filter_type", listItems[position]);
-					// Log.i("extra", listItems[position]);
-					startActivity(i);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		// if clicked on artist or album
+		if (position == 1 || position == 0) {
+			try {
+				Intent i = new Intent(HomeScreen.this,
+						FilteredListAfterQuery.class);
+				i.putExtra("filter_type", listItems[position]);
+				// Log.i("extra", listItems[position]);
+				startActivity(i);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

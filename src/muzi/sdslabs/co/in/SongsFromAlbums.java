@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class SongsFromAlbums extends Activity implements OnItemClickListener {
+public class SongsFromAlbums extends ListActivity implements
+		OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -38,22 +40,42 @@ public class SongsFromAlbums extends Activity implements OnItemClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.filtered_list_after_query);
-		lv = (ListView) findViewById(R.id.lvFilteredList);
-		lv.setFastScrollEnabled(true);
-		SongsList = new ArrayList<String>();
-		String value = getIntent().getStringExtra("search_id");
 
-		if (value != null) {
-			root = GlobalVariables.api_root + value;
-			Log.i("request url", root);
-		} else {
-			finish();
-			Toast.makeText(SongsFromAlbums.this,
-					"Sorry, the request couldn't be executed",
-					Toast.LENGTH_LONG).show();
+		/*------------------------style list view-----------------*/
+		{
+			lv = getListView();
+			lv.setFastScrollEnabled(true);
+			lv.getRootView().setBackgroundColor(
+					getResources().getColor(R.color.homeGrey));
+			getListView().setCacheColorHint(Color.TRANSPARENT);
+			lv.setFastScrollEnabled(true);
+
+			SongsList = new ArrayList<String>();
+
+			/*-------add header & footer to list view-------*/
+
+			// View header = getLayoutInflater().inflate(R.layout.header, null);
+			// View footer = getLayoutInflater().inflate(R.layout.footer, null);
+			// listView.addHeaderView(header);
+			// listView.addFooterView(footer);
 		}
 
+		/*------------------get query value to search for-----------------*/
+		{
+			String value = getIntent().getStringExtra("search_id");
+
+			if (value != null) {
+				root = GlobalVariables.api_root + value;
+				Log.i("request url", root);
+			} else {
+				finish();
+				Toast.makeText(SongsFromAlbums.this,
+						"Sorry, the request couldn't be executed",
+						Toast.LENGTH_LONG).show();
+			}
+		}
+
+		/*----------------------call async method---------------------*/
 		new LoadAllProducts().execute();
 	}
 
@@ -80,10 +102,10 @@ public class SongsFromAlbums extends Activity implements OnItemClickListener {
 			// Creating JSON Parser instance
 			// getting JSON string from URL
 			GetMethodEx test = new GetMethodEx();
-			try {jsonObject = new JSONObject(test.getInternetData(root));
-			FilteredJSONArray = jsonObject.getJSONArray("tracks");
-			Log.i("Array", FilteredJSONArray.toString());
-
+			try {
+				jsonObject = new JSONObject(test.getInternetData(root));
+				FilteredJSONArray = jsonObject.getJSONArray("tracks");
+				Log.i("Array", FilteredJSONArray.toString());
 
 				if (FilteredJSONArray != null) {
 					firstId = FilteredJSONArray.getJSONObject(0).getInt("id");
@@ -93,17 +115,12 @@ public class SongsFromAlbums extends Activity implements OnItemClickListener {
 					Log.i("Working", "good");
 					// require it later
 					for (int i = 0; i < FilteredJSONArray.length(); i++) {
-						jsonObject = FilteredJSONArray
-								.getJSONObject(i);
+						jsonObject = FilteredJSONArray.getJSONObject(i);
 
 						SongsList.add((i + 1) + ". "
 								+ jsonObject.getString(TAG_TITLE));
 						// creating new HashMap
-
-						Log.i((i + 1) + "", jsonObject.getString(TAG_TITLE));
 					}
-					// if php query doesn't give sorted results comment out
-					// the
 				}
 
 			} catch (Exception e) {
@@ -144,6 +161,11 @@ public class SongsFromAlbums extends Activity implements OnItemClickListener {
 						R.id.tv_in_list_item_with_one_tv, SongsList);
 				lv.setAdapter(adapter);
 				lv.setOnItemClickListener(SongsFromAlbums.this);
+			}
+
+			if (year != 0) {
+				Toast.makeText(SongsFromAlbums.this,
+						"Year of release: " + year, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
