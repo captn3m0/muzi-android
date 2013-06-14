@@ -13,15 +13,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class FilteredListAfterQuery extends Activity {
+public class FilteredListAfterQuery extends Activity implements OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
-	private static String url;
+	private static String root;
 
 	private ProgressDialog pDialog;
 
@@ -47,11 +49,11 @@ public class FilteredListAfterQuery extends Activity {
 		String value1 = getIntent().getStringExtra("filter_type");
 
 		if (value1.equals("Artists")) {
-			url = GlobalVariables.api_root + "album/list.php";
+			root = GlobalVariables.api_root + "album/";
 		} else if (value1.equals("Artists")) {
-			url = GlobalVariables.api_root + "band/list.php";
+			root = GlobalVariables.api_root + "band/";
 		} else if (value1.equals("Genre")) {
-			url = GlobalVariables.api_root + "genre/list.php";
+			root = GlobalVariables.api_root + "genre/";
 		}
 
 		new LoadAllProducts().execute();
@@ -100,7 +102,7 @@ public class FilteredListAfterQuery extends Activity {
 			try {
 				Log.i("Trying", "done");
 				try {
-					FilteredJSONArray = new JSONArray(test.getInternetData(url));
+					FilteredJSONArray = new JSONArray(test.getInternetData(root + "list.php"));
 				} catch (JSONException e) {
 					Log.e("JSON Parser", "Error parsing data " + e.toString());
 				} finally {
@@ -170,8 +172,17 @@ public class FilteredListAfterQuery extends Activity {
 						new int[] { R.id.tv_in_list_item_with_one_tv });
 
 				lv.setAdapter(adapter);
+				lv.setOnItemClickListener(FilteredListAfterQuery.this);
 			}
 		}
 
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> av, View arg1, int position, long arg3) {
+		// TODO Auto-generated method stub
+		HashMap<String, String> map = new HashMap<String, String>();
+		map = FilteredArrayList.get(position);
+		map.get(TAG_ID);
 	}
 }

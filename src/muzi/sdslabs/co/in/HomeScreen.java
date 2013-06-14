@@ -12,8 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
-public class HomeScreen extends Activity implements OnItemClickListener, OnClickListener {
+public class HomeScreen extends Activity implements OnItemClickListener,
+		OnClickListener {
 
 	ListView lv;
 	ArrayAdapter<String> adapter;
@@ -29,9 +31,9 @@ public class HomeScreen extends Activity implements OnItemClickListener, OnClick
 
 		lv = (ListView) findViewById(R.id.lvHomeScreen);
 		lv.setOnItemClickListener(HomeScreen.this);
-		ibSearch = (ImageButton)findViewById(R.id.ibSearchInHomeScreen);
+		ibSearch = (ImageButton) findViewById(R.id.ibSearchInHomeScreen);
 		ibSearch.setOnClickListener(HomeScreen.this);
-		etSearch = (EditText)findViewById(R.id.etSearchBoxHomeScreen);
+		etSearch = (EditText) findViewById(R.id.etSearchBoxHomeScreen);
 
 		adapter = new ArrayAdapter<String>(this,
 				R.layout.list_item_with_one_tv,
@@ -60,7 +62,7 @@ public class HomeScreen extends Activity implements OnItemClickListener, OnClick
 				Intent i = new Intent(HomeScreen.this,
 						FilteredListAfterQuery.class);
 				i.putExtra("filter_type", listItems[position]);
-				//Log.i("extra", listItems[position]);
+				// Log.i("extra", listItems[position]);
 				startActivity(i);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -71,12 +73,17 @@ public class HomeScreen extends Activity implements OnItemClickListener, OnClick
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		if(v.getId() == R.id.ibSearchInHomeScreen){
-			Intent i = new Intent(HomeScreen.this, SearchResults.class);
-			i.putExtra("search_query", etSearch.getText().toString());
-			startActivity(i);
-		}
-		
-	}
+		if (v.getId() == R.id.ibSearchInHomeScreen) {
 
+			if (etSearch.getText().toString().length() < 3) {
+				Toast.makeText(HomeScreen.this,
+						"Enter minimum of 3 characters to search",
+						Toast.LENGTH_SHORT).show();
+			} else {
+				Intent i = new Intent(HomeScreen.this, SearchResults.class);
+				i.putExtra("search_query", etSearch.getText().toString());
+				startActivity(i);
+			}
+		}
+	}
 }

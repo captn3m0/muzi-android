@@ -11,10 +11,10 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 
 public class SearchResults extends Activity {
@@ -22,6 +22,7 @@ public class SearchResults extends Activity {
 	// url to make request
 	// remember that its album & not albums
 	private static String url;
+	TabHost th;
 
 	private ProgressDialog pDialog;
 
@@ -43,7 +44,7 @@ public class SearchResults extends Activity {
 		this.setTitle("Search Results for " + text);
 		Log.i("url", url);
 
-		TabHost th = (TabHost) findViewById(R.id.tabhost);
+		th = (TabHost) findViewById(R.id.tabhost);
 		arrayList1 = new ArrayList<String>();
 		arrayList2 = new ArrayList<String>();
 		arrayList3 = new ArrayList<String>();
@@ -90,7 +91,7 @@ public class SearchResults extends Activity {
 		@Override
 		protected void onProgressUpdate(String... values) {
 			// TODO Auto-generated method stub
-			super.onProgressUpdate(values); 
+			super.onProgressUpdate(values);
 			int progress = (int) Double.parseDouble(values[0]);
 			pDialog.setProgress(progress);
 		}
@@ -115,15 +116,16 @@ public class SearchResults extends Activity {
 
 				Log.i("artist list", jsonArray2.toString());
 				JSONArray jsonArray3 = json.getJSONArray("tracks");
-				
-				int len = jsonArray1.length() + jsonArray2.length() + jsonArray3.length();
+
+				int len = jsonArray1.length() + jsonArray2.length()
+						+ jsonArray3.length();
 
 				for (int i = 0; i < jsonArray1.length(); i++) {
 					JSONObject c = jsonArray1.getJSONObject(i);
 					String name = c.getString(TAG_NAME);
 					arrayList1.add(name);
 				}
-				this.publishProgress((jsonArray1.length()/len) + "");
+				this.publishProgress((jsonArray1.length() / len) + "");
 
 				for (int i = 0; i < jsonArray2.length(); i++) {
 					JSONObject c = jsonArray2.getJSONObject(i);
@@ -131,8 +133,9 @@ public class SearchResults extends Activity {
 					arrayList2.add(name);
 				}
 
-				this.publishProgress(((jsonArray1.length() + jsonArray2.length())/len) + "");
-				
+				this.publishProgress(((jsonArray1.length() + jsonArray2
+						.length()) / len) + "");
+
 				for (int i = 0; i < jsonArray3.length(); i++) {
 					JSONObject c = jsonArray3.getJSONObject(i);
 					String title = c.getString(TAG_TITLE);
@@ -143,7 +146,7 @@ public class SearchResults extends Activity {
 			} catch (Exception e) {
 				Log.e("JSON Parser", "Error parsing data " + e.toString());
 			}
-			this.publishProgress(100+"");
+			this.publishProgress(100 + "");
 
 			return null;
 		}
@@ -160,6 +163,7 @@ public class SearchResults extends Activity {
 			 * */
 			if (arrayList1.size() == 0) {
 				lv1.setAdapter(null);
+				th.setCurrentTab(1);
 			} else {
 				Collections.sort(arrayList1);
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -171,6 +175,8 @@ public class SearchResults extends Activity {
 
 			if (arrayList2.size() == 0) {
 				lv2.setAdapter(null);
+				if (th.getCurrentTab() == 1)
+					th.setCurrentTab(2);
 			} else {
 				Collections.sort(arrayList2);
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -181,6 +187,12 @@ public class SearchResults extends Activity {
 
 			if (arrayList3.size() == 0) {
 				lv3.setAdapter(null);
+				if (th.getCurrentTab() == 2) {
+					SearchResults.this.finish();
+					Toast.makeText(SearchResults.this,
+							"Your search query doesn't match any result",
+							Toast.LENGTH_LONG).show();
+				}
 			} else {
 				Collections.sort(arrayList3);
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -189,6 +201,5 @@ public class SearchResults extends Activity {
 				lv3.setAdapter(adapter);
 			}
 		}
-
 	}
 }
