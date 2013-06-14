@@ -12,15 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:hint="Search..." />
-
-    <ImageButton
-        android:id="@+id/ibSearchInHomeScreen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/icon" />
+        android:hint="Search..."
+        android:imeOptions="actionSearch"
+        android:maxLines="1" />
     <!--
     <include
         android:id="@+id/footer"
@@ -37,6 +31,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:contentDescription="Music Player"
         android:src="@drawable/icon" />
 
     <ListView
