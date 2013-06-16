@@ -23,7 +23,6 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 	ArrayAdapter<String> adapter;
 	String listItems[] = { "Albums", "Artists", "Top Tracks", "Top Albums",
 			"Language" };
-	char stringlist[] = new char[26];
 	EditText etSearch;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,8 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 
 		lv.setOnItemClickListener(HomeScreen.this);
 
-		View header = getLayoutInflater().inflate(R.layout.header_for_homescreen, null);
+		View header = getLayoutInflater().inflate(
+				R.layout.header_for_homescreen, null);
 		lv.addHeaderView(header);
 		etSearch = (EditText) findViewById(R.id.etSearchBoxHomeScreen);
 
@@ -45,10 +45,6 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 				R.id.tv_in_list_item_with_one_tv, listItems);
 
 		lv.setAdapter(adapter);
-
-		for (int i = 0; i < 25; i++) {
-			stringlist[i] = (char) (65 + i); // String.valueOf(Character.toChars(i))
-		}
 
 		etSearch.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
@@ -61,11 +57,12 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 								"Enter minimum of 3 characters to search",
 								Toast.LENGTH_SHORT).show();
 					} else {
-						Intent i = new Intent(HomeScreen.this,
+						Intent i1 = new Intent(HomeScreen.this,
 								SearchResults.class);
-						i.putExtra("search_query", etSearch.getText()
-								.toString());
-						startActivity(i);
+						i1.putExtra(
+								GlobalVariables.HomeScreen_to_SearchResults,
+								etSearch.getText().toString());
+						startActivity(i1);
 					}
 					handled = true;
 				}
@@ -85,17 +82,22 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> av, View v, int position, long arg3) {
 		// TODO Auto-generated method stub
 
+		// Learnt it the hard way that position starts from 1 here
+		position -= 1;
+
 		// if clicked on artist or album
 		if (position == 1 || position == 0) {
 			try {
-				Intent i = new Intent(HomeScreen.this,
-						FilteredListAfterQuery.class);
-				i.putExtra("filter_type", listItems[position]);
+				Intent i = new Intent(HomeScreen.this, FilteredList.class);
+				i.putExtra(GlobalVariables.HomeScreen_to_FilteredList,
+						listItems[position]);
 				// Log.i("extra", listItems[position]);
 				startActivity(i);
+				// HomeScreen.this.finish();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 		}
 	}
 }
