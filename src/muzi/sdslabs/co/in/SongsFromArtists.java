@@ -7,7 +7,10 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,12 +41,18 @@ public class SongsFromArtists extends ListActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (!isNetworkAvailable()) {
+			finish();
+			Toast.makeText(SongsFromArtists.this,
+					"Please check your internet connection.", Toast.LENGTH_LONG)
+					.show();
+		}
 		lv = getListView();
 		lv.getRootView().setBackgroundColor(
 				getResources().getColor(R.color.homeGrey));
 		getListView().setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
-		
+
 		SongsList = new ArrayList<String>();
 		String value = getIntent().getStringExtra("search_id");
 
@@ -58,6 +67,17 @@ public class SongsFromArtists extends ListActivity implements
 		}
 
 		new LoadAllProducts().execute();
+	}
+
+	public boolean isNetworkAvailable() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+		// if no network is available networkInfo will be null
+		// otherwise check if we are connected
+		if (networkInfo != null && networkInfo.isConnected()) {
+			return true;
+		}
+		return false;
 	}
 
 	class LoadAllProducts extends AsyncTask<String, String, String> {
