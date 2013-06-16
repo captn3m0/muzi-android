@@ -43,6 +43,11 @@
             android:name=".SongsFromArtists"
             android:label="@string/app_name" >
         </activity>
+        
+        <activity
+            android:name=".TopTracks"
+            android:label="Top Tracks" >
+        </activity>
     </application>
 
 </manifest>
