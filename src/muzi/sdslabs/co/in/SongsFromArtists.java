@@ -54,13 +54,19 @@ public class SongsFromArtists extends ListActivity implements
 		lv.setFastScrollEnabled(true);
 
 		SongsList = new ArrayList<String>();
-		String value = getIntent().getStringExtra("search_id");
 
-		if (value != null) {
-			root = GlobalVariables.api_root + value;
+		String type = getIntent().getStringExtra(
+				GlobalVariables.FilteredList_to_SongsFromArtists_type);
+		String album_id = getIntent().getStringExtra(
+				GlobalVariables.FilteredList_to_SongsFromArtists_id);
+
+		if (type != null) {
+			root = GlobalVariables.api_root + type + "?id=" + album_id;
 			Log.i("request url", root);
+			this.setTitle(getIntent().getStringExtra(
+					GlobalVariables.FilteredList_to_SongsFromArtists_title));
 		} else {
-			finish();
+			SongsFromArtists.this.finish();
 			Toast.makeText(SongsFromArtists.this,
 					"Sorry, the request couldn't be executed",
 					Toast.LENGTH_LONG).show();

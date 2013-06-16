@@ -86,12 +86,16 @@ public class SongsFromAlbums extends ListActivity implements
 
 		/*------------------get query value to search for-----------------*/
 		{
-			String type = getIntent().getStringExtra("search_type");
-			album_id = getIntent().getStringExtra("search_id");
+			String type = getIntent().getStringExtra(
+					GlobalVariables.FilteredList_to_SongsFromAlbums_type);
+			album_id = getIntent().getStringExtra(
+					GlobalVariables.FilteredList_to_SongsFromAlbums_id);
 
 			if (type != null) {
 				root = GlobalVariables.api_root + type + "?id=" + album_id;
 				Log.i("request url", root);
+				this.setTitle(getIntent().getStringExtra(
+						GlobalVariables.FilteredList_to_SongsFromAlbums_title));
 			} else {
 				SongsFromAlbums.this.finish();
 				Toast.makeText(SongsFromAlbums.this,

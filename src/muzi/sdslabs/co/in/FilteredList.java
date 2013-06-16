@@ -4,7 +4,6 @@ package muzi.sdslabs.co.in;
  * it or rather use its strings to put in array*/
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -68,11 +67,13 @@ public class FilteredList extends Activity implements OnItemClickListener {
 
 		Log.i("value", value1);
 
-		if (value1.equals("Albums"))
+		if (value1.equals("Albums")) {
 			type = "album/";
-		else if (value1.equals("Artists"))
+			this.setTitle("Albums");
+		} else if (value1.equals("Artists")) {
 			type = "band/";
-		else {
+			this.setTitle("Artists");
+		} else {
 			FilteredList.this.finish();
 			Toast.makeText(FilteredList.this,
 					"Sorry, the request couldn't be executed",
@@ -245,22 +246,31 @@ public class FilteredList extends Activity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
 		// TODO Auto-generated method stub
+		position -= 1;
 
 		if (type == "album/") {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map = FilteredArrayList.get(position);
 			Intent i = new Intent(FilteredList.this, SongsFromAlbums.class);
 
-			i.putExtra("search_type", type);
-			i.putExtra("search_id", map.get(TAG_ID));
+			i.putExtra(GlobalVariables.FilteredList_to_SongsFromAlbums_type,
+					type);
+			i.putExtra(GlobalVariables.FilteredList_to_SongsFromAlbums_id,
+					map.get(TAG_ID));
+			i.putExtra(GlobalVariables.FilteredList_to_SongsFromAlbums_title,
+					map.get(TAG_NAME));
 			startActivity(i);
 		} else if (type == "band/") {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map = FilteredArrayList.get(position);
 			Intent i = new Intent(FilteredList.this, SongsFromArtists.class);
 
-			i.putExtra("search_type", type);
-			i.putExtra("search_id", map.get(TAG_ID));
+			i.putExtra(GlobalVariables.FilteredList_to_SongsFromArtists_type,
+					type);
+			i.putExtra(GlobalVariables.FilteredList_to_SongsFromArtists_id,
+					map.get(TAG_ID));
+			i.putExtra(GlobalVariables.FilteredList_to_SongsFromArtists_title,
+					map.get(TAG_NAME));
 
 			startActivity(i);
 		}
