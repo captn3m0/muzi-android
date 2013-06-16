@@ -1,5 +1,7 @@
 package muzi.sdslabs.co.in;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -7,7 +9,13 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +23,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SongsFromAlbums extends ListActivity implements
@@ -36,10 +46,23 @@ public class SongsFromAlbums extends ListActivity implements
 	JSONArray FilteredJSONArray = null;
 	ListView lv;
 	ArrayList<String> SongsList;
+	ImageView ivAlbumCover;
+	TextView tvAlbumDetails;
+	Drawable image;
+	Boolean image_avail;
+	String album_id;
+	Bitmap bitmap;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//
+		// if (!isNetworkAvailable()) {
+		// finish();
+		// Toast.makeText(SongsFromAlbums.this,
+		// "Please check your internet connection.", Toast.LENGTH_LONG)
+		// .show();
+		// }
 
 		/*------------------------style list view-----------------*/
 		{
@@ -50,25 +73,27 @@ public class SongsFromAlbums extends ListActivity implements
 			getListView().setCacheColorHint(Color.TRANSPARENT);
 			lv.setFastScrollEnabled(true);
 
+			/*-------add header to list view-------*/
+			View header = getLayoutInflater().inflate(
+					R.layout.header_for_songs_from_album, null);
+			lv.addHeaderView(header);
+			ivAlbumCover = (ImageView) findViewById(R.id.ivAlbumCover);
+			tvAlbumDetails = (TextView) findViewById(R.id.tvAlbumDetails);
+
+			image_avail = false;
 			SongsList = new ArrayList<String>();
-
-			/*-------add header & footer to list view-------*/
-
-			// View header = getLayoutInflater().inflate(R.layout.header, null);
-			// View footer = getLayoutInflater().inflate(R.layout.footer, null);
-			// listView.addHeaderView(header);
-			// listView.addFooterView(footer);
 		}
 
 		/*------------------get query value to search for-----------------*/
 		{
-			String value = getIntent().getStringExtra("search_id");
+			String type = getIntent().getStringExtra("search_type");
+			album_id = getIntent().getStringExtra("search_id");
 
-			if (value != null) {
-				root = GlobalVariables.api_root + value;
+			if (type != null) {
+				root = GlobalVariables.api_root + type + "?id=" + album_id;
 				Log.i("request url", root);
 			} else {
-				finish();
+				SongsFromAlbums.this.finish();
 				Toast.makeText(SongsFromAlbums.this,
 						"Sorry, the request couldn't be executed",
 						Toast.LENGTH_LONG).show();
@@ -77,6 +102,17 @@ public class SongsFromAlbums extends ListActivity implements
 
 		/*----------------------call async method---------------------*/
 		new LoadAllProducts().execute();
+	}
+
+	public boolean isNetworkAvailable() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+		// if no network is available networkInfo will be null
+		// otherwise check if we are connected
+		if (networkInfo != null && networkInfo.isConnected()) {
+			return true;
+		}
+		return false;
 	}
 
 	class LoadAllProducts extends AsyncTask<String, String, String> {
@@ -140,6 +176,27 @@ public class SongsFromAlbums extends ListActivity implements
 				}
 
 			}
+
+			try {
+				Log.i("Image url", "http://localhost/muzi/images/pics/"
+						+ album_id + ".jpg");
+				// InputStream is = (InputStream) new URL(
+				// GlobalVariables.album_pic_root + album_id + ".jpg")
+				// .getContent();
+				// image = Drawable.createFromStream(is, "src name");
+
+				bitmap = BitmapFactory.decodeStream((InputStream) new URL(
+						GlobalVariables.album_pic_root + album_id + ".jpg")
+						.getContent());
+
+				image_avail = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				image_avail = false;
+				Log.i("Image Not returned", "");
+
+			}
+
 			return null;
 		}
 
@@ -153,6 +210,13 @@ public class SongsFromAlbums extends ListActivity implements
 			/**
 			 * Updating parsed JSON data into ListView
 			 * */
+
+			// has to be before setting up the adapter
+			if (image_avail == true) {
+				ivAlbumCover.setImageBitmap(bitmap);
+				Log.i("Image available", "");
+			}
+
 			if (SongsList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
@@ -167,13 +231,33 @@ public class SongsFromAlbums extends ListActivity implements
 				Toast.makeText(SongsFromAlbums.this,
 						"Year of release: " + year, Toast.LENGTH_SHORT).show();
 			}
+
 		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stubString url = "http://........"; //
+		// your URL here
+		/*
+		 * MediaPlayer mediaPlayer = new MediaPlayer();
+		 * mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); try {
+		 * mediaPlayer .setDataSource(
+		 * "http://192.168.1.3/muzi/Adele___Set_Fire_To_The_Rain_Adele.mp3"); }
+		 * catch (IllegalArgumentException e) { // TODO Auto-generated catch
+		 * block e.printStackTrace(); } catch (SecurityException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } catch
+		 * (IllegalStateException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated
+		 * catch block e.printStackTrace(); }
+		 * 
+		 * try { mediaPlayer.prepare(); } catch (IllegalStateException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); } catch
+		 * (IOException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } // might take long! (for buffering, etc)
+		 * mediaPlayer.start();
+		 */
 
 	}
 }
