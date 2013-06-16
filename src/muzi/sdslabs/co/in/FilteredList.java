@@ -1,6 +1,10 @@
 package muzi.sdslabs.co.in;
 
+/*if writable cursor isn't available then pass this hashmap to database file & then parse
+ * it or rather use its strings to put in array*/
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -8,7 +12,10 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,15 +25,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
-public class FilteredListAfterQuery extends Activity implements
-		OnItemClickListener {
+public class FilteredList extends Activity implements OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
 	private static String type;
 
 	private ProgressDialog pDialog;
+	boolean artist, album;
 
 	// JSON keys
 	private static final String TAG_ID = "id";
@@ -42,21 +50,39 @@ public class FilteredListAfterQuery extends Activity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		/*
+		 * if (!isNetworkAvailable()) { FilteredList.this.finish();
+		 * Toast.makeText(FilteredList.this,
+		 * "Please check your internet connection.", Toast.LENGTH_LONG) .show();
+		 * }
+		 */
+
 		setContentView(R.layout.filtered_list_after_query);
 		lv = (ListView) findViewById(R.id.lvFilteredList);
 		lv.setFastScrollEnabled(true);
 		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
-		String value1 = getIntent().getStringExtra("filter_type");
+		String value1 = getIntent().getStringExtra(
+				GlobalVariables.HomeScreen_to_FilteredList);
+
+		Log.i("value", value1);
 
 		if (value1.equals("Albums"))
 			type = "album/";
 		else if (value1.equals("Artists"))
 			type = "band/";
+		else {
+			FilteredList.this.finish();
+			Toast.makeText(FilteredList.this,
+					"Sorry, the request couldn't be executed",
+					Toast.LENGTH_LONG).show();
+		}
 
 		new LoadAllProducts().execute();
 	}
 
+	/*--------------------To enable alphabetical scrollbar-----------------*/
 	public void onClick(View v) {
 		// Toast.makeText(FilteredJSONArrayAfterQuery.this, "Clicked",
 		// Toast.LENGTH_SHORT).show();
@@ -74,6 +100,17 @@ public class FilteredListAfterQuery extends Activity implements
 		lv.setSelectionFromTop(index, 0);
 	}
 
+	public boolean isNetworkAvailable() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+		// if no network is available networkInfo will be null
+		// otherwise check if we are connected
+		if (networkInfo != null && networkInfo.isConnected()) {
+			return true;
+		}
+		return false;
+	}
+
 	class LoadAllProducts extends AsyncTask<String, String, String> {
 
 		/**
@@ -82,33 +119,27 @@ public class FilteredListAfterQuery extends Activity implements
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			pDialog = new ProgressDialog(FilteredListAfterQuery.this);
+			pDialog = new ProgressDialog(FilteredList.this);
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(false);
 			pDialog.show();
 		}
 
-		/**
-		 * getting All products from url
-		 * */
-		protected String doInBackground(String... args) {
-			// Building Parameters
-			// Creating JSON Parser instance
-			// getting JSON string from URL
+		void parseJsonAndReturnHashMap() {
+
 			GetMethodEx test = new GetMethodEx();
 			try {
+				Log.i("url", GlobalVariables.api_root + type + "list.php");
 				FilteredJSONArray = new JSONArray(
 						test.getInternetData(GlobalVariables.api_root + type
 								+ "list.php"));
-				Log.i("url", GlobalVariables.api_root + type + "list.php");
 
 				if (FilteredJSONArray != null) {
 					// Getting Array of FilteredJSONArray
 					// looping through All FilteredJSONArray
-					// the code saves much more than required for now as we
-					// may
-					// require it later
+					// the code saves much more than required for now as
+					// we may require it later
 					for (int i = 0; i < FilteredJSONArray.length(); i++) {
 						JSONObject c = FilteredJSONArray.getJSONObject(i);
 
@@ -121,24 +152,67 @@ public class FilteredListAfterQuery extends Activity implements
 						// creating new HashMap
 						HashMap<String, String> map = new HashMap<String, String>();
 
-						// adding each child node to HashMap key => value
+						// adding each child node to HashMap key =>
+						// value
 						map.put(TAG_ID, id);
 						map.put(TAG_NAME, name);
 						map.put(TAG_LANGUAGE, language);
 
-						// Log.i((i + 1) + "", name);
-
 						// adding HashList to ArrayList
 						FilteredArrayList.add(map);
+
 					}
-					// if php query doesn't give sorted results comment out
-					// the
 				}
 
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		}
+
+		/**
+		 * getting All products from url
+		 * */
+		protected String doInBackground(String... args) {
+			// Building Parameters
+			// Creating JSON Parser instance
+			// getting JSON string from URL
+
+			parseJsonAndReturnHashMap();
+			// if (type == "album/") {
+
+			// // Use date here otherwise it'll update everytime
+			// // but this is just temporary ;)
+			// if (GlobalVariables.date_of_last_stored_album_db !=
+			// Calendar.ZONE_OFFSET) {
+			//
+			// GlobalVariables.date_of_last_stored_album_db =
+			// Calendar.ZONE_OFFSET;
+			//
+			// parseJsonAndReturnHashMap();
+			// // call a method from database to add values to album db
+			//
+			// } else {
+			// // return it from database
+			//
+			// }
+			// } else {
+
+			// // Use date here otherwise it'll update everytime
+			// // but this is just temporary ;)
+			// if (GlobalVariables.date_of_last_stored_artist_db !=
+			// Calendar.ZONE_OFFSET) {
+			//
+			// GlobalVariables.date_of_last_stored_artist_db =
+			// Calendar.ZONE_OFFSET;
+			//
+			// parseJsonAndReturnHashMap();
+			// // call a method from Database to add values to artist db
+			// } else {
+			// // return it from database
+			//
+			// }
+			// }
 			return null;
 		}
 
@@ -155,14 +229,13 @@ public class FilteredListAfterQuery extends Activity implements
 			if (FilteredArrayList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
-				ListAdapter adapter = new SimpleAdapter(
-						FilteredListAfterQuery.this, FilteredArrayList,
-						R.layout.list_item_with_one_tv,
+				ListAdapter adapter = new SimpleAdapter(FilteredList.this,
+						FilteredArrayList, R.layout.list_item_with_one_tv,
 						new String[] { TAG_NAME },
 						new int[] { R.id.tv_in_list_item_with_one_tv });
 
 				lv.setAdapter(adapter);
-				lv.setOnItemClickListener(FilteredListAfterQuery.this);
+				lv.setOnItemClickListener(FilteredList.this);
 			}
 		}
 
@@ -176,18 +249,19 @@ public class FilteredListAfterQuery extends Activity implements
 		if (type == "album/") {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map = FilteredArrayList.get(position);
-			Intent i = new Intent(FilteredListAfterQuery.this,
-					SongsFromAlbums.class);
+			Intent i = new Intent(FilteredList.this, SongsFromAlbums.class);
 
-			i.putExtra("search_id", type + "?id=" + map.get(TAG_ID));
+			i.putExtra("search_type", type);
+			i.putExtra("search_id", map.get(TAG_ID));
 			startActivity(i);
 		} else if (type == "band/") {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map = FilteredArrayList.get(position);
-			Intent i = new Intent(FilteredListAfterQuery.this,
-					SongsFromArtists.class);
+			Intent i = new Intent(FilteredList.this, SongsFromArtists.class);
 
-			i.putExtra("search_id", type + "?id=" + map.get(TAG_ID));
+			i.putExtra("search_type", type);
+			i.putExtra("search_id", map.get(TAG_ID));
+
 			startActivity(i);
 		}
 	}
