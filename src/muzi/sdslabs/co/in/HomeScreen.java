@@ -86,7 +86,7 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 		position -= 1;
 
 		// if clicked on artist or album
-		if (position == 1 || position == 0) {
+		if (position == 0 || position == 1) {
 			try {
 				Intent i = new Intent(HomeScreen.this, FilteredList.class);
 				i.putExtra(GlobalVariables.HomeScreen_to_FilteredList,
@@ -98,6 +98,9 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 				e.printStackTrace();
 			}
 
+		}else if(position == 2){
+			Intent i = new Intent(HomeScreen.this, TopTracks.class);
+			startActivity(i);
 		}
 	}
 }
