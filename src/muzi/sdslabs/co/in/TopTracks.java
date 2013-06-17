@@ -9,8 +9,9 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +20,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-public class TopTracks extends Activity implements OnItemClickListener {
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class TopTracks extends SherlockListActivity implements OnItemClickListener {
 
 	private ProgressDialog pDialog;
 	boolean artist, album;
@@ -46,10 +50,14 @@ public class TopTracks extends Activity implements OnItemClickListener {
 		 * "Please check your internet connection.", Toast.LENGTH_LONG) .show();
 		 * }
 		 */
-
-		setContentView(R.layout.filtered_list_after_query);
-		lv = (ListView) findViewById(R.id.lvFilteredList);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		lv = getListView();
 		lv.setFastScrollEnabled(true);
+		lv.getRootView().setBackgroundColor(
+				getResources().getColor(R.color.Black));
+		getListView().setCacheColorHint(Color.TRANSPARENT);
+		lv.setFastScrollEnabled(true);
+		
 		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
 		new LoadAllProducts().execute();
@@ -120,8 +128,8 @@ public class TopTracks extends Activity implements OnItemClickListener {
 			if (FilteredArrayList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(TopTracks.this,
-						R.layout.list_item_with_one_tv,
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+						TopTracks.this, R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, FilteredNamesList);
 
 				lv.setAdapter(adapter);
@@ -135,5 +143,20 @@ public class TopTracks extends Activity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			Intent mainIntent = new Intent(getApplicationContext(),
+					HomeScreen.class);
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(mainIntent);
+		}
+		return true;
 	}
 }

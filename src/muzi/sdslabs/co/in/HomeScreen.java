@@ -1,11 +1,9 @@
 package muzi.sdslabs.co.in;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -17,7 +15,10 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-public class HomeScreen extends ListActivity implements OnItemClickListener {
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+
+public class HomeScreen extends SherlockListActivity implements OnItemClickListener {
 
 	ListView lv;
 	ArrayAdapter<String> adapter;
@@ -29,7 +30,7 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 		super.onCreate(savedInstanceState);
 		lv = getListView();
 		lv.getRootView().setBackgroundColor(
-				getResources().getColor(R.color.homeGrey));
+				getResources().getColor(R.color.Black));
 		getListView().setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
 
@@ -59,9 +60,8 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 					} else {
 						Intent i1 = new Intent(HomeScreen.this,
 								SearchResults.class);
-						i1.putExtra(
-								GlobalVariables.HomeScreen_to_SearchResults,
-								etSearch.getText().toString());
+						i1.putExtra("search_query", etSearch.getText()
+								.toString());
 						startActivity(i1);
 					}
 					handled = true;
@@ -71,10 +71,10 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 		});
 	}
 
-	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+
+		menu.add("Nothing");
+		//getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
@@ -89,8 +89,7 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 		if (position == 0 || position == 1) {
 			try {
 				Intent i = new Intent(HomeScreen.this, FilteredList.class);
-				i.putExtra(GlobalVariables.HomeScreen_to_FilteredList,
-						listItems[position]);
+				i.putExtra("list_type", listItems[position]);
 				// Log.i("extra", listItems[position]);
 				startActivity(i);
 				// HomeScreen.this.finish();
@@ -98,7 +97,7 @@ public class HomeScreen extends ListActivity implements OnItemClickListener {
 				e.printStackTrace();
 			}
 
-		}else if(position == 2){
+		} else if (position == 2) {
 			Intent i = new Intent(HomeScreen.this, TopTracks.class);
 			startActivity(i);
 		}

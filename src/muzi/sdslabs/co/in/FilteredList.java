@@ -9,7 +9,6 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +25,12 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class FilteredList extends Activity implements OnItemClickListener {
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class FilteredList extends SherlockActivity implements
+		OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -58,12 +62,13 @@ public class FilteredList extends Activity implements OnItemClickListener {
 		 */
 
 		setContentView(R.layout.filtered_list_after_query);
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		lv = (ListView) findViewById(R.id.lvFilteredList);
 		lv.setFastScrollEnabled(true);
 		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
-		String value1 = getIntent().getStringExtra(
-				GlobalVariables.HomeScreen_to_FilteredList);
+		String value1 = getIntent().getStringExtra("list_type");
 
 		Log.i("value", value1);
 
@@ -248,31 +253,45 @@ public class FilteredList extends Activity implements OnItemClickListener {
 		// TODO Auto-generated method stub
 		position -= 1;
 
+		// For Albums
 		if (type == "album/") {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map = FilteredArrayList.get(position);
 			Intent i = new Intent(FilteredList.this, SongsFromAlbums.class);
 
-			i.putExtra(GlobalVariables.FilteredList_to_SongsFromAlbums_type,
-					type);
-			i.putExtra(GlobalVariables.FilteredList_to_SongsFromAlbums_id,
-					map.get(TAG_ID));
-			i.putExtra(GlobalVariables.FilteredList_to_SongsFromAlbums_title,
-					map.get(TAG_NAME));
+			i.putExtra("search_type1", type);
+			i.putExtra("search_id1", map.get(TAG_ID));
+			i.putExtra("search_title1", map.get(TAG_NAME));
 			startActivity(i);
+
+			// For Artists
 		} else if (type == "band/") {
 			HashMap<String, String> map = new HashMap<String, String>();
 			map = FilteredArrayList.get(position);
 			Intent i = new Intent(FilteredList.this, SongsFromArtists.class);
 
-			i.putExtra(GlobalVariables.FilteredList_to_SongsFromArtists_type,
-					type);
-			i.putExtra(GlobalVariables.FilteredList_to_SongsFromArtists_id,
-					map.get(TAG_ID));
-			i.putExtra(GlobalVariables.FilteredList_to_SongsFromArtists_title,
-					map.get(TAG_NAME));
+			i.putExtra("search_type2", type);
+			i.putExtra("search_id2", map.get(TAG_ID));
+			i.putExtra("search_title2", map.get(TAG_NAME));
 
 			startActivity(i);
 		}
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		menu.add("Nothing");
+		// getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			Intent mainIntent = new Intent(getApplicationContext(),
+					HomeScreen.class);
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(mainIntent);
+		}
+		return true;
 	}
 }

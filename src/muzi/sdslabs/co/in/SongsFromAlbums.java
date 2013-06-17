@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -28,7 +28,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongsFromAlbums extends ListActivity implements
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class SongsFromAlbums extends SherlockListActivity implements
 		OnItemClickListener {
 
 	// url to make request
@@ -64,12 +68,14 @@ public class SongsFromAlbums extends ListActivity implements
 		// .show();
 		// }
 
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		/*------------------------style list view-----------------*/
 		{
 			lv = getListView();
 			lv.setFastScrollEnabled(true);
 			lv.getRootView().setBackgroundColor(
-					getResources().getColor(R.color.homeGrey));
+					getResources().getColor(R.color.Black));
 			getListView().setCacheColorHint(Color.TRANSPARENT);
 			lv.setFastScrollEnabled(true);
 
@@ -86,16 +92,13 @@ public class SongsFromAlbums extends ListActivity implements
 
 		/*------------------get query value to search for-----------------*/
 		{
-			String type = getIntent().getStringExtra(
-					GlobalVariables.FilteredList_to_SongsFromAlbums_type);
-			album_id = getIntent().getStringExtra(
-					GlobalVariables.FilteredList_to_SongsFromAlbums_id);
+			String type = getIntent().getStringExtra("search_type1");
+			album_id = getIntent().getStringExtra("search_id1");
 
 			if (type != null) {
 				root = GlobalVariables.api_root + type + "?id=" + album_id;
 				Log.i("request url", root);
-				this.setTitle(getIntent().getStringExtra(
-						GlobalVariables.FilteredList_to_SongsFromAlbums_title));
+				this.setTitle(getIntent().getStringExtra("search_title1"));
 			} else {
 				SongsFromAlbums.this.finish();
 				Toast.makeText(SongsFromAlbums.this,
@@ -105,7 +108,8 @@ public class SongsFromAlbums extends ListActivity implements
 		}
 
 		/*----------------------call async method---------------------*/
-		new LoadAllProducts().execute();
+		new LoadAlbumCover().execute();
+		new LoadSongs().execute();
 	}
 
 	public boolean isNetworkAvailable() {
@@ -119,7 +123,7 @@ public class SongsFromAlbums extends ListActivity implements
 		return false;
 	}
 
-	class LoadAllProducts extends AsyncTask<String, String, String> {
+	class LoadSongs extends AsyncTask<String, String, String> {
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -180,15 +184,54 @@ public class SongsFromAlbums extends ListActivity implements
 				}
 
 			}
+			return null;
+		}
 
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// dismiss the dialog after getting all products
+			pDialog.dismiss();
+			// updating UI from Background Thread
+			/**
+			 * Updating parsed JSON data into ListView
+			 * */
+
+			if (SongsList.size() == 0) {
+				lv.setAdapter(null);
+			} else {
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+						SongsFromAlbums.this, R.layout.list_item_with_one_tv,
+						R.id.tv_in_list_item_with_one_tv, SongsList);
+				lv.setAdapter(adapter);
+				lv.setOnItemClickListener(SongsFromAlbums.this);
+			}
+		}
+	}
+
+	class LoadAlbumCover extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			// pDialog = new ProgressDialog(SongsFromAlbums.this);
+			// pDialog.setMessage("Loading content. Please wait...");
+			// pDialog.setIndeterminate(false);
+			// pDialog.setCancelable(false);
+			// pDialog.show();
+		}
+
+		/**
+		 * getting All products from url
+		 * */
+		protected String doInBackground(String... args) {
 			try {
-				Log.i("Image url", "http://localhost/muzi/images/pics/"
-						+ album_id + ".jpg");
-				// InputStream is = (InputStream) new URL(
-				// GlobalVariables.album_pic_root + album_id + ".jpg")
-				// .getContent();
-				// image = Drawable.createFromStream(is, "src name");
-
+				// Log.i("Image url", "http://localhost/muzi/images/pics/"
+				// + album_id + ".jpg");
 				bitmap = BitmapFactory.decodeStream((InputStream) new URL(
 						GlobalVariables.album_pic_root + album_id + ".jpg")
 						.getContent());
@@ -209,7 +252,6 @@ public class SongsFromAlbums extends ListActivity implements
 		 * **/
 		protected void onPostExecute(String file_url) {
 			// dismiss the dialog after getting all products
-			pDialog.dismiss();
 			// updating UI from Background Thread
 			/**
 			 * Updating parsed JSON data into ListView
@@ -221,21 +263,10 @@ public class SongsFromAlbums extends ListActivity implements
 				Log.i("Image available", "");
 			}
 
-			if (SongsList.size() == 0) {
-				lv.setAdapter(null);
-			} else {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						SongsFromAlbums.this, R.layout.list_item_with_one_tv,
-						R.id.tv_in_list_item_with_one_tv, SongsList);
-				lv.setAdapter(adapter);
-				lv.setOnItemClickListener(SongsFromAlbums.this);
-			}
-
 			if (year != 0) {
 				Toast.makeText(SongsFromAlbums.this,
 						"Year of release: " + year, Toast.LENGTH_SHORT).show();
 			}
-
 		}
 	}
 
@@ -263,5 +294,20 @@ public class SongsFromAlbums extends ListActivity implements
 		 * mediaPlayer.start();
 		 */
 
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			Intent mainIntent = new Intent(getApplicationContext(),
+					HomeScreen.class);
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(mainIntent);
+		}
+		return true;
 	}
 }

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -21,7 +21,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class SongsFromArtists extends ListActivity implements
+import com.actionbarsherlock.app.SherlockListActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+public class SongsFromArtists extends SherlockListActivity implements
 		OnItemClickListener {
 
 	// url to make request
@@ -41,30 +45,33 @@ public class SongsFromArtists extends ListActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (!isNetworkAvailable()) {
-			finish();
-			Toast.makeText(SongsFromArtists.this,
-					"Please check your internet connection.", Toast.LENGTH_LONG)
-					.show();
-		}
+		// if (!isNetworkAvailable()) {
+		// finish();
+		// Toast.makeText(SongsFromArtists.this,
+		// "Please check your internet connection.", Toast.LENGTH_LONG)
+		// .show();
+		// }
+
+		/* To customize action bar */
+		// getSupportActionBar().setDisplayShowCustomEnabled(true);
+		// getSupportActionBar().setCustomView(R.layout.my_custom_view);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		lv = getListView();
 		lv.getRootView().setBackgroundColor(
-				getResources().getColor(R.color.homeGrey));
+				getResources().getColor(R.color.Black));
 		getListView().setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
 
 		SongsList = new ArrayList<String>();
 
-		String type = getIntent().getStringExtra(
-				GlobalVariables.FilteredList_to_SongsFromArtists_type);
-		String album_id = getIntent().getStringExtra(
-				GlobalVariables.FilteredList_to_SongsFromArtists_id);
+		String type = getIntent().getStringExtra("search_type2");
+		String album_id = getIntent().getStringExtra("search_id2");
 
 		if (type != null) {
 			root = GlobalVariables.api_root + type + "?id=" + album_id;
 			Log.i("request url", root);
-			this.setTitle(getIntent().getStringExtra(
-					GlobalVariables.FilteredList_to_SongsFromArtists_title));
+			this.setTitle(getIntent().getStringExtra("search_title2"));
 		} else {
 			SongsFromArtists.this.finish();
 			Toast.makeText(SongsFromArtists.this,
@@ -164,5 +171,20 @@ public class SongsFromArtists extends ListActivity implements
 			long arg3) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			Intent mainIntent = new Intent(getApplicationContext(),
+					HomeScreen.class);
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(mainIntent);
+		}
+		return true;
 	}
 }
