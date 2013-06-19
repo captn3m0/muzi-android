@@ -3,7 +3,11 @@ package muzi.sdslabs.co.in;
 /*if writable cursor isn't available then pass this hashmap to database file & then parse
  * it or rather use its strings to put in array*/
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -132,14 +136,12 @@ public class FilteredList extends SherlockActivity implements
 			pDialog.show();
 		}
 
-		void parseJsonAndReturnHashMap() {
+		void parseJson(String string) {
 
-			GetMethodEx test = new GetMethodEx();
+			Log.i("list", string);
+
 			try {
-				Log.i("url", GlobalVariables.api_root + type + "list.php");
-				FilteredJSONArray = new JSONArray(
-						test.getInternetData(GlobalVariables.api_root + type
-								+ "list.php"));
+				FilteredJSONArray = new JSONArray(string);
 
 				if (FilteredJSONArray != null) {
 					// Getting Array of FilteredJSONArray
@@ -183,43 +185,132 @@ public class FilteredList extends SherlockActivity implements
 			// Building Parameters
 			// Creating JSON Parser instance
 			// getting JSON string from URL
+			Log.i("background processing", " ");
+			listFileNames();
 
-			parseJsonAndReturnHashMap();
-			// if (type == "album/") {
+			String string = "";
+			if (type.equals("album/")) {
+				// write to app's internal data
+				if (fileList() == null
+						|| !Arrays.asList(fileList()).contains(
+								"album" + getDate())) {
+					Log.i("", "deleted");
+					deleteFileList();
 
-			// // Use date here otherwise it'll update everytime
-			// // but this is just temporary ;)
-			// if (GlobalVariables.date_of_last_stored_album_db !=
-			// Calendar.ZONE_OFFSET) {
-			//
-			// GlobalVariables.date_of_last_stored_album_db =
-			// Calendar.ZONE_OFFSET;
-			//
-			// parseJsonAndReturnHashMap();
-			// // call a method from database to add values to album db
-			//
-			// } else {
-			// // return it from database
-			//
-			// }
-			// } else {
+					GetMethodEx test = new GetMethodEx();
+					try {
+						Log.i("url", GlobalVariables.api_root + type
+								+ "list.php");
 
-			// // Use date here otherwise it'll update everytime
-			// // but this is just temporary ;)
-			// if (GlobalVariables.date_of_last_stored_artist_db !=
-			// Calendar.ZONE_OFFSET) {
-			//
-			// GlobalVariables.date_of_last_stored_artist_db =
-			// Calendar.ZONE_OFFSET;
-			//
-			// parseJsonAndReturnHashMap();
-			// // call a method from Database to add values to artist db
-			// } else {
-			// // return it from database
-			//
-			// }
-			// }
+						string = test.getInternetData(GlobalVariables.api_root
+								+ type + "list.php");
+
+						FileOutputStream fos = openFileOutput("album"
+								+ getDate(), Context.MODE_PRIVATE);
+						fos.write(string.getBytes());
+						fos.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				} else {
+					// return it from database
+					try {
+						FileInputStream fis = openFileInput("album" + getDate());
+						StringBuffer fileContent = new StringBuffer("");
+						byte[] buffer = new byte[1024];
+
+						while (fis.read(buffer) != -1) {
+							fileContent.append(new String(buffer));
+						}
+
+						fis.close();
+						string = fileContent.toString();
+
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+
+			else if (type.equals("band/")) {
+
+				// write to app's internal data
+				if (fileList() == null
+						|| !Arrays.asList(fileList()).contains(
+								"artist" + getDate())) {
+
+					deleteFileList();
+
+					GetMethodEx test = new GetMethodEx();
+					try {
+						Log.i("url", GlobalVariables.api_root + type
+								+ "list.php");
+
+						string = test.getInternetData(GlobalVariables.api_root
+								+ type + "list.php");
+
+						FileOutputStream fos = openFileOutput("artist"
+								+ getDate(), Context.MODE_PRIVATE);
+						fos.write(string.getBytes());
+						fos.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				} else {
+					// return it from database
+					try {
+						FileInputStream fis = openFileInput("artist"
+								+ getDate());
+						StringBuffer fileContent = new StringBuffer("");
+						byte[] buffer = new byte[1024];
+
+						while (fis.read(buffer) != -1) {
+							fileContent.append(new String(buffer));
+						}
+						fis.close();
+						string = fileContent.toString();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			parseJson(string);
 			return null;
+		}
+
+		private void deleteFileList() {
+			// TODO Auto-generated method stub
+
+			int i = 0;
+
+			if (fileList()[0].equals("album" + getDate())
+					|| fileList()[0].equals("artist" + getDate())) {
+				i = 1;
+			}
+			while (fileList().length > i) {
+				Log.i("deleted", fileList()[i]);
+				getApplicationContext().deleteFile(fileList()[i]);
+			}
+		}
+
+		private void listFileNames() {
+			// TODO Auto-generated method stub
+			int i = 0;
+			while (i < fileList().length) {
+				Log.i("listing", fileList()[i]);
+				i++;
+			}
+		}
+
+		private String getDate() {
+			Calendar c = Calendar.getInstance();
+			return " " + c.get(Calendar.DAY_OF_MONTH) + "_"
+					+ c.get(Calendar.MONTH) + "_" + c.get(Calendar.YEAR);
+			// return null;
 		}
 
 		/**
@@ -251,7 +342,7 @@ public class FilteredList extends SherlockActivity implements
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
 		// TODO Auto-generated method stub
-		position -= 1;
+		Log.i("position", ""+position);
 
 		// For Albums
 		if (type == "album/") {
