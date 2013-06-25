@@ -24,13 +24,11 @@
                 android:id="@+id/tbEnglish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:layout_alignParentRight="true"
-                android:onClick="onToggleClicked"
-                android:textOff=""
-                android:textOn="" />
+                android:checked="true"
+                android:onClick="onToggleClicked" />
         </RelativeLayout>
-        
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,13 +45,10 @@
                 android:id="@+id/tbHindi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:layout_alignParentRight="true"
-                android:onClick="onToggleClicked"
-                android:textOff=""
-                android:textOn="" />
+                android:checked="true" />
         </RelativeLayout>
-        
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,11 +65,9 @@
                 android:id="@+id/tbTamil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:layout_alignParentRight="true"
-                android:onClick="onToggleClicked"
-                android:textOff=""
-                android:textOn="" />
+                android:checked="true"
+                android:onClick="onToggleClicked" />
         </RelativeLayout>
 
         <RelativeLayout
