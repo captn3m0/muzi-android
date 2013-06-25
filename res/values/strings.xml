@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="local_service_stopped">Music Service Stopped</string>
+    <string name="local_service_started">Music Service Started</string>
     <string name="app_name">Muzi</string>
     <string name="home_screen_title">&#x2023;Muzi|SDSLabs</string>
     <string name="action_settings">Settings</string>

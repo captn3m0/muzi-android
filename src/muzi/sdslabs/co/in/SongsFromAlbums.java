@@ -15,8 +15,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -32,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
 public class SongsFromAlbums extends SherlockListActivity implements
@@ -110,12 +107,13 @@ public class SongsFromAlbums extends SherlockListActivity implements
 				this.setTitle(getIntent().getStringExtra("search_title1"));
 				tvAlbumName
 						.setText(getIntent().getStringExtra("search_title1"));
-			} else {
-				SongsFromAlbums.this.finish();
-				Toast.makeText(SongsFromAlbums.this,
-						"Sorry, the request couldn't be executed",
-						Toast.LENGTH_LONG).show();
 			}
+			// else {
+			// SongsFromAlbums.this.finish();
+			// Toast.makeText(SongsFromAlbums.this,
+			// "Sorry, the request couldn't be executed",
+			// Toast.LENGTH_LONG).show();
+			// }
 		}
 
 		/*----------------------call async method---------------------*/
@@ -151,12 +149,12 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
-			pDialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
-		          public void onCancel(DialogInterface dialog) {
-		              task1.cancel(true);
-		              task2.cancel(true);
-		          }
-		    });
+			pDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				public void onCancel(DialogInterface dialog) {
+					task1.cancel(true);
+					task2.cancel(true);
+				}
+			});
 			pDialog.show();
 		}
 
@@ -176,6 +174,7 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			// getting JSON string from URL
 			GetMethodEx test = new GetMethodEx();
 			try {
+				Log.i("Root", root);
 				jsonObject = new JSONObject(test.getInternetData(root));
 				Log.i("Track url", jsonObject.toString());
 
@@ -235,7 +234,7 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			
+
 		}
 
 		protected void onCancelled() {
@@ -322,24 +321,9 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			long arg3) {
 		// TODO Auto-generated method stubString url = "http://........"; //
 		// your URL here
-
-		MediaPlayer mediaPlayer = new MediaPlayer();
-		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-		try {
-			mediaPlayer
-					.setDataSource("http://192.168.1.5/muzi/Adele___Set_Fire_To_The_Rain_Adele.mp3");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			mediaPlayer.prepare();
-		} catch (Exception e) { // TODO Auto-generated catch block
-			e.printStackTrace();
-		} // might take long! (for buffering, etc)
-		mediaPlayer.start();
-
+		
+		Intent i = new Intent(SongsFromAlbums.this, LocalService.class);
+		startService(i);
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -350,5 +334,9 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			startActivity(mainIntent);
 		}
 		return true;
+	}
+
+	public void stopPlayer(View v) {
+		stopService(new Intent(this, LocalService.class));
 	}
 }

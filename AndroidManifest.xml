@@ -49,6 +49,9 @@
             android:name=".LangSettings"
             android:label="Settings" >
         </activity>
+        
+      <service android:name=".LocalService" 
+          android:exported="false"/>
     </application>
 
 </manifest>
