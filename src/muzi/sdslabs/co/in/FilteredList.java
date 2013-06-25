@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +15,7 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -24,9 +24,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -50,9 +49,8 @@ public class FilteredList extends SherlockActivity implements
 
 	JSONArray FilteredJSONArray = null;
 	ListView lv;
-	ArrayList<String> FilteredNamesList;
-
-	ArrayList<HashMap<String, String>> FilteredArrayList;
+	ArrayList<String> FilteredNamesList, FilteredIdList, langList;
+	SharedPreferences pref;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,22 +69,35 @@ public class FilteredList extends SherlockActivity implements
 		lv = (ListView) findViewById(R.id.lvFilteredList);
 		lv.setFastScrollEnabled(true);
 		FilteredNamesList = new ArrayList<String>();
-		FilteredArrayList = new ArrayList<HashMap<String, String>>();
+		FilteredIdList = new ArrayList<String>();
 		String value1 = getIntent().getStringExtra("list_type");
 
 		Log.i("value", value1);
 
 		if (value1.equals("Albums")) {
-			type = "album/";
+			type = "album";
 			this.setTitle("Albums");
 		} else if (value1.equals("Artists")) {
-			type = "band/";
-			this.setTitle("Artists");
+			type = "band";
 		} else {
 			FilteredList.this.finish();
 			Toast.makeText(FilteredList.this,
 					"Sorry, the request couldn't be executed",
 					Toast.LENGTH_LONG).show();
+		}
+
+		langList = new ArrayList<String>();
+		pref = getApplicationContext().getSharedPreferences("Lang Pref", 0);
+
+		if (pref.getBoolean("English", true))
+			langList.add("English");
+		if (pref.getBoolean("Hindi", true))
+			langList.add("Hindi");
+		if (pref.getBoolean("Tamil", true))
+			langList.add("Tamil");
+		
+		for(int i=0; i<langList.size(); i++){
+			Log.i("pref list", langList.get(i));
 		}
 
 		new LoadAllProducts().execute();
@@ -138,7 +149,7 @@ public class FilteredList extends SherlockActivity implements
 
 		void parseJson(String string) {
 
-			Log.i("list", string);
+			Log.i("JSON data", string);
 
 			try {
 				FilteredJSONArray = new JSONArray(string);
@@ -152,23 +163,11 @@ public class FilteredList extends SherlockActivity implements
 						JSONObject c = FilteredJSONArray.getJSONObject(i);
 
 						// Storing each json item in variable
-						String id = c.getString(TAG_ID);
-						String name = c.getString(TAG_NAME);
-						String language = c.getString(TAG_LANGUAGE);
-
-						FilteredNamesList.add(name);
-						// creating new HashMap
-						HashMap<String, String> map = new HashMap<String, String>();
-
-						// adding each child node to HashMap key =>
-						// value
-						map.put(TAG_ID, id);
-						map.put(TAG_NAME, name);
-						map.put(TAG_LANGUAGE, language);
-
-						// adding HashList to ArrayList
-						FilteredArrayList.add(map);
-
+						if (langList.contains(c.getString(TAG_LANGUAGE))) {
+							// Storing each json item in variable
+							FilteredIdList.add(c.getString(TAG_ID));
+							FilteredNamesList.add(c.getString(TAG_NAME));
+						}
 					}
 				}
 
@@ -189,95 +188,46 @@ public class FilteredList extends SherlockActivity implements
 			listFileNames();
 
 			String string = "";
-			if (type.equals("album/")) {
-				// write to app's internal data
-				if (fileList() == null
-						|| !Arrays.asList(fileList()).contains(
-								"album" + getDate())) {
-					Log.i("", "deleted");
-					deleteFileList();
+			if (fileList() == null
+					|| !Arrays.asList(fileList()).contains(type + getDate())) {
+				Log.i("", "deleted");
+				deleteFileList();
 
-					GetMethodEx test = new GetMethodEx();
-					try {
-						Log.i("url", GlobalVariables.api_root + type
-								+ "list.php");
+				GetMethodEx test = new GetMethodEx();
+				try {
+					Log.i("url", GlobalVariables.api_root + type + "/list.php");
 
-						string = test.getInternetData(GlobalVariables.api_root
-								+ type + "list.php");
+					string = test.getInternetData(GlobalVariables.api_root
+							+ type + "/list.php");
 
-						FileOutputStream fos = openFileOutput("album"
-								+ getDate(), Context.MODE_PRIVATE);
-						fos.write(string.getBytes());
-						fos.close();
-					} catch (Exception e) {
-						e.printStackTrace();
+					FileOutputStream fos = openFileOutput(type + getDate(),
+							Context.MODE_PRIVATE);
+					fos.write(string.getBytes());
+					fos.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			} else {
+				// return it from database
+				try {
+					FileInputStream fis = openFileInput(type + getDate());
+					StringBuffer fileContent = new StringBuffer("");
+					byte[] buffer = new byte[1024];
+
+					while (fis.read(buffer) != -1) {
+						fileContent.append(new String(buffer));
 					}
 
-				} else {
-					// return it from database
-					try {
-						FileInputStream fis = openFileInput("album" + getDate());
-						StringBuffer fileContent = new StringBuffer("");
-						byte[] buffer = new byte[1024];
+					fis.close();
+					string = fileContent.toString();
 
-						while (fis.read(buffer) != -1) {
-							fileContent.append(new String(buffer));
-						}
-
-						fis.close();
-						string = fileContent.toString();
-
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 
-			else if (type.equals("band/")) {
-
-				// write to app's internal data
-				if (fileList() == null
-						|| !Arrays.asList(fileList()).contains(
-								"artist" + getDate())) {
-
-					deleteFileList();
-
-					GetMethodEx test = new GetMethodEx();
-					try {
-						Log.i("url", GlobalVariables.api_root + type
-								+ "list.php");
-
-						string = test.getInternetData(GlobalVariables.api_root
-								+ type + "list.php");
-
-						FileOutputStream fos = openFileOutput("artist"
-								+ getDate(), Context.MODE_PRIVATE);
-						fos.write(string.getBytes());
-						fos.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				} else {
-					// return it from database
-					try {
-						FileInputStream fis = openFileInput("artist"
-								+ getDate());
-						StringBuffer fileContent = new StringBuffer("");
-						byte[] buffer = new byte[1024];
-
-						while (fis.read(buffer) != -1) {
-							fileContent.append(new String(buffer));
-						}
-						fis.close();
-						string = fileContent.toString();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
 			parseJson(string);
 			return null;
 		}
@@ -287,8 +237,9 @@ public class FilteredList extends SherlockActivity implements
 
 			int i = 0;
 
-			if (fileList()[0].equals("album" + getDate())
-					|| fileList()[0].equals("artist" + getDate())) {
+			if (fileList().length > 0
+					&& (fileList()[0].equals("album" + getDate()) || fileList()[0]
+							.equals("artist" + getDate()))) {
 				i = 1;
 			}
 			while (fileList().length > i) {
@@ -323,15 +274,13 @@ public class FilteredList extends SherlockActivity implements
 			/**
 			 * Updating parsed JSON data into ListView
 			 * */
-			if (FilteredArrayList.size() == 0) {
+			if (FilteredNamesList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
-				ListAdapter adapter = new SimpleAdapter(FilteredList.this,
-						FilteredArrayList, R.layout.list_item_with_one_tv,
-						new String[] { TAG_NAME },
-						new int[] { R.id.tv_in_list_item_with_one_tv });
 
-				lv.setAdapter(adapter);
+				lv.setAdapter(new ArrayAdapter<String>(FilteredList.this,
+						R.layout.list_item_with_one_tv,
+						R.id.tv_in_list_item_with_one_tv, FilteredNamesList));
 				lv.setOnItemClickListener(FilteredList.this);
 			}
 		}
@@ -342,28 +291,24 @@ public class FilteredList extends SherlockActivity implements
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
 		// TODO Auto-generated method stub
-		Log.i("position", ""+position);
+		Log.i("position", "" + position);
 
 		// For Albums
-		if (type == "album/") {
-			HashMap<String, String> map = new HashMap<String, String>();
-			map = FilteredArrayList.get(position);
+		if (type == "album") {
 			Intent i = new Intent(FilteredList.this, SongsFromAlbums.class);
 
 			i.putExtra("search_type1", type);
-			i.putExtra("search_id1", map.get(TAG_ID));
-			i.putExtra("search_title1", map.get(TAG_NAME));
+			i.putExtra("search_id1", FilteredIdList.get(position));
+			i.putExtra("search_title1", FilteredNamesList.get(position));
 			startActivity(i);
 
 			// For Artists
-		} else if (type == "band/") {
-			HashMap<String, String> map = new HashMap<String, String>();
-			map = FilteredArrayList.get(position);
+		} else if (type == "band") {
 			Intent i = new Intent(FilteredList.this, SongsFromArtists.class);
 
 			i.putExtra("search_type2", type);
-			i.putExtra("search_id2", map.get(TAG_ID));
-			i.putExtra("search_title2", map.get(TAG_NAME));
+			i.putExtra("search_id2", FilteredIdList.get(position));
+			i.putExtra("search_title2", FilteredNamesList.get(position));
 
 			startActivity(i);
 		}
@@ -371,7 +316,7 @@ public class FilteredList extends SherlockActivity implements
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 
-		menu.add("Nothing");
+		menu.add("Settings");
 		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
