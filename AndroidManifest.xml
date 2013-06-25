@@ -45,6 +45,9 @@
         <activity
             android:name=".TopTracks"
             android:label="Top Tracks" >
+        </activity><activity
+            android:name=".LangSettings"
+            android:label="Settings" >
         </activity>
     </application>
 
