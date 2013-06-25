@@ -187,7 +187,6 @@ public class SongsFromAlbums extends SherlockListActivity implements
 
 					// Getting Array of FilteredJSONArray
 					// looping through All FilteredJSONArray
-					Log.i("Working", "good");
 					// require it later
 					for (int i = 0; i < FilteredJSONArray.length(); i++) {
 						if (isCancelled()) {
@@ -341,11 +340,6 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		} // might take long! (for buffering, etc)
 		mediaPlayer.start();
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
