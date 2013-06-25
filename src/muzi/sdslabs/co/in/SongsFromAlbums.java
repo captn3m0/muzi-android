@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -59,6 +60,8 @@ public class SongsFromAlbums extends SherlockListActivity implements
 	String album_id;
 	Bitmap bitmap;
 	String album_artist;
+	LoadAlbumCover task2;
+	LoadSongs task1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -105,7 +108,8 @@ public class SongsFromAlbums extends SherlockListActivity implements
 				root = GlobalVariables.api_root + type + "?id=" + album_id;
 				Log.i("request url", root);
 				this.setTitle(getIntent().getStringExtra("search_title1"));
-				tvAlbumName.setText(getIntent().getStringExtra("search_title1"));
+				tvAlbumName
+						.setText(getIntent().getStringExtra("search_title1"));
 			} else {
 				SongsFromAlbums.this.finish();
 				Toast.makeText(SongsFromAlbums.this,
@@ -115,8 +119,13 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		}
 
 		/*----------------------call async method---------------------*/
-		new LoadAlbumCover().execute();
-		new LoadSongs().execute();
+		// want to execute these tasks in parallel in different threads
+		// but it may give errors if header content is loaded after the list
+		// items
+		task1 = new LoadSongs();
+		task2 = new LoadAlbumCover();
+		task1.execute();
+		task2.execute();
 	}
 
 	public boolean isNetworkAvailable() {
@@ -141,8 +150,21 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			pDialog = new ProgressDialog(SongsFromAlbums.this);
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
+			pDialog.setCancelable(true);
+			pDialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+		          public void onCancel(DialogInterface dialog) {
+		              task1.cancel(true);
+		              task2.cancel(true);
+		          }
+		    });
 			pDialog.show();
+		}
+
+		@Override
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			super.onCancelled();
+			SongsFromAlbums.this.finish();
 		}
 
 		/**
@@ -168,6 +190,9 @@ public class SongsFromAlbums extends SherlockListActivity implements
 					Log.i("Working", "good");
 					// require it later
 					for (int i = 0; i < FilteredJSONArray.length(); i++) {
+						if (isCancelled()) {
+							return null;
+						}
 						jsonObject = FilteredJSONArray.getJSONObject(i);
 
 						SongsList.add((i + 1) + ". "
@@ -186,8 +211,6 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
-			// dismiss the dialog after getting all products
-			pDialog.dismiss();
 			// updating UI from Background Thread
 			/**
 			 * Updating parsed JSON data into ListView
@@ -213,6 +236,13 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			
+		}
+
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			super.onCancelled();
+			SongsFromAlbums.this.finish();
 		}
 
 		/**
@@ -231,12 +261,10 @@ public class SongsFromAlbums extends SherlockListActivity implements
 				e.printStackTrace();
 				image_avail = false;
 				Log.i("Image Not returned", "");
-
 			}
-			
 
 			GetMethodEx test = new GetMethodEx();
-			
+
 			if (SongsList.size() > 0) {
 				try {
 					jsonObject = new JSONObject(
@@ -247,7 +275,7 @@ public class SongsFromAlbums extends SherlockListActivity implements
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				try {
 					jsonObject = new JSONObject(test.getInternetData(root));
 					album_artist = jsonObject.getString("band");
@@ -264,10 +292,12 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
+			// dismissing the dialog
+			pDialog.dismiss();
 			// has to be before setting up the adapter
 			if (image_avail == true) {
 				ivAlbumCover.setImageBitmap(bitmap);
-				Log.i("Image available", "");
+				Log.i("Image available", "true");
 			}
 
 			if (year != 0) {
@@ -275,11 +305,15 @@ public class SongsFromAlbums extends SherlockListActivity implements
 				tvAlbumYear.setText("RELEASED IN " + year);
 				Toast.makeText(SongsFromAlbums.this,
 						"Year of release: " + year, Toast.LENGTH_SHORT).show();
+			} else {
+				tvAlbumYear.setText("");
 			}
-			
+
 			if (album_artist != null) {
 
-				tvAlbumYear.setText("BY " + album_artist);
+				tvAlbumArtist.setText("BY " + album_artist);
+			} else {
+				tvAlbumArtist.setText("");
 			}
 		}
 	}
