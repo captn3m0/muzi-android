@@ -95,8 +95,8 @@ public class FilteredList extends SherlockActivity implements
 			langList.add("Hindi");
 		if (pref.getBoolean("Tamil", true))
 			langList.add("Tamil");
-		
-		for(int i=0; i<langList.size(); i++){
+
+		for (int i = 0; i < langList.size(); i++) {
 			Log.i("pref list", langList.get(i));
 		}
 
@@ -200,10 +200,14 @@ public class FilteredList extends SherlockActivity implements
 					string = test.getInternetData(GlobalVariables.api_root
 							+ type + "/list.php");
 
+					if(string != null && string != ""){
 					FileOutputStream fos = openFileOutput(type + getDate(),
 							Context.MODE_PRIVATE);
 					fos.write(string.getBytes());
 					fos.close();
+					}else{
+						FilteredList.this.finish();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
