@@ -88,7 +88,6 @@ public class HomeScreen extends SherlockListActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	Intent i = new Intent(HomeScreen.this, LangSettings.class);
-        Toast.makeText(this, "Menu Selected", Toast.LENGTH_SHORT).show();
     	startActivity(i);
         return true;
     }
