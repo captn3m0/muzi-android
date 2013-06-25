@@ -14,6 +14,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -51,11 +53,12 @@ public class SongsFromAlbums extends SherlockListActivity implements
 	ListView lv;
 	ArrayList<String> SongsList;
 	ImageView ivAlbumCover;
-	TextView tvAlbumDetails;
+	TextView tvAlbumName, tvAlbumArtist, tvAlbumYear;
 	Drawable image;
 	Boolean image_avail;
 	String album_id;
 	Bitmap bitmap;
+	String album_artist;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -84,10 +87,13 @@ public class SongsFromAlbums extends SherlockListActivity implements
 					R.layout.header_for_songs_from_album, null);
 			lv.addHeaderView(header);
 			ivAlbumCover = (ImageView) findViewById(R.id.ivAlbumCover);
-			tvAlbumDetails = (TextView) findViewById(R.id.tvAlbumDetails);
+			tvAlbumName = (TextView) findViewById(R.id.tvAlbumName);
+			tvAlbumArtist = (TextView) findViewById(R.id.tvAlbumArtist);
+			tvAlbumYear = (TextView) findViewById(R.id.tvAlbumYear);
 
 			image_avail = false;
 			SongsList = new ArrayList<String>();
+			album_artist = null;
 		}
 
 		/*------------------get query value to search for-----------------*/
@@ -99,6 +105,7 @@ public class SongsFromAlbums extends SherlockListActivity implements
 				root = GlobalVariables.api_root + type + "?id=" + album_id;
 				Log.i("request url", root);
 				this.setTitle(getIntent().getStringExtra("search_title1"));
+				tvAlbumName.setText(getIntent().getStringExtra("search_title1"));
 			} else {
 				SongsFromAlbums.this.finish();
 				Toast.makeText(SongsFromAlbums.this,
@@ -148,6 +155,8 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			GetMethodEx test = new GetMethodEx();
 			try {
 				jsonObject = new JSONObject(test.getInternetData(root));
+				Log.i("Track url", jsonObject.toString());
+
 				FilteredJSONArray = jsonObject.getJSONArray("tracks");
 				Log.i("Array", FilteredJSONArray.toString());
 
@@ -169,20 +178,6 @@ public class SongsFromAlbums extends SherlockListActivity implements
 
 			} catch (Exception e) {
 				Log.e("JSON Parser", "Error parsing data " + e.toString());
-			} finally {
-				if (SongsList.size() > 0) {
-					try {
-						jsonObject = new JSONObject(
-								test.getInternetData(GlobalVariables.api_root
-										+ "/track/?id=" + firstId));
-						Log.i("Track url", jsonObject.toString());
-						year = jsonObject.getInt("year");
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
 			}
 			return null;
 		}
@@ -218,11 +213,6 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			// pDialog = new ProgressDialog(SongsFromAlbums.this);
-			// pDialog.setMessage("Loading content. Please wait...");
-			// pDialog.setIndeterminate(false);
-			// pDialog.setCancelable(false);
-			// pDialog.show();
 		}
 
 		/**
@@ -243,6 +233,29 @@ public class SongsFromAlbums extends SherlockListActivity implements
 				Log.i("Image Not returned", "");
 
 			}
+			
+
+			GetMethodEx test = new GetMethodEx();
+			
+			if (SongsList.size() > 0) {
+				try {
+					jsonObject = new JSONObject(
+							test.getInternetData(GlobalVariables.api_root
+									+ "/track/?id=" + firstId));
+					year = jsonObject.getInt("year");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				try {
+					jsonObject = new JSONObject(test.getInternetData(root));
+					album_artist = jsonObject.getString("band");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 			return null;
 		}
@@ -251,12 +264,6 @@ public class SongsFromAlbums extends SherlockListActivity implements
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
-			// dismiss the dialog after getting all products
-			// updating UI from Background Thread
-			/**
-			 * Updating parsed JSON data into ListView
-			 * */
-
 			// has to be before setting up the adapter
 			if (image_avail == true) {
 				ivAlbumCover.setImageBitmap(bitmap);
@@ -264,8 +271,15 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			}
 
 			if (year != 0) {
+
+				tvAlbumYear.setText("RELEASED IN " + year);
 				Toast.makeText(SongsFromAlbums.this,
 						"Year of release: " + year, Toast.LENGTH_SHORT).show();
+			}
+			
+			if (album_artist != null) {
+
+				tvAlbumYear.setText("BY " + album_artist);
 			}
 		}
 	}
@@ -275,27 +289,26 @@ public class SongsFromAlbums extends SherlockListActivity implements
 			long arg3) {
 		// TODO Auto-generated method stubString url = "http://........"; //
 		// your URL here
-		/*
-		 * MediaPlayer mediaPlayer = new MediaPlayer();
-		 * mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC); try {
-		 * mediaPlayer .setDataSource(
-		 * "http://192.168.1.3/muzi/Adele___Set_Fire_To_The_Rain_Adele.mp3"); }
-		 * catch (IllegalArgumentException e) { // TODO Auto-generated catch
-		 * block e.printStackTrace(); } catch (SecurityException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); } catch
-		 * (IllegalStateException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated
-		 * catch block e.printStackTrace(); }
-		 * 
-		 * try { mediaPlayer.prepare(); } catch (IllegalStateException e) { //
-		 * TODO Auto-generated catch block e.printStackTrace(); } catch
-		 * (IOException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } // might take long! (for buffering, etc)
-		 * mediaPlayer.start();
-		 */
+
+		MediaPlayer mediaPlayer = new MediaPlayer();
+		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+		try {
+			mediaPlayer
+					.setDataSource("http://192.168.1.5/muzi/Adele___Set_Fire_To_The_Rain_Adele.mp3");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			mediaPlayer.prepare();
+		} catch (Exception e) { // TODO Auto-generated catch block
+			e.printStackTrace();
+		} // might take long! (for buffering, etc)
+		mediaPlayer.start();
 
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return true;
