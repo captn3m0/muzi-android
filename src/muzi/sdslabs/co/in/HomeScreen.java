@@ -3,6 +3,7 @@ package muzi.sdslabs.co.in;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -17,8 +18,11 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 
-public class HomeScreen extends SherlockListActivity implements OnItemClickListener {
+public class HomeScreen extends SherlockListActivity implements
+		OnItemClickListener {
 
 	ListView lv;
 	ArrayAdapter<String> adapter;
@@ -72,17 +76,32 @@ public class HomeScreen extends SherlockListActivity implements OnItemClickListe
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
+		SubMenu sub = menu.addSubMenu("Settings");
+		sub.getItem().setShowAsAction(
+				MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-		menu.add("Nothing");
-		//getMenuInflater().inflate(R.menu.main, menu);
+		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	Intent i = new Intent(HomeScreen.this, LangSettings.class);
+        Toast.makeText(this, "Menu Selected", Toast.LENGTH_SHORT).show();
+    	startActivity(i);
+        return true;
+    }
 
 	@Override
 	public void onItemClick(AdapterView<?> av, View v, int position, long arg3) {
 		// TODO Auto-generated method stub
 
+		Log.i("position", position + "");
+
 		// Learnt it the hard way that position starts from 1 here
+		// May be it's because of header otherwise the count starts from 0 in
+		// general
 		position -= 1;
 
 		// if clicked on artist or album
