@@ -1,6 +1,6 @@
 package muzi.sdslabs.co.in;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -9,7 +9,10 @@ import android.view.View;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class LangSettings extends Activity {
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
+
+public class LangSettings extends SherlockActivity {
 
 	SharedPreferences pref;
 	int PRIVATE_MODE;
@@ -21,16 +24,17 @@ public class LangSettings extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lang_settings);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		PRIVATE_MODE = 0;
 		pref = getApplicationContext().getSharedPreferences("Lang Pref",
 				PRIVATE_MODE);
-		tbEng = (ToggleButton)findViewById(R.id.tbEnglish);
-		tbHindi = (ToggleButton)findViewById(R.id.tbHindi);
-		tbTamil = (ToggleButton)findViewById(R.id.tbTamil);
+		tbEng = (ToggleButton) findViewById(R.id.tbEnglish);
+		tbHindi = (ToggleButton) findViewById(R.id.tbHindi);
+		tbTamil = (ToggleButton) findViewById(R.id.tbTamil);
 		tbEng.setChecked(pref.getBoolean("English", true));
 		tbHindi.setChecked(pref.getBoolean("Hindi", true));
 		tbTamil.setChecked(pref.getBoolean("Tamil", true));
-		
+
 	}
 
 	public void onToggleClicked(View view) {
@@ -83,5 +87,15 @@ public class LangSettings extends Activity {
 		Log.i("Hindi", pref.getBoolean("Hindi", true) + "");
 		Log.i("Tamil", pref.getBoolean("Tamil", true) + "");
 		LangSettings.this.finish();
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			Intent mainIntent = new Intent(getApplicationContext(),
+					HomeScreen.class);
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(mainIntent);
+		}
+		return true;
 	}
 }
