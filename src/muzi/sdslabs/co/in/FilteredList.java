@@ -56,6 +56,12 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		return this;
 	}
 
+
+	@Override
+	protected int getLayoutResourceId() {
+		return R.layout.filtered_list;
+	}
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,13 +72,6 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		 * "Please check your internet connection.", Toast.LENGTH_LONG) .show();
 		 * }
 		 */
-
-		// setContentView(R.layout.filtered_list);
-
-		FooterForPlayerControls footer = new FooterForPlayerControls(
-				FilteredList.this);
-		footer = (FooterForPlayerControls) findViewById(R.id.footer);
-		footer.initFooter();
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		lv = (ListView) findViewById(R.id.lvFilteredList);
@@ -110,11 +109,6 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		}
 
 		new LoadAllProducts().execute();
-	}
-
-	@Override
-	protected int getLayoutResourceId() {
-		return R.layout.filtered_list;
 	}
 
 	/*--------------------To enable alphabetical scrollbar-----------------*/
