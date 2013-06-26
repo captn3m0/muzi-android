@@ -44,8 +44,8 @@ public class LocalService extends Service {
 		mediaPlayer = new MediaPlayer();
 		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
-			mediaPlayer
-					.setDataSource("http://192.168.1.3/muzi/Adele___Set_Fire_To_The_Rain_Adele.mp3");
+			mediaPlayer.setDataSource(GlobalVariables.music_root
+					+ "Adele___Set_Fire_To_The_Rain_Adele.mp3");
 
 			mediaPlayer.prepare();
 		} catch (Exception e) {
@@ -53,7 +53,6 @@ public class LocalService extends Service {
 			e.printStackTrace();
 		}
 		mediaPlayer.start();
-		
 
 		// Display a notification about us starting. We put an icon in the
 		// status bar.
