@@ -45,7 +45,7 @@ public class LocalService extends Service {
 		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		try {
 			mediaPlayer
-					.setDataSource("http://192.168.1.5/muzi/Adele___Set_Fire_To_The_Rain_Adele.mp3");
+					.setDataSource("http://192.168.1.3/muzi/Adele___Set_Fire_To_The_Rain_Adele.mp3");
 
 			mediaPlayer.prepare();
 		} catch (Exception e) {

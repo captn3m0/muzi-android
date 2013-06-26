@@ -28,12 +28,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class FilteredList extends SherlockActivity implements
-		OnItemClickListener {
+public class FilteredList extends MyActivity implements OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -53,6 +51,12 @@ public class FilteredList extends SherlockActivity implements
 	SharedPreferences pref;
 
 	@Override
+	protected Context getContext() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -63,7 +67,12 @@ public class FilteredList extends SherlockActivity implements
 		 * }
 		 */
 
-		setContentView(R.layout.filtered_list_after_query);
+		// setContentView(R.layout.filtered_list);
+
+		FooterForPlayerControls footer = new FooterForPlayerControls(
+				FilteredList.this);
+		footer = (FooterForPlayerControls) findViewById(R.id.footer);
+		footer.initFooter();
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		lv = (ListView) findViewById(R.id.lvFilteredList);
@@ -101,6 +110,11 @@ public class FilteredList extends SherlockActivity implements
 		}
 
 		new LoadAllProducts().execute();
+	}
+
+	@Override
+	protected int getLayoutResourceId() {
+		return R.layout.filtered_list;
 	}
 
 	/*--------------------To enable alphabetical scrollbar-----------------*/
@@ -200,12 +214,12 @@ public class FilteredList extends SherlockActivity implements
 					string = test.getInternetData(GlobalVariables.api_root
 							+ type + "/list.php");
 
-					if(string != null && string != ""){
-					FileOutputStream fos = openFileOutput(type + getDate(),
-							Context.MODE_PRIVATE);
-					fos.write(string.getBytes());
-					fos.close();
-					}else{
+					if (string != null && string != "") {
+						FileOutputStream fos = openFileOutput(type + getDate(),
+								Context.MODE_PRIVATE);
+						fos.write(string.getBytes());
+						fos.close();
+					} else {
 						FilteredList.this.finish();
 					}
 				} catch (Exception e) {
