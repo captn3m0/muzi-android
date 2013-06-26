@@ -28,11 +28,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
-public class SongsFromAlbums extends SherlockActivity implements
-		OnItemClickListener {
+public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -60,6 +58,17 @@ public class SongsFromAlbums extends SherlockActivity implements
 	LoadSongs task1;
 
 	@Override
+	protected Context getContext() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+	@Override
+	protected int getLayoutResourceId() {
+		return R.layout.songs_from_albums;
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//
@@ -69,18 +78,18 @@ public class SongsFromAlbums extends SherlockActivity implements
 		// "Please check your internet connection.", Toast.LENGTH_LONG)
 		// .show();
 		// }
-		setContentView(R.layout.songs_from_albums);
+		// setContentView(R.layout.songs_from_albums);
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		/*------------------------style list view-----------------*/
 		{
-			//lv = getListView();
+			// lv = getListView();
 			lv = (ListView) findViewById(R.id.lvSongsFromAlbums);
 			lv.setFastScrollEnabled(true);
-//			lv.getRootView().setBackgroundColor(
-//					getResources().getColor(R.color.Black));
-//			getListView().setCacheColorHint(Color.TRANSPARENT);
+			// lv.getRootView().setBackgroundColor(
+			// getResources().getColor(R.color.Black));
+			// getListView().setCacheColorHint(Color.TRANSPARENT);
 
 			/*-------add header to list view-------*/
 			// View header = getLayoutInflater().inflate(
@@ -366,7 +375,7 @@ public class SongsFromAlbums extends SherlockActivity implements
 			/*--------Declaring stop player for debugging----------*/
 
 			stopService(new Intent(this, LocalService.class));
-			//works absolutely fine
+			// works absolutely fine
 
 			/*-------------------------------------------------------*/
 			startActivity(mainIntent);

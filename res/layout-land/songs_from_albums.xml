@@ -34,10 +34,18 @@
         android:layout_below="@id/tvAlbumArtist"
         android:text="Year" />
 
+    <muzi.sdslabs.co.in.FooterForPlayerControls
+        android:id="@+id/footer"
+        android:layout_toRightOf="@id/ivAlbumCover"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
     <ListView
         android:id="@+id/lvSongsFromAlbums"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/ivAlbumCover"
         android:cacheColorHint="#000000"
