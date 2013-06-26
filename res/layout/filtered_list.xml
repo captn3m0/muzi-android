@@ -14,13 +14,11 @@
         layout="@layout/footer" />
     -->
 
-    <ImageView
+    <muzi.sdslabs.co.in.FooterForPlayerControls
         android:id="@+id/footer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:contentDescription="@string/description"
-        android:src="@drawable/icon" />
+        android:layout_alignParentBottom="true" />
 
     <ListView
         android:id="@+id/lvFilteredList"
