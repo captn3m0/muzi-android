@@ -42,6 +42,7 @@ public class SongsFromArtists extends SherlockListActivity implements
 	ArrayList<String> SongsList;
 	JSONObject jsonObject;
 
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

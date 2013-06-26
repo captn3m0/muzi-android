@@ -41,5 +41,4 @@ public class FooterForPlayerControls extends RelativeLayout {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.footer_for_player_controls, this);
 	}
-
 }
