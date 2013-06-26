@@ -20,6 +20,13 @@
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
             android:src="@drawable/pause_button" />
+
+        <ImageButton
+            android:id="@+id/ibTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="footerClickControls"
+            android:src="@drawable/test" />
     </LinearLayout>
 
 </merge>

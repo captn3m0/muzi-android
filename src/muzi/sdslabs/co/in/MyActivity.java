@@ -11,7 +11,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 public class MyActivity extends SherlockActivity {
 
-	ImageButton ibPlay, ibPause;
+	ImageButton ibPlay, ibPause, ibTest;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,6 +24,7 @@ public class MyActivity extends SherlockActivity {
 
 		ibPlay = (ImageButton) findViewById(R.id.ibPlay);
 		ibPause = (ImageButton) findViewById(R.id.ibPause);
+		ibTest = (ImageButton) findViewById(R.id.ibTest);
 	}
 
 	protected Context getContext() {
@@ -36,6 +37,18 @@ public class MyActivity extends SherlockActivity {
 					Toast.LENGTH_SHORT).show();
 			Intent i = new Intent(getContext(), LocalService.class);
 			startService(i);
+		}
+
+		else if (v.getId() == R.id.ibPause) {
+			Toast.makeText(getContext(), "Pause button clicked",
+					Toast.LENGTH_SHORT).show();
+
+			stopService(new Intent(this, LocalService.class));
+		}
+
+		else if (v.getId() == R.id.ibTest) {
+			Toast.makeText(getContext(), "Test button clicked",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
