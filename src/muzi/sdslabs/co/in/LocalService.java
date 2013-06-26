@@ -33,6 +33,13 @@ public class LocalService extends Service {
 	@Override
 	public void onCreate() {
 		mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.i("LocalService", "Received start id " + startId + ": " + intent);
+		// We want this service to continue running until it is explicitly
+		// stopped, so return sticky.
 
 		mediaPlayer = new MediaPlayer();
 		mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -45,18 +52,12 @@ public class LocalService extends Service {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		mediaPlayer.start();
+		
+
 		// Display a notification about us starting. We put an icon in the
 		// status bar.
 		showNotification();
-	}
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i("LocalService", "Received start id " + startId + ": " + intent);
-		// We want this service to continue running until it is explicitly
-		// stopped, so return sticky.
-
-		mediaPlayer.start();
 		return START_STICKY;
 	}
 
@@ -64,6 +65,8 @@ public class LocalService extends Service {
 	public void onDestroy() {
 		// Cancel the persistent notification.
 		mNM.cancel(NOTIFICATION);
+		mediaPlayer.release();
+		mediaPlayer = null;
 
 		// Tell the user we stopped.
 		Toast.makeText(this, R.string.local_service_stopped, Toast.LENGTH_SHORT)
@@ -101,7 +104,7 @@ public class LocalService extends Service {
 		notification.setLatestEventInfo(this, "Awesome song", text,
 				contentIntent);
 
-		// Send the notification.
-		mNM.notify(NOTIFICATION, notification);
+		notification.flags |= Notification.FLAG_NO_CLEAR;
+		startForeground(1337, notification);
 	}
 }
