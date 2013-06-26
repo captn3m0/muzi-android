@@ -21,11 +21,14 @@
 
             <ToggleButton
                 android:id="@+id/tbEnglish"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="137px"
+                android:layout_height="36px"
                 android:layout_alignParentRight="true"
+                android:background="@drawable/toggleswitch"
                 android:checked="true"
-                android:onClick="onToggleClicked" />
+                android:onClick="onToggleClicked"
+                android:textOff=""
+                android:textOn="" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -41,10 +44,13 @@
 
             <ToggleButton
                 android:id="@+id/tbHindi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="137px"
+                android:layout_height="36px"
                 android:layout_alignParentRight="true"
-                android:checked="true" />
+                android:background="@drawable/toggleswitch"
+                android:checked="true"
+                android:textOff=""
+                android:textOn="" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -60,33 +66,12 @@
 
             <ToggleButton
                 android:id="@+id/tbTamil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:checked="true"
-                android:onClick="onToggleClicked" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="Test" />
-
-            <ToggleButton
-                android:id="@+id/tbSampleTry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="137px"
+                android:layout_height="36px"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/toggleswitch"
                 android:checked="true"
                 android:onClick="onToggleClicked"
-                android:text="Sound"
                 android:textOff=""
                 android:textOn="" />
         </RelativeLayout>
