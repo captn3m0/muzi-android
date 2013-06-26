@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <LinearLayout
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/ibPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="footerClickControls"
+            android:src="@drawable/play_button" />
+
+        <ImageButton
+            android:id="@+id/ibPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="footerClickControls"
+            android:src="@drawable/pause_button" />
+    </LinearLayout>
+
+</merge>
