@@ -38,40 +38,21 @@ public class LangSettings extends SherlockActivity {
 	}
 
 	public void onToggleClicked(View view) {
-		// Is the toggle on?
-		if (view.getId() == R.id.tbEnglish) {
-			boolean on = ((ToggleButton) view).isChecked();
-
-			if (on) {
-				Toast.makeText(getApplicationContext(), "English on",
-						Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(getApplicationContext(), "English off",
-						Toast.LENGTH_SHORT).show();
-			}
-		}
-		if (view.getId() == R.id.tbHindi) {
-			boolean on = ((ToggleButton) view).isChecked();
-
-			if (on) {
-				Toast.makeText(getApplicationContext(), "Hindi on",
-						Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(getApplicationContext(), "Hindi off",
-						Toast.LENGTH_SHORT).show();
-			}
-		}
-		if (view.getId() == R.id.tbTamil) {
-			boolean on = ((ToggleButton) view).isChecked();
-
-			if (on) {
-				Toast.makeText(getApplicationContext(), "Tamil on",
-						Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(getApplicationContext(), "Tamil off",
-						Toast.LENGTH_SHORT).show();
-			}
-		}
+		/*
+		 * Sample code to implement on click for future
+		 */
+		//
+		// if (view.getId() == R.id.tbEnglish) {
+		// boolean on = ((ToggleButton) view).isChecked();
+		//
+		// if (on) {
+		// Toast.makeText(getApplicationContext(), "English on",
+		// Toast.LENGTH_SHORT).show();
+		// } else {
+		// Toast.makeText(getApplicationContext(), "English off",
+		// Toast.LENGTH_SHORT).show();
+		// }
+		// }
 	}
 
 	@Override
