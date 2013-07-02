@@ -8,25 +8,48 @@
         android:orientation="horizontal" >
 
         <ImageButton
-            android:id="@+id/ibPlay"
+            android:id="@+id/ibCurrentList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/play_button" />
+            android:src="@drawable/current_list_button" />
 
         <ImageButton
-            android:id="@+id/ibPause"
+            android:id="@+id/ibPrevious"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/pause_button" />
+            android:src="@drawable/previous" />
+
+        <ToggleButton
+            android:id="@+id/tbPlayPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/play_pause_toggle"
+            android:onClick="footerPlayToggle"
+            android:textOff=""
+            android:textOn="" />
 
         <ImageButton
-            android:id="@+id/ibTest"
+            android:id="@+id/ibNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/test" />
+            android:src="@drawable/next" />
+
+        <ImageButton
+            android:id="@+id/ibShuffle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="footerClickControls"
+            android:src="@drawable/shuffle_button" />
+
+        <ImageButton
+            android:id="@+id/ibRepeat"
+            android:layout_width="30px"
+            android:layout_height="30px"
+            android:onClick="footerClickControls"
+            android:src="@drawable/repeat_button" />
     </LinearLayout>
 
 </merge>
