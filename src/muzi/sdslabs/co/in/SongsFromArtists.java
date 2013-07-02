@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -41,8 +42,8 @@ public class SongsFromArtists extends SherlockListActivity implements
 	ListView lv;
 	ArrayList<String> SongsList;
 	JSONObject jsonObject;
+	LoadSongs task;
 
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,7 +81,8 @@ public class SongsFromArtists extends SherlockListActivity implements
 					Toast.LENGTH_LONG).show();
 		}
 
-		new LoadAllProducts().execute();
+		task = new LoadSongs();
+		task.execute();
 	}
 
 	public boolean isNetworkAvailable() {
@@ -94,7 +96,7 @@ public class SongsFromArtists extends SherlockListActivity implements
 		return false;
 	}
 
-	class LoadAllProducts extends AsyncTask<String, String, String> {
+	class LoadSongs extends AsyncTask<String, String, String> {
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -105,8 +107,20 @@ public class SongsFromArtists extends SherlockListActivity implements
 			pDialog = new ProgressDialog(SongsFromArtists.this);
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
+			pDialog.setCancelable(true);
+			pDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				public void onCancel(DialogInterface dialog) {
+					task.cancel(true);
+				}
+			});
 			pDialog.show();
+		}
+
+		@Override
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			super.onCancelled();
+			SongsFromArtists.this.finish();
 		}
 
 		/**
@@ -127,6 +141,11 @@ public class SongsFromArtists extends SherlockListActivity implements
 					Log.i("Working", "good");
 					// require it later
 					for (int i = 0; i < FilteredJSONArray.length(); i++) {
+
+						if (isCancelled()) {
+							return null;
+						}
+
 						jsonObject = FilteredJSONArray.getJSONObject(i);
 
 						SongsList.add((i + 1) + ". "
