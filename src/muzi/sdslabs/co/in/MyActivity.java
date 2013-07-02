@@ -6,12 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
+/*
+ * Caution: If you need a Context object within your Fragment, 
+ * you can call getActivity(). However, be careful to call getActivity() only 
+ * when the fragment is attached to an activity. When the fragment is not yet attached, 
+ * or was detached during the end of its lifecycle, getActivity() will return null.
+ * */
+
 public class MyActivity extends SherlockActivity {
 
-	ImageButton ibPlay, ibPause, ibTest;
+	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,10 +29,11 @@ public class MyActivity extends SherlockActivity {
 				getContext());
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
-
-		ibPlay = (ImageButton) findViewById(R.id.ibPlay);
-		ibPause = (ImageButton) findViewById(R.id.ibPause);
-		ibTest = (ImageButton) findViewById(R.id.ibTest);
+		ibNext = (ImageButton) findViewById(R.id.ibNext);
+		ibPrevious = (ImageButton) findViewById(R.id.ibPrevious);
+		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
+		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
+		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
 	}
 
 	protected Context getContext() {
@@ -32,23 +41,25 @@ public class MyActivity extends SherlockActivity {
 	};
 
 	public void footerClickControls(View v) {
-		if (v.getId() == R.id.ibPlay) {
-			Toast.makeText(getContext(), "Play button clicked",
-					Toast.LENGTH_SHORT).show();
-			Intent i = new Intent(getContext(), LocalService.class);
-			startService(i);
-		}
+		Toast.makeText(getContext(), v.getId(), Toast.LENGTH_SHORT).show();
+	}
 
-		else if (v.getId() == R.id.ibPause) {
-			Toast.makeText(getContext(), "Pause button clicked",
-					Toast.LENGTH_SHORT).show();
+	public void footerPlayToggle(View view) {
 
-			stopService(new Intent(this, LocalService.class));
-		}
+		if (view.getId() == R.id.tbPlayPause) {
+			boolean on = ((ToggleButton) view).isChecked();
 
-		else if (v.getId() == R.id.ibTest) {
-			Toast.makeText(getContext(), "Test button clicked",
-					Toast.LENGTH_SHORT).show();
+			if (on) {
+				Toast.makeText(getContext(), "Play button clicked",
+						Toast.LENGTH_SHORT).show();
+				Intent i = new Intent(getContext(), LocalService.class);
+				startService(i);
+			} else {
+				Toast.makeText(getContext(), "Pause button clicked",
+						Toast.LENGTH_SHORT).show();
+
+				stopService(new Intent(this, LocalService.class));
+			}
 		}
 	}
 
