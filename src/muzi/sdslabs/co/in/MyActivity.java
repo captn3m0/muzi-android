@@ -55,9 +55,6 @@ public class MyActivity extends SherlockActivity {
 				Intent i = new Intent(getContext(), LocalService.class);
 				startService(i);
 			} else {
-				Toast.makeText(getContext(), "Pause button clicked",
-						Toast.LENGTH_SHORT).show();
-
 				stopService(new Intent(this, LocalService.class));
 			}
 		}

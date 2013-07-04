@@ -35,6 +35,10 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name=".SearchResultsWithTab"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name=".SongsFromAlbums"
             android:label="@string/app_name" >
         </activity>

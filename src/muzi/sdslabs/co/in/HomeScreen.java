@@ -63,7 +63,7 @@ public class HomeScreen extends SherlockListActivity implements
 								Toast.LENGTH_SHORT).show();
 					} else {
 						Intent i1 = new Intent(HomeScreen.this,
-								SearchResults.class);
+								SearchResultsWithTab.class);
 						i1.putExtra("search_query", etSearch.getText()
 								.toString());
 						startActivity(i1);
