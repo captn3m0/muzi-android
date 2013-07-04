@@ -2,6 +2,9 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,7 +56,7 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 
 	JSONArray FilteredJSONArray = null;
 	static ArrayList<String> arrayList1, arrayList2, arrayList3;
-	static ListView lv1, lv2, lv3;
+	static ArrayAdapter<String> adapter1, adapter2, adapter3;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,10 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
-						Log.i("Pager called", "Pager called");
+
+						// mViewPager.removeView(lv1);
+						// mViewPager.removeView(lv2);
+						// mViewPager.removeView(lv3);
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
@@ -105,19 +111,6 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-
-		lv1 = new ListView(this);
-		lv2 = new ListView(this);
-		lv3 = new ListView(this);
-
-		lv1.setCacheColorHint(Color.TRANSPARENT);
-		lv1.setFastScrollEnabled(true);
-
-		lv2.setCacheColorHint(Color.TRANSPARENT);
-		lv2.setFastScrollEnabled(true);
-
-		lv3.setCacheColorHint(Color.TRANSPARENT);
-		lv3.setFastScrollEnabled(true);
 
 		new LoadAllProducts().execute();
 	}
@@ -206,37 +199,35 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 			 * Updating parsed JSON data into ListView
 			 * */
 			if (arrayList1.size() == 0) {
-				lv1.setAdapter(null);
+				adapter1 = null;
 			} else {
 				Collections.sort(arrayList1);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						SearchResultsWithTab.this,
+				adapter1 = new ArrayAdapter<String>(SearchResultsWithTab.this,
 						R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, arrayList1);
 
-				lv1.setAdapter(adapter);
 			}
 
 			if (arrayList2.size() == 0) {
-				lv2.setAdapter(null);
+				adapter2 = null;
 			} else {
 				Collections.sort(arrayList2);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						SearchResultsWithTab.this,
+				adapter2 = new ArrayAdapter<String>(SearchResultsWithTab.this,
 						R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, arrayList2);
-				lv2.setAdapter(adapter);
 			}
 
 			if (arrayList3.size() == 0) {
-				lv3.setAdapter(null);
+				adapter3 = null;
 			} else {
+
+				// to filter the list to remove duplicate items
+				// Set<String> hashsetList = new HashSet<String>(arrayList3);
+				// arrayList3 = new ArrayList<String>(hashsetList);
 				Collections.sort(arrayList3);
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						SearchResultsWithTab.this,
+				adapter3 = new ArrayAdapter<String>(SearchResultsWithTab.this,
 						R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, arrayList3);
-				lv3.setAdapter(adapter);
 			}
 		}
 	}
@@ -309,35 +300,37 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 			// Create a new TextView and set its text to the fragment's section
 			// number argument value.
 			int tab = getArguments().getInt(ARG_SECTION_NUMBER);
-			ListView lv = new ListView(getActivity());
-			lv.setAdapter(null);
 			Log.i("..", "..");
 			Log.i("..", "..");
 			Log.i("..", "..");
 			Log.i("..", "..");
 			// for (int i = 0; i < lv1.getAdapter().getCount(); i++)
 			// Log.i("list = ", lv1.getAdapter().getItem(i).toString());
+
+			ListView lv = new ListView(getActivity());
+			lv.setCacheColorHint(Color.TRANSPARENT);
+			lv.setFastScrollEnabled(true);
+
 			if (tab == 1) {
-//
-//				Collections.sort(arrayList1);
-//				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-//						getActivity(), R.layout.list_item_with_one_tv,
-//						R.id.tv_in_list_item_with_one_tv, arrayList1);
-//				lv1.setAdapter(adapter);
-				return lv1;
+
+				lv.setAdapter(adapter1);
+				return lv;
 			} else if (tab == 2) {
-				return lv2;
+
+				lv.setAdapter(adapter2);
+				return lv;
 			} else if (tab == 3) {
-				return lv3;
+				lv.setAdapter(adapter3);
+				return lv;
 			}
-			return lv;
+			return null;
 		}
 	}
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+
 		Log.i("Tab", tab.toString());
 
 	}
