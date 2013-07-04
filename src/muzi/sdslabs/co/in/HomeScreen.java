@@ -1,5 +1,6 @@
 package muzi.sdslabs.co.in;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -62,6 +64,9 @@ public class HomeScreen extends SherlockListActivity implements
 								"Enter minimum of 3 characters to search",
 								Toast.LENGTH_SHORT).show();
 					} else {
+						InputMethodManager imm = (InputMethodManager)getSystemService(
+							      Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 						Intent i1 = new Intent(HomeScreen.this,
 								SearchResultsWithTab.class);
 						i1.putExtra("search_query", etSearch.getText()
