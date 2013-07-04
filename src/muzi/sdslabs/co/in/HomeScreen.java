@@ -89,10 +89,9 @@ public class HomeScreen extends SherlockListActivity implements
 		return true;
 	}
 	
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	Intent i = new Intent(HomeScreen.this, LangSettings.class);
+    	Intent i = new Intent(HomeScreen.this, UserSettings.class);
     	startActivity(i);
         return true;
     }
