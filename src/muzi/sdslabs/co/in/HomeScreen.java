@@ -43,7 +43,7 @@ public class HomeScreen extends SherlockListActivity implements
 		lv.setOnItemClickListener(HomeScreen.this);
 
 		View header = getLayoutInflater().inflate(
-				R.layout.header_for_homescreen, null);
+				R.layout.header_for_homescreen, null, false);
 		lv.addHeaderView(header);
 		etSearch = (EditText) findViewById(R.id.etSearchBoxHomeScreen);
 
@@ -61,7 +61,7 @@ public class HomeScreen extends SherlockListActivity implements
 				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 					if (etSearch.getText().toString().length() < 3) {
 						Toast.makeText(HomeScreen.this,
-								"Enter minimum of 3 characters to search",
+								"Enter at least 3 characters to search",
 								Toast.LENGTH_SHORT).show();
 					} else {
 						InputMethodManager imm = (InputMethodManager)getSystemService(
