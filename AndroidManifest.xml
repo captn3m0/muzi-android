@@ -65,9 +65,7 @@
             android:label="Settings" >
         </activity>
 
-        <service
-            android:name=".LocalService"
-            android:exported="false" />
+        <service android:name=".MusicService" />
     </application>
 
 </manifest>
