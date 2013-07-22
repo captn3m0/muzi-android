@@ -1,13 +1,10 @@
 package muzi.sdslabs.co.in;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class FooterForPlayerControls extends RelativeLayout {
 	public static final String TAG = FooterForPlayerControls.class

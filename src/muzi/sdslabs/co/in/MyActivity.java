@@ -9,6 +9,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 
 /*
  * Caution: If you need a Context object within your Fragment, 
@@ -34,6 +35,8 @@ public class MyActivity extends SherlockActivity {
 		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
 		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
 		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
+
+		getSupportActionBar().setHomeButtonEnabled(true);
 	}
 
 	protected Context getContext() {
@@ -58,6 +61,23 @@ public class MyActivity extends SherlockActivity {
 				stopService(new Intent(this, LocalService.class));
 			}
 		}
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == android.R.id.home) {
+			Intent mainIntent = new Intent(getApplicationContext(),
+					HomeScreen.class);
+			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+			/*--------Declaring stop player for debugging----------*/
+
+			stopService(new Intent(this, LocalService.class));
+			// works absolutely fine
+
+			/*-------------------------------------------------------*/
+			startActivity(mainIntent);
+		}
+		return true;
 	}
 
 	protected int getLayoutResourceId() {

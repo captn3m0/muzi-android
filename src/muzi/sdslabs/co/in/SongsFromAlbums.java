@@ -28,8 +28,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.MenuItem;
-
 public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
 	// url to make request
@@ -79,8 +77,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		// .show();
 		// }
 		// setContentView(R.layout.songs_from_albums);
-
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		/*------------------------style list view-----------------*/
 		{
@@ -364,23 +360,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 					Toast.LENGTH_SHORT).show();
 
 		}
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			Intent mainIntent = new Intent(getApplicationContext(),
-					HomeScreen.class);
-			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-			/*--------Declaring stop player for debugging----------*/
-
-			stopService(new Intent(this, LocalService.class));
-			// works absolutely fine
-
-			/*-------------------------------------------------------*/
-			startActivity(mainIntent);
-		}
-		return true;
 	}
 
 	public void stopPlayer(View v) {

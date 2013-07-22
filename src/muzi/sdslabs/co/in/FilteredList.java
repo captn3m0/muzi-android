@@ -29,7 +29,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 public class FilteredList extends MyActivity implements OnItemClickListener {
 
@@ -73,7 +72,6 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		 * }
 		 */
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		lv = (ListView) findViewById(R.id.lvFilteredList);
 		lv.setFastScrollEnabled(true);
 		FilteredNamesList = new ArrayList<String>();
@@ -330,16 +328,6 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 		menu.add("Settings");
 		// getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			Intent mainIntent = new Intent(getApplicationContext(),
-					HomeScreen.class);
-			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(mainIntent);
-		}
 		return true;
 	}
 }

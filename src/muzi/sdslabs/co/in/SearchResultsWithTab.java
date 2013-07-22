@@ -2,9 +2,6 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,6 +26,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+
 
 public class SearchResultsWithTab extends SherlockFragmentActivity implements
 		ActionBar.TabListener {
@@ -57,6 +55,7 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 	JSONArray FilteredJSONArray = null;
 	static ArrayList<String> arrayList1, arrayList2, arrayList3;
 	static ArrayAdapter<String> adapter1, adapter2, adapter3;
+	ActionBar actionBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,7 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 		arrayList2 = new ArrayList<String>();
 		arrayList3 = new ArrayList<String>();
 		// Set up the action bar.
-		final ActionBar actionBar = getSupportActionBar();
+		actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		// Create the adapter that will return a fragment for each of the three
@@ -94,9 +93,6 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 					@Override
 					public void onPageSelected(int position) {
 
-						// mViewPager.removeView(lv1);
-						// mViewPager.removeView(lv2);
-						// mViewPager.removeView(lv3);
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
@@ -114,6 +110,28 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 
 		new LoadAllProducts().execute();
 	}
+
+	// Solves the issue of unresponsive tabs when orientation changes are
+	// self-handled
+
+	// private void recreateTabs() {
+	// if (mTabScrollView == null) {
+	// return;
+	// }
+	// ArrayList<TabImpl> tabs = new ArrayList<TabImpl>(mTabs);
+	// int tabPosition = getSelectedNavigationIndex();
+	// cleanupTabs();
+	// mTabScrollView.onDetachedFromWindow();
+	// mTabScrollView = null;
+	// ensureTabsExist();
+	// for (ActionBar.Tab tab : tabs) {
+	// addTab(tab, false);
+	// }
+	// if (tabPosition != INVALID_POSITION) {
+	// selectTab(tabs.get(tabPosition));
+	// }
+	//
+	// }
 
 	class LoadAllProducts extends AsyncTask<String, String, String> {
 
@@ -284,7 +302,7 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
 	 */
-	public static class CustomListViewFragment extends Fragment {
+	public static class CustomListViewFragment extends android.support.v4.app.Fragment {
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
@@ -299,7 +317,7 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 				Bundle savedInstanceState) {
 			// Create a new TextView and set its text to the fragment's section
 			// number argument value.
-			int tab = getArguments().getInt(ARG_SECTION_NUMBER);
+			int tabPosition = getArguments().getInt(ARG_SECTION_NUMBER);
 			Log.i("..", "..");
 			Log.i("..", "..");
 			Log.i("..", "..");
@@ -311,15 +329,14 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 			lv.setCacheColorHint(Color.TRANSPARENT);
 			lv.setFastScrollEnabled(true);
 
-			if (tab == 1) {
-
+			if (tabPosition == 1) {
 				lv.setAdapter(adapter1);
 				return lv;
-			} else if (tab == 2) {
+			} else if (tabPosition == 2) {
 
 				lv.setAdapter(adapter2);
 				return lv;
-			} else if (tab == 3) {
+			} else if (tabPosition == 3) {
 				lv.setAdapter(adapter3);
 				return lv;
 			}
@@ -331,8 +348,20 @@ public class SearchResultsWithTab extends SherlockFragmentActivity implements
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
 
-		Log.i("Tab", tab.toString());
+		// String title = tab.getText().toString();
+		Log.i("Tab", "clicked");
+		tab.select();
+		actionBar.setSelectedNavigationItem(tab.getPosition());
+		actionBar.selectTab(tab);
 
+		Fragment fragment = new CustomListViewFragment();
+		Bundle args = new Bundle();
+		args.putInt(CustomListViewFragment.ARG_SECTION_NUMBER,
+				tab.getPosition() + 1);
+		fragment.setArguments(args);
+
+		getSupportFragmentManager().beginTransaction()
+				.replace(R.id.vpSearchResults, fragment).commit();
 	}
 
 	@Override

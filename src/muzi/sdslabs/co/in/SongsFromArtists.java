@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -23,8 +22,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 public class SongsFromArtists extends SherlockListActivity implements
 		OnItemClickListener {
@@ -57,7 +54,6 @@ public class SongsFromArtists extends SherlockListActivity implements
 		/* To customize action bar */
 		// getSupportActionBar().setDisplayShowCustomEnabled(true);
 		// getSupportActionBar().setCustomView(R.layout.my_custom_view);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		lv = getListView();
 		lv.getRootView().setBackgroundColor(
@@ -191,20 +187,5 @@ public class SongsFromArtists extends SherlockListActivity implements
 			long arg3) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			Intent mainIntent = new Intent(getApplicationContext(),
-					HomeScreen.class);
-			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(mainIntent);
-		}
-		return true;
 	}
 }
