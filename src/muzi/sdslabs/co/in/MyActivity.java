@@ -1,8 +1,14 @@
 package muzi.sdslabs.co.in;
 
+import java.util.ArrayList;
+
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -22,6 +28,12 @@ public class MyActivity extends SherlockActivity {
 
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
 
+	private boolean mIsBound = false;
+	private MusicService mServ;
+	private ServiceConnection Scon;
+	static ArrayList<String> nowPlayingList, nowPlayingPathsList;
+	static int currentSongIndex;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -37,6 +49,39 @@ public class MyActivity extends SherlockActivity {
 		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
 
 		getSupportActionBar().setHomeButtonEnabled(true);
+
+		// should be initialized in first activity only
+		nowPlayingList = new ArrayList<String>();
+		nowPlayingPathsList = new ArrayList<String>();
+		currentSongIndex = 0;
+
+		Scon = new ServiceConnection() {
+
+			public void onServiceConnected(ComponentName name, IBinder binder) {
+				MusicService ms = new MusicService();
+				MusicService.ServiceBinder sv = ms.new ServiceBinder();
+				mServ = sv.getService();
+			}
+
+			public void onServiceDisconnected(ComponentName name) {
+				mServ = null;
+			}
+		};
+
+		doBindService();
+	}
+
+	void doBindService() {
+		bindService(new Intent(this, MusicService.class), Scon,
+				Context.BIND_AUTO_CREATE);
+		mIsBound = true;
+	}
+
+	void doUnbindService() {
+		if (mIsBound) {
+			unbindService(Scon);
+			mIsBound = false;
+		}
 	}
 
 	protected Context getContext() {
@@ -49,18 +94,45 @@ public class MyActivity extends SherlockActivity {
 
 	public void footerPlayToggle(View view) {
 
-		if (view.getId() == R.id.tbPlayPause) {
+		int id = view.getId();
+		if (id == R.id.tbPlayPause) {
 			boolean on = ((ToggleButton) view).isChecked();
 
 			if (on) {
-				Toast.makeText(getContext(), "Play button clicked",
-						Toast.LENGTH_SHORT).show();
-				Intent i = new Intent(getContext(), LocalService.class);
-				startService(i);
+				mServ.resumeMusic();
 			} else {
-				stopService(new Intent(this, LocalService.class));
+				mServ.pauseMusic();
+				// stopService(new Intent(this, LocalService.class));
+			}
+		} else if (id == R.id.ibPrevious) {
+
+			if (currentSongIndex != 0) {
+				currentSongIndex--;
+				Intent i = new Intent(getContext(), MusicService.class);
+				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
+				i.putExtra("song_path",
+						nowPlayingPathsList.get(currentSongIndex));
+				startService(i);
+
+			}
+		} else if (id == R.id.ibNext) {
+			if (currentSongIndex < nowPlayingPathsList.size() - 1) {
+				currentSongIndex++;
+				Intent i = new Intent(getContext(), MusicService.class);
+				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
+				i.putExtra("song_path",
+						nowPlayingPathsList.get(currentSongIndex));
+				startService(i);
+
 			}
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		doUnbindService();
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -68,13 +140,6 @@ public class MyActivity extends SherlockActivity {
 			Intent mainIntent = new Intent(getApplicationContext(),
 					HomeScreen.class);
 			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-			/*--------Declaring stop player for debugging----------*/
-
-			stopService(new Intent(this, LocalService.class));
-			// works absolutely fine
-
-			/*-------------------------------------------------------*/
 			startActivity(mainIntent);
 		}
 		return true;
