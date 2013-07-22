@@ -16,6 +16,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +27,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
@@ -323,46 +323,71 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
-		// TODO Auto-generated method stubString url = "http://........"; //
-		// your URL here
+		// TODO Auto-generated method
 
-		// i.putExtra(PlaybackService.EXTRA_PLAYLIST, "main");
-		// i.putExtra(PlaybackService.EXTRA_SHUFFLE, true);
-		new PlaySong().execute();
+		final int pos = position;
+
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				Intent i = new Intent(getContext(), MusicService.class);
+
+				// Let's see which one to implement setData or setExtra
+				String songPath = GlobalVariables.music_root
+						+ tvAlbumArtist.getText().toString() + "/"
+						+ tvAlbumName.getText().toString() + "/"
+						+ SongsList.get(pos);
+
+				// add the song to now playing list
+				nowPlayingList.add(SongsList.get(pos));
+				nowPlayingPathsList.add(songPath);
+				currentSongIndex++;
+
+				i.setData(Uri.parse(songPath));
+
+				i.putExtra("song_path", songPath);
+				startService(i);
+			}
+		};
+		t.start();
+
+		//
+		// new PlaySong().execute();
 	}
 
-	class PlaySong extends AsyncTask<String, String, String> {
-
-		/**
-		 * Before starting background thread Show Progress Dialog
-		 * */
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-
-		}
-
-		/**
-		 * getting All products from url
-		 * */
-		protected String doInBackground(String... args) {
-			Intent i = new Intent(SongsFromAlbums.this, LocalService.class);
-			startService(i);
-			return null;
-		}
-
-		/**
-		 * After completing background task Dismiss the progress dialog
-		 * **/
-		protected void onPostExecute(String file_url) {
-			// has to be before setting up the adapter
-			Toast.makeText(SongsFromAlbums.this, "Your song has started ;)",
-					Toast.LENGTH_SHORT).show();
-
-		}
-	}
+	//
+	// class PlaySong extends AsyncTask<String, String, String> {
+	//
+	// /**
+	// * Before starting background thread Show Progress Dialog
+	// * */
+	// @Override
+	// protected void onPreExecute() {
+	// super.onPreExecute();
+	//
+	// }
+	//
+	// /**
+	// * getting All products from url
+	// * */
+	// protected String doInBackground(String... args) {
+	// Intent i = new Intent(SongsFromAlbums.this, LocalService.class);
+	// startService(i);
+	// return null;
+	// }
+	//
+	// /**
+	// * After completing background task Dismiss the progress dialog
+	// * **/
+	// protected void onPostExecute(String file_url) {
+	// // has to be before setting up the adapter
+	// Toast.makeText(SongsFromAlbums.this, "Your song has started ;)",
+	// Toast.LENGTH_SHORT).show();
+	//
+	// }
+	// }
 
 	public void stopPlayer(View v) {
-		stopService(new Intent(this, LocalService.class));
+		stopService(new Intent(this, MusicService.class));
 	}
 }
