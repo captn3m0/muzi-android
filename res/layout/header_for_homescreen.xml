@@ -3,15 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Black"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="10dp" >
 
     <EditText
         android:id="@+id/etSearchBoxHomeScreen"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:hint="Search..."
+        android:hint="@string/etSearch"
         android:imeOptions="actionSearch"
         android:maxLines="1" />
+    <ImageButton
+            android:id="@+id/ibSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/search_button"
+            android:onClick="startSearch"/>
 
 </LinearLayout>
