@@ -1,19 +1,21 @@
 package muzi.sdslabs.co.in;
 
 import android.content.Context;
-
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListActivity;
@@ -54,53 +56,53 @@ public class HomeScreen extends SherlockListActivity implements
 		
 		
 
-//		etSearch.setOnEditorActionListener(new OnEditorActionListener() {
-//			@Override
-//			public boolean onEditorAction(TextView v, int actionId,
-//					KeyEvent event) {
-//				boolean handled = false;
-//				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-//					if (etSearch.getText().toString().length() < 3) {
-//						Toast.makeText(HomeScreen.this,
-//								"Enter minimum of 3 characters to search",
-//								Toast.LENGTH_SHORT).show();
-//					} else {
-//						InputMethodManager imm = (InputMethodManager)getSystemService(
-//							      Context.INPUT_METHOD_SERVICE);
-//							imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-//						Intent i1 = new Intent(HomeScreen.this,
-//								SearchResults.class);
-//						i1.putExtra("search_query", etSearch.getText()
-//								.toString());
-//						startActivity(i1);
-//					}
-//					handled = true;
-//				}
-//				return handled;
-//			}
-//		});
+		etSearch.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				boolean handled = false;
+				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+					if (etSearch.getText().toString().length() < 3) {
+						Toast.makeText(HomeScreen.this,
+								"Enter minimum of 3 characters to search",
+								Toast.LENGTH_SHORT).show();
+					} else {
+						InputMethodManager imm = (InputMethodManager)getSystemService(
+							      Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+						Intent i1 = new Intent(HomeScreen.this,
+								SearchResults.class);
+						i1.putExtra("search_query", etSearch.getText()
+								.toString());
+						startActivity(i1);
+					}
+					handled = true;
+				}
+				return handled;
+			}
+		});
 		
 	}
 	
-	public void startSearch (View view)
-	{
-		//this function starts the search when the image button is pressed
-		if (etSearch.getText().toString().length() < 3) {
-			Toast.makeText(HomeScreen.this,
-					"Enter minimum of 3 characters to search",
-					Toast.LENGTH_SHORT).show();
-		} else {
-			InputMethodManager imm = (InputMethodManager)getSystemService(
-				      Context.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-			Intent i1 = new Intent(HomeScreen.this,
-					SearchResults.class);
-			i1.putExtra("search_query", etSearch.getText()
-					.toString());
-			startActivity(i1);
-			}
-	    	
-	}
+//	public void startSearch (View view)
+//	{
+//		//this function starts the search when the image button is pressed
+//		if (etSearch.getText().toString().length() < 3) {
+//			Toast.makeText(HomeScreen.this,
+//					"Enter minimum of 3 characters to search",
+//					Toast.LENGTH_SHORT).show();
+//		} else {
+//			InputMethodManager imm = (InputMethodManager)getSystemService(
+//				      Context.INPUT_METHOD_SERVICE);
+//				imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+//			Intent i1 = new Intent(HomeScreen.this,
+//					SearchResults.class);
+//			i1.putExtra("search_query", etSearch.getText()
+//					.toString());
+//			startActivity(i1);
+//			}
+//	    	
+//	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SubMenu sub = menu.addSubMenu("Settings");

@@ -13,12 +13,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/etSearch"
         android:imeOptions="actionSearch"
-        android:maxLines="1" />
-    <ImageButton
-            android:id="@+id/ibSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/search_button"
-            android:onClick="startSearch"/>
+        android:singleLine="true" />
+
 
 </LinearLayout>
