@@ -9,47 +9,53 @@
 
         <ImageButton
             android:id="@+id/ibCurrentList"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/current_list_button" />
+            android:src="@drawable/current_list_button"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/ibPrevious"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/previous" />
+            android:src="@drawable/previous" 
+            android:layout_weight="1"/>
 
         <ToggleButton
             android:id="@+id/tbPlayPause"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@drawable/play_pause_toggle"
             android:onClick="footerPlayToggle"
             android:textOff=""
-            android:textOn="" />
+            android:textOn=""
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/ibNext"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/next" />
+            android:src="@drawable/next"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/ibShuffle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/shuffle_button" />
+            android:src="@drawable/shuffle_button"
+            android:layout_weight="1" />
 
         <ImageButton
             android:id="@+id/ibRepeat"
-            android:layout_width="30px"
-            android:layout_height="30px"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:onClick="footerClickControls"
-            android:src="@drawable/repeat_button" />
+            android:src="@drawable/repeat_button"
+            android:layout_weight="1" />
     </LinearLayout>
 
 </merge>
