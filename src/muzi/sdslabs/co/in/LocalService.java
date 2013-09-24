@@ -84,6 +84,7 @@ public class LocalService extends Service {
 	/**
 	 * Show a notification while this service is running.
 	 */
+	@SuppressWarnings("deprecation")
 	private void showNotification() {
 		// In this sample, we'll use the same text for the ticker and the
 		// expanded notification
