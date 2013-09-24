@@ -87,6 +87,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 			this.setTitle("Albums");
 		} else if (value1.equals("Artists")) {
 			type = "band";
+			this.setTitle("Artists");
 		} else {
 			FilteredList.this.finish();
 			Toast.makeText(FilteredList.this,
