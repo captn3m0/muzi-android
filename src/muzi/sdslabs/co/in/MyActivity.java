@@ -40,13 +40,12 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(layout_id);
-		
-		FooterForPlayerControls footer = new FooterForPlayerControls(
-				context);
-		
+
+		FooterForPlayerControls footer = new FooterForPlayerControls(context);
+
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
-		
+
 		ibNext = (ImageButton) findViewById(R.id.ibNext);
 		ibPrevious = (ImageButton) findViewById(R.id.ibPrevious);
 		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
@@ -97,8 +96,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	protected Context getContext() {
 		return null;
 	};
-	
-	public void setMyContentView(int layout_id, Context c){
+
+	public void setMyContentView(int layout_id, Context c) {
 		this.layout_id = layout_id;
 		this.context = c;
 	}

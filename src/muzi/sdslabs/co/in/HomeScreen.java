@@ -31,6 +31,7 @@ public class HomeScreen extends SherlockListActivity implements
 	String listItems[] = { "Albums", "Artists", "Top Tracks", "Top Albums",
 			"Language" };
 	EditText etSearch;
+	//Button Search;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,6 +53,8 @@ public class HomeScreen extends SherlockListActivity implements
 				R.id.tv_in_list_item_with_one_tv, listItems);
 
 		lv.setAdapter(adapter);
+		
+		
 
 		etSearch.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
@@ -68,7 +71,7 @@ public class HomeScreen extends SherlockListActivity implements
 							      Context.INPUT_METHOD_SERVICE);
 							imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 						Intent i1 = new Intent(HomeScreen.this,
-								SearchResultsWithTab.class);
+								SearchResults.class);
 						i1.putExtra("search_query", etSearch.getText()
 								.toString());
 						startActivity(i1);
@@ -78,7 +81,28 @@ public class HomeScreen extends SherlockListActivity implements
 				return handled;
 			}
 		});
+		
 	}
+	
+//	public void startSearch (View view)
+//	{
+//		//this function starts the search when the image button is pressed
+//		if (etSearch.getText().toString().length() < 3) {
+//			Toast.makeText(HomeScreen.this,
+//					"Enter minimum of 3 characters to search",
+//					Toast.LENGTH_SHORT).show();
+//		} else {
+//			InputMethodManager imm = (InputMethodManager)getSystemService(
+//				      Context.INPUT_METHOD_SERVICE);
+//				imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+//			Intent i1 = new Intent(HomeScreen.this,
+//					SearchResults.class);
+//			i1.putExtra("search_query", etSearch.getText()
+//					.toString());
+//			startActivity(i1);
+//			}
+//	    	
+//	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SubMenu sub = menu.addSubMenu("Settings");
@@ -121,6 +145,16 @@ public class HomeScreen extends SherlockListActivity implements
 		} else if (position == 2) {
 			Intent i = new Intent(HomeScreen.this, TopTracks.class);
 			startActivity(i);
+		} else if (position == 3) {
+			Intent i= new Intent(HomeScreen.this , TopAlbums.class);
+			startActivity(i);
+		} else if (position == 4) {
+			Intent i = new Intent(HomeScreen.this , LangSettings.class);
+			startActivity(i);
 		}
+		
+		
+		
+		
 	}
 }

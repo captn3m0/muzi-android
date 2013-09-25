@@ -193,7 +193,7 @@ public class SearchResults extends SherlockActivity {
 			if (arrayList3.size() == 0) {
 				lv3.setAdapter(null);
 				if (th.getCurrentTab() == 2) {
-					SearchResults.this.finish();
+					//SearchResults.this.finish();
 					Toast.makeText(SearchResults.this,
 							"Your search query doesn't match any result",
 							Toast.LENGTH_LONG).show();

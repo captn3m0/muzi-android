@@ -1,8 +1,5 @@
 package muzi.sdslabs.co.in;
 
-/*if writable cursor isn't available then pass this hashmap to database file & then parse
- * it or rather use its strings to put in array*/
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -30,6 +27,9 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 
+/*if writable cursor isn't available then pass this hashmap to database file & then parse
+ * it or rather use its strings to put in array*/
+
 public class FilteredList extends MyActivity implements OnItemClickListener {
 
 	// url to make request
@@ -48,17 +48,6 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 	ListView lv;
 	ArrayList<String> FilteredNamesList, FilteredIdList, langList;
 	SharedPreferences pref;
-
-	@Override
-	protected Context getContext() {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	@Override
-	protected int getLayoutResourceId() {
-		return R.layout.filtered_list;
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -85,6 +74,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 			this.setTitle("Albums");
 		} else if (value1.equals("Artists")) {
 			type = "band";
+			this.setTitle("Artists");
 		} else {
 			FilteredList.this.finish();
 			Toast.makeText(FilteredList.this,

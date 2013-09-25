@@ -56,18 +56,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 	LoadSongs task1;
 
 	@Override
-	protected Context getContext() {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	@Override
-	protected int getLayoutResourceId() {
-		return R.layout.songs_from_albums;
-	}
-
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setMyContentView(R.layout.songs_from_albums, this);
 		super.onCreate(savedInstanceState);
 		//
 		// if (!isNetworkAvailable()) {
