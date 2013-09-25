@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MusicService extends Service implements
@@ -46,6 +47,7 @@ public class MusicService extends Service implements
 			mPlayer.prepare();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			Log.i("Song won't play", "NO");
 			e.printStackTrace();
 		}
 		mPlayer.setOnErrorListener(this);

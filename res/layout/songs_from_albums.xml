@@ -5,8 +5,6 @@
     android:background="#000"
     android:orientation="vertical" >
 
-    <!-- It should be a default drawable here to use if album cover is unavailable -->
-
     <TextView
         android:id="@+id/tvAlbumName"
         style="@style/tv_header_for_songs_from_album"

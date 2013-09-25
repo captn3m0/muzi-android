@@ -55,14 +55,14 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		return this;
 	}
 
-
 	@Override
 	protected int getLayoutResourceId() {
 		return R.layout.filtered_list;
 	}
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setMyContentView(R.layout.filtered_list, this);
 		super.onCreate(savedInstanceState);
 
 		/*

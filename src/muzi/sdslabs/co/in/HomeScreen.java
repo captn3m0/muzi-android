@@ -83,8 +83,7 @@ public class HomeScreen extends SherlockListActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SubMenu sub = menu.addSubMenu("Settings");
 		sub.getItem().setShowAsAction(
-				MenuItem.SHOW_AS_ACTION_ALWAYS);
-
+				MenuItem.SHOW_AS_ACTION_ALWAYS);;
 		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}

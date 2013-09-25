@@ -78,6 +78,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		// }
 		// setContentView(R.layout.songs_from_albums);
 
+		
 		/*------------------------style list view-----------------*/
 		{
 			// lv = getListView();
@@ -338,20 +339,26 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 						+ tvAlbumName.getText().toString() + "/"
 						+ SongsList.get(pos);
 
+				Log.i(songPath, "Getting played.");
 				// add the song to now playing list
+
+				/** To-do list: Write a subroutine **/
+
+				// if the song doesn't exist in the list
 				nowPlayingList.add(SongsList.get(pos));
 				nowPlayingPathsList.add(songPath);
 				currentSongIndex++;
 
-				i.setData(Uri.parse(songPath));
+//				for (int j = 0; j < nowPlayingPathsList.size(); j++) {
+//					Log.i("song " + j, nowPlayingPathsList.get(j));
+//				}
 
+				i.setData(Uri.parse(songPath));
 				i.putExtra("song_path", songPath);
 				startService(i);
 			}
 		};
 		t.start();
-
-		//
 		// new PlaySong().execute();
 	}
 
