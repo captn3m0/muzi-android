@@ -29,7 +29,7 @@ public class HomeScreen extends SherlockListActivity implements
 	ListView lv;
 	ArrayAdapter<String> adapter;
 	String listItems[] = { "Albums", "Artists", "Top Tracks", "Top Albums",
-			"Language" };
+			"Language" , "Feedback" };
 	EditText etSearch;
 	//Button Search;
 
@@ -107,16 +107,19 @@ public class HomeScreen extends SherlockListActivity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SubMenu sub = menu.addSubMenu("Settings");
 		sub.getItem().setShowAsAction(
-				MenuItem.SHOW_AS_ACTION_ALWAYS);;
+				MenuItem.SHOW_AS_ACTION_ALWAYS);	
 		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	Intent i = new Intent(HomeScreen.this, UserSettings.class);
-    	startActivity(i);
-        return true;
+    	switch(item.getItemId())
+    	{
+    	
+    	}
+		return false;
+    	
     }
 
 	@Override
@@ -151,6 +154,14 @@ public class HomeScreen extends SherlockListActivity implements
 		} else if (position == 4) {
 			Intent i = new Intent(HomeScreen.this , LangSettings.class);
 			startActivity(i);
+		} else if (position == 5) {
+			String email[] = {"contact+muzi@sdslabs.co.in"};
+			Intent EmailIntent = new Intent(android.content.Intent.ACTION_SEND);
+			EmailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, email);
+			EmailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback for Muzi" );
+			EmailIntent.setType("plain/Text");
+			EmailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+			startActivity(EmailIntent);	
 		}
 		
 		
