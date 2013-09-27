@@ -114,12 +114,10 @@ public class HomeScreen extends SherlockListActivity implements
 	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	switch(item.getItemId())
-    	{
     	
-    	}
-		return false;
-    	
+    	Intent i = new Intent(HomeScreen.this, UserSettings.class);
+    	startActivity(i);
+    	return true;	
     }
 
 	@Override
