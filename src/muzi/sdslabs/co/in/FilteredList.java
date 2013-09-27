@@ -139,7 +139,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 			pDialog = new ProgressDialog(FilteredList.this);
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
+			pDialog.setCancelable(true);
 			pDialog.show();
 		}
 

@@ -74,7 +74,7 @@ public class TopTracks extends SherlockListActivity implements OnItemClickListen
 			pDialog = new ProgressDialog(TopTracks.this);
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
+			pDialog.setCancelable(true);
 			pDialog.show();
 		}
 

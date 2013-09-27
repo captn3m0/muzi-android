@@ -76,7 +76,7 @@ public class TopAlbums extends SherlockListActivity implements OnItemClickListen
 			pDialog = new ProgressDialog(TopAlbums.this);
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
+			pDialog.setCancelable(true);
 			pDialog.show();
 		}
 
@@ -84,7 +84,6 @@ public class TopAlbums extends SherlockListActivity implements OnItemClickListen
 
 			GetMethodEx test = new GetMethodEx();
 			try {
-				//AKD :copied from TopTracks.java tried replacing track with album
 				Log.i("url", GlobalVariables.api_root + "album/top.php");
 				FilteredJSONArray = new JSONArray(
 						test.getInternetData(GlobalVariables.api_root
@@ -145,7 +144,20 @@ public class TopAlbums extends SherlockListActivity implements OnItemClickListen
 	@Override
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
-		// TODO Auto-generated method stub
+		
+		    for (int i = 0; i < FilteredJSONArray.length(); i++)
+			{
+		    	String albumName = FilteredNamesList.get(position).toString();
+		    	if(FilteredArrayList.contains(albumName))
+		    	{
+		    		String id=FilteredArrayList.get(i).get(TAG_ID);
+		    		Intent intent = new Intent(TopAlbums.this, SongsFromAlbums.class);
+		    		intent.putExtra("search_type1", "album");
+		    		intent.putExtra("search_id1", id);
+		    		intent.putExtra("search_title1", FilteredNamesList.get(position));
+		    		startActivity(intent);
+		    	}
+			}
 	}
 
 	@Override
