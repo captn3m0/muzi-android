@@ -39,12 +39,15 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
 	// JSON keys
 	private static final String TAG_TITLE = "title";
+	private static final String TAG_ID = "id";
+
 	private static int year;
 	private static int firstId;
 
 	JSONArray FilteredJSONArray = null;
 	ListView lv;
-	ArrayList<String> SongsList;
+	ArrayList<String> songsNameList;
+	ArrayList<Integer> songsIdList;
 	ImageView ivAlbumCover;
 	TextView tvAlbumName, tvAlbumArtist, tvAlbumYear;
 	Drawable image;
@@ -68,7 +71,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		// }
 		// setContentView(R.layout.songs_from_albums);
 
-		
 		/*------------------------style list view-----------------*/
 		{
 			// lv = getListView();
@@ -88,7 +90,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 			tvAlbumYear = (TextView) findViewById(R.id.tvAlbumYear);
 
 			image_avail = false;
-			SongsList = new ArrayList<String>();
+			songsNameList = new ArrayList<String>();
 			album_artist = null;
 		}
 
@@ -174,7 +176,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				jsonObject = new JSONObject(test.getInternetData(root));
 				Log.i("Track url", jsonObject.toString());
 
-				FilteredJSONArray = jsonObject.getJSONArray("tracks");
+				FilteredJSONArray = jsonObject.getJSONArray("songs");
 				Log.i("Array", FilteredJSONArray.toString());
 
 				if (FilteredJSONArray != null) {
@@ -189,8 +191,9 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 						}
 						jsonObject = FilteredJSONArray.getJSONObject(i);
 
-						SongsList.add((i + 1) + ". "
+						songsNameList.add((i + 1) + ". "
 								+ jsonObject.getString(TAG_TITLE));
+						songsIdList.add(jsonObject.getInt(TAG_ID));
 						// creating new HashMap
 					}
 				}
@@ -215,12 +218,12 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 			 * Updating parsed JSON data into ListView
 			 * */
 
-			if (SongsList.size() == 0) {
+			if (songsNameList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						SongsFromAlbums.this, R.layout.list_item_with_one_tv,
-						R.id.tv_in_list_item_with_one_tv, SongsList);
+						R.id.tv_in_list_item_with_one_tv, songsNameList);
 				lv.setAdapter(adapter);
 				lv.setOnItemClickListener(SongsFromAlbums.this);
 			}
@@ -264,11 +267,11 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
 			InternetData test = new InternetData();
 
-			if (SongsList.size() > 0) {
+			if (songsNameList.size() > 0) {
 				try {
 					jsonObject = new JSONObject(
 							test.getInternetData(GlobalVariables.api_root
-									+ "/track/?id=" + firstId));
+									+ "/song/?id=" + firstId));
 					year = jsonObject.getInt("year");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -283,7 +286,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 					e.printStackTrace();
 				}
 			}
-
 			return null;
 		}
 
@@ -311,6 +313,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		}
 	}
 
+	String requestedTrackURL, songPath, songName;
+
 	@Override
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
@@ -318,41 +322,44 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
 		final int pos = position;
 
-		Thread t = new Thread() {
-			@Override
-			public void run() {
-				Intent i = new Intent(getContext(), MusicService.class);
+		// Thread t = new Thread() {
+		// @Override
+		// public void run() {
+		// Intent i = new Intent(SongsFromAlbums.this, MusicService.class);
+		//
+		// // Let's see which one to implement setData or setExtra
+		// // Get song path by requesting the url below
+		requestedTrackURL = GlobalVariables.api_root + "song/?id="
+				+ songsIdList.get(pos);
 
-				// Let's see which one to implement setData or setExtra
-				String songPath = GlobalVariables.music_root
-						+ tvAlbumArtist.getText().toString() + "/"
-						+ tvAlbumName.getText().toString() + "/"
-						+ SongsList.get(pos);
-
-				Log.i(songPath, "Getting played.");
-				// add the song to now playing list
-
-				/** To-do: Write a subroutine **/
-
-				// if the song doesn't exist in the list
-				nowPlayingList.add(SongsList.get(pos));
-				nowPlayingPathsList.add(songPath);
-				currentSongIndex++;
-
-//				for (int j = 0; j < nowPlayingPathsList.size(); j++) {
-//					Log.i("song " + j, nowPlayingPathsList.get(j));
-//				}
-
-				i.setData(Uri.parse(songPath));
-				i.putExtra("song_path", songPath);
-				startService(i);
-			}
-		};
-		t.start();
+		/** Parse the string to remove the number before it **/
+		songName = songsNameList.get(pos);
+		//
+		// Log.i("requestedURL", requestedTrackURL);
+		// // add the song to now playing list
+		//
+		// /** To-do: Write a subroutine **/
+		//
+		// // if the song doesn't exist in the list
+		// nowPlayingList.add(songsNameList.get(pos));
+		// nowPlayingPathsList.add(songPath);
+		// currentSongIndex++;
+		//
+		// // for (int j = 0; j < nowPlayingPathsList.size(); j++) {
+		// // Log.i("song " + j, nowPlayingPathsList.get(j));
+		// // }
+		//
+		// i.setData(Uri.parse(songPath));
+		// i.putExtra("song_path", songPath);
+		// startService(i);
+		// }
+		// };
+		// t.start();
 		// new PlaySong().execute();
 	}
 
-	//
+	/** Starting service with an AsyncTask **/
+
 	// class PlaySong extends AsyncTask<String, String, String> {
 	//
 	// /**
@@ -383,6 +390,89 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 	//
 	// }
 	// }
+
+	class PlaySong extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+		}
+
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			super.onCancelled();
+			SongsFromAlbums.this.finish();
+		}
+
+		/**
+		 * getting All products from url
+		 * */
+		protected String doInBackground(String... args) {
+			InternetData test = new InternetData();
+
+			try {
+				jsonObject = new JSONObject(
+						test.getInternetData(requestedTrackURL));
+				songPath = GlobalVariables.music_root
+						+ jsonObject.getString("file");
+
+				Intent i = new Intent(SongsFromAlbums.this, MusicService.class);
+
+				Log.i("requestedURL", requestedTrackURL);
+				// add the song to now playing list
+
+				/** To-do: Write a subroutine **/
+
+				// if the song doesn't exist in the list
+
+				if (!nowPlayingList.contains(songName)) {
+					nowPlayingList.add(songName);
+					nowPlayingPathsList.add(songPath);
+					currentSongIndex++;
+				}
+
+				for (int j = 0; j < nowPlayingPathsList.size(); j++) {
+					Log.i("song " + j, nowPlayingPathsList.get(j));
+				}
+
+				i.setData(Uri.parse(songPath));
+				i.putExtra("song_path", songPath);
+				startService(i);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			// has to be before setting up the adapter
+			if (image_avail == true) {
+				ivAlbumCover.setImageBitmap(bitmap);
+				Log.i("Image available", "true");
+			}
+
+			if (year != 0) {
+				tvAlbumYear.setText("RELEASED IN " + year);
+			} else {
+				tvAlbumYear.setText("");
+			}
+
+			if (album_artist != null) {
+				tvAlbumArtist.setText("BY " + album_artist);
+			} else {
+				tvAlbumArtist.setText("");
+			}
+		}
+	}
 
 	public void stopPlayer(View v) {
 		stopService(new Intent(this, MusicService.class));
