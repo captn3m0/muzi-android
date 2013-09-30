@@ -82,7 +82,7 @@ public class TopAlbums extends SherlockListActivity implements OnItemClickListen
 
 		void parseJsonAndReturnHashMap() {
 
-			GetMethodEx test = new GetMethodEx();
+			InternetData test = new InternetData();
 			try {
 				Log.i("url", GlobalVariables.api_root + "album/top.php");
 				FilteredJSONArray = new JSONArray(

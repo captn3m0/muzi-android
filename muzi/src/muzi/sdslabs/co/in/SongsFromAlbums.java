@@ -168,7 +168,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 			// Building Parameters
 			// Creating JSON Parser instance
 			// getting JSON string from URL
-			GetMethodEx test = new GetMethodEx();
+			InternetData test = new InternetData();
 			try {
 				Log.i("Root", root);
 				jsonObject = new JSONObject(test.getInternetData(root));
@@ -262,7 +262,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				Log.i("Image Not returned", "");
 			}
 
-			GetMethodEx test = new GetMethodEx();
+			InternetData test = new InternetData();
 
 			if (SongsList.size() > 0) {
 				try {
@@ -332,7 +332,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				Log.i(songPath, "Getting played.");
 				// add the song to now playing list
 
-				/** To-do list: Write a subroutine **/
+				/** To-do: Write a subroutine **/
 
 				// if the song doesn't exist in the list
 				nowPlayingList.add(SongsList.get(pos));

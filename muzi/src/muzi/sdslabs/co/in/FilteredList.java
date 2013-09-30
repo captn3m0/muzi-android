@@ -189,7 +189,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 				Log.i("", "deleted");
 				deleteFileList();
 
-				GetMethodEx test = new GetMethodEx();
+				InternetData test = new InternetData();
 				try {
 					Log.i("url", GlobalVariables.api_root + type + "/list.php");
 

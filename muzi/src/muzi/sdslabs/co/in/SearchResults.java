@@ -108,7 +108,7 @@ public class SearchResults extends SherlockActivity {
 			// Building Parameters
 			// Creating JSON Parser instance
 			// getting JSON string from URL
-			GetMethodEx test = new GetMethodEx();
+			InternetData test = new InternetData();
 			try {
 				Log.i("Trying", "done");
 

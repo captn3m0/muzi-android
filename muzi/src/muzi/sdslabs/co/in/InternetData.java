@@ -9,7 +9,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-public class GetMethodEx {
+public class InternetData {
 
 	public String getInternetData(String url) throws Exception {
 		BufferedReader in = null;

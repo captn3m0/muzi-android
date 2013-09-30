@@ -126,7 +126,7 @@ public class SongsFromArtists extends SherlockListActivity implements
 			// Building Parameters
 			// Creating JSON Parser instance
 			// getting JSON string from URL
-			GetMethodEx test = new GetMethodEx();
+			InternetData test = new InternetData();
 			try {
 
 				FilteredJSONArray = new JSONArray(test.getInternetData(root));
