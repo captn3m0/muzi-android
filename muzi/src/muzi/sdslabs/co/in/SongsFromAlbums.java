@@ -432,7 +432,10 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				if (!nowPlayingList.contains(songName)) {
 					nowPlayingList.add(songName);
 					nowPlayingPathsList.add(songPath);
-					currentSongIndex++;
+					currentSongIndex = nowPlayingList.size() - 1;
+					// currentSongIndex++;
+				} else {
+					currentSongIndex = nowPlayingList.indexOf(songName);
 				}
 
 				for (int j = 0; j < nowPlayingPathsList.size(); j++) {
