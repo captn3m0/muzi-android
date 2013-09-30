@@ -25,6 +25,12 @@ import com.actionbarsherlock.view.MenuItem;
  * or was detached during the end of its lifecycle, getActivity() will return null.
  * */
 
+
+/**
+ * @author shivam
+ * To do: Add the capability of ordering songs by dragging
+ */
+
 public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
