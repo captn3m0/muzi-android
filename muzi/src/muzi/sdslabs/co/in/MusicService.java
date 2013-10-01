@@ -12,7 +12,7 @@ public class MusicService extends Service implements
 		MediaPlayer.OnErrorListener {
 
 	public final IBinder mBinder = new ServiceBinder();
-	MediaPlayer mPlayer;
+	MediaPlayer mp;
 	private int length = 0;
 
 	public MusicService() {
@@ -33,66 +33,86 @@ public class MusicService extends Service implements
 	public void onCreate() {
 		super.onCreate();
 
-		// mPlayer = new MediaPlayer();
+		// mp = new MediaPlayer();
 		//
 		// Uri uri = Uri.parse(GlobalVariables.music_root
 		// + "Adele___Set_Fire_To_The_Rain_Adele.mp3");
 		//
 		// Log.i("uri in music service", uri.toString());
 
-		mPlayer = new MediaPlayer();
+		mp = new MediaPlayer();
 		try {
-			mPlayer.setDataSource(GlobalVariables.music_root
-					+ "Adele___Set_Fire_To_The_Rain_Adele.mp3");
-			mPlayer.prepare();
+			String song = GlobalVariables.music_root
+					+ "English/John Williams/1987 - Empire of The Sun/01 - Suo Gan.mp3";
+			song = song.replaceAll(" ", "%20");
+			mp.setDataSource(song);
+			Log.i("song path", song);
+			mp.prepareAsync();
+			mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+				@Override
+				public void onPrepared(MediaPlayer mp) {
+					// TODO Auto-generated method stub
+					mp.start();
+				}
+			});
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			Log.i("Song won't play", "NO");
 			e.printStackTrace();
 		}
-		mPlayer.setOnErrorListener(this);
+		
+//		mp = new MediaPlayer();
+//		try {
+//			mp.setDataSource(GlobalVariables.music_root
+//					+ "English/John Williams/1987 - Empire of The Sun/01 - Suo Gan.mp3");
+//			mp.prepare();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			Log.i("Song won't play", "NO");
+//			e.printStackTrace();
+//		}
+//		mp.setOnErrorListener(this);
 
-		if (mPlayer != null) {
-			mPlayer.setLooping(true);
-			mPlayer.setVolume(100, 100);
+		if (mp != null) {
+			mp.setLooping(true);
+			mp.setVolume(100, 100);
 		}
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		mPlayer.start();
+		mp.start();
 		return START_STICKY;
 	}
 
 	public void pauseMusic() {
-		if (mPlayer.isPlaying()) {
-			mPlayer.pause();
-			length = mPlayer.getCurrentPosition();
+		if (mp.isPlaying()) {
+			mp.pause();
+			length = mp.getCurrentPosition();
 		}
 	}
 
 	public void resumeMusic() {
-		if (mPlayer.isPlaying() == false) {
-			mPlayer.seekTo(length);
-			mPlayer.start();
+		if (mp.isPlaying() == false) {
+			mp.seekTo(length);
+			mp.start();
 		}
 	}
 
 	public void stopMusic() {
-		mPlayer.stop();
-		mPlayer.release();
-		mPlayer = null;
+		mp.stop();
+		mp.release();
+		mp = null;
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (mPlayer != null) {
+		if (mp != null) {
 			try {
-				mPlayer.stop();
-				mPlayer.release();
+				mp.stop();
+				mp.release();
 			} finally {
-				mPlayer = null;
+				mp = null;
 			}
 		}
 	}
@@ -100,12 +120,12 @@ public class MusicService extends Service implements
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 
 		Toast.makeText(this, "music player failed", Toast.LENGTH_SHORT).show();
-		if (mPlayer != null) {
+		if (mp != null) {
 			try {
-				mPlayer.stop();
-				mPlayer.release();
+				mp.stop();
+				mp.release();
 			} finally {
-				mPlayer = null;
+				mp = null;
 			}
 		}
 		return false;

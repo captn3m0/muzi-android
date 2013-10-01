@@ -2,18 +2,16 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -25,10 +23,8 @@ import com.actionbarsherlock.view.MenuItem;
  * or was detached during the end of its lifecycle, getActivity() will return null.
  * */
 
-
 /**
- * @author shivam
- * To do: Add the capability of ordering songs by dragging
+ * @author shivam To do: Add the capability of ordering songs by dragging
  */
 
 public class MyActivity extends SherlockActivity implements OnClickListener {
@@ -36,10 +32,10 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
 	int layout_id;
 
-	private boolean mIsBound = false;
-	private MusicService mServ;
-	private ServiceConnection Scon;
-	static ArrayList<String> nowPlayingList, nowPlayingPathsList;
+	// private boolean mIsBound = false;
+	// private MusicService mServ;
+	// private ServiceConnection Scon;
+	public static ArrayList<String> nowPlayingList, nowPlayingPathsList;
 	static int currentSongIndex = 0;
 	Context context;
 
@@ -70,34 +66,38 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		nowPlayingList = new ArrayList<String>();
 		nowPlayingPathsList = new ArrayList<String>();
 
-		Scon = new ServiceConnection() {
+		// to check if these lists get initialized before every activity
+		Log.i("Size of nowPlayingList", nowPlayingList.size() + "");
 
-			public void onServiceConnected(ComponentName name, IBinder binder) {
-				MusicService ms = new MusicService();
-				MusicService.ServiceBinder sv = ms.new ServiceBinder();
-				mServ = sv.getService();
-			}
-
-			public void onServiceDisconnected(ComponentName name) {
-				mServ = null;
-			}
-		};
-
-		doBindService();
+		// Scon = new ServiceConnection() {
+		//
+		// public void onServiceConnected(ComponentName name, IBinder binder) {
+		// MusicService ms = new MusicService();
+		// MusicService.ServiceBinder sv = ms.new ServiceBinder();
+		// mServ = sv.getService();
+		// }
+		//
+		// public void onServiceDisconnected(ComponentName name) {
+		// mServ = null;
+		// }
+		// };
+		//
+		// doBindService();
 	}
 
-	void doBindService() {
-		bindService(new Intent(this, MusicService.class), Scon,
-				Context.BIND_AUTO_CREATE);
-		mIsBound = true;
-	}
-
-	void doUnbindService() {
-		if (mIsBound) {
-			unbindService(Scon);
-			mIsBound = false;
-		}
-	}
+	//
+	// void doBindService() {
+	// bindService(new Intent(this, MusicService.class), Scon,
+	// Context.BIND_AUTO_CREATE);
+	// mIsBound = true;
+	// }
+	//
+	// void doUnbindService() {
+	// if (mIsBound) {
+	// unbindService(Scon);
+	// mIsBound = false;
+	// }
+	// }
 
 	protected Context getContext() {
 		return null;
@@ -115,23 +115,25 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	public void footerPlayToggle(View view) {
 
 		int id = view.getId();
-		if (id == R.id.tbPlayPause) {
-			boolean on = ((ToggleButton) view).isChecked();
 
-			if (on) {
-				mServ.resumeMusic();
-			} else {
-				mServ.pauseMusic();
-				// stopService(new Intent(this, LocalService.class));
-			}
-		}
+
+		// if (id == R.id.tbPlayPause) {
+		// boolean on = ((ToggleButton) view).isChecked();
+		//
+		// if (on) {
+		// mServ.resumeMusic();
+		// } else {
+		// mServ.pauseMusic();
+		// // stopService(new Intent(this, LocalService.class));
+		// }
+		// }
 	}
 
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		doUnbindService();
+		// doUnbindService();
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
