@@ -91,6 +91,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
 			image_avail = false;
 			songsNameList = new ArrayList<String>();
+			songsIdList = new ArrayList<Integer>();
 			album_artist = null;
 		}
 
@@ -174,10 +175,10 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 			try {
 				Log.i("Root", root);
 				jsonObject = new JSONObject(test.getInternetData(root));
-				Log.i("Track url", jsonObject.toString());
+				Log.i("Album URL", jsonObject.toString());
 
-				FilteredJSONArray = jsonObject.getJSONArray("songs");
-				Log.i("Array", FilteredJSONArray.toString());
+				FilteredJSONArray = jsonObject.getJSONArray("tracks");
+				Log.i("JSON Array", FilteredJSONArray.toString());
 
 				if (FilteredJSONArray != null) {
 					firstId = FilteredJSONArray.getJSONObject(0).getInt("id");
@@ -194,7 +195,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 						songsNameList.add((i + 1) + ". "
 								+ jsonObject.getString(TAG_TITLE));
 						songsIdList.add(jsonObject.getInt(TAG_ID));
-						// creating new HashMap
 					}
 				}
 
@@ -221,6 +221,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 			if (songsNameList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
+				Log.i("Songs list size", songsNameList.size() + "");
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						SongsFromAlbums.this, R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, songsNameList);
@@ -262,7 +263,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 			} catch (Exception e) {
 				e.printStackTrace();
 				image_avail = false;
-				Log.i("Image Not returned", "");
+				Log.i("Image", "false");
 			}
 
 			InternetData test = new InternetData();
@@ -271,7 +272,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				try {
 					jsonObject = new JSONObject(
 							test.getInternetData(GlobalVariables.api_root
-									+ "/song/?id=" + firstId));
+									+ "/track/?id=" + firstId));
 					year = jsonObject.getInt("year");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -329,11 +330,14 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		//
 		// // Let's see which one to implement setData or setExtra
 		// // Get song path by requesting the url below
-		requestedTrackURL = GlobalVariables.api_root + "song/?id="
+		requestedTrackURL = GlobalVariables.api_root + "track/?id="
 				+ songsIdList.get(pos);
+		
+		Log.i("Requested track url", requestedTrackURL);
 
 		/** Parse the string to remove the number before it **/
 		songName = songsNameList.get(pos);
+		new PlaySong().execute();
 		//
 		// Log.i("requestedURL", requestedTrackURL);
 		// // add the song to now playing list
@@ -420,6 +424,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				songPath = GlobalVariables.music_root
 						+ jsonObject.getString("file");
 
+				Log.i("Song Path", songPath);
+
 				Intent i = new Intent(SongsFromAlbums.this, MusicService.class);
 
 				Log.i("requestedURL", requestedTrackURL);
@@ -442,8 +448,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 					Log.i("song " + j, nowPlayingPathsList.get(j));
 				}
 
-				i.setData(Uri.parse(songPath));
-				i.putExtra("song_path", songPath);
+//				i.setData(Uri.parse(songPath));
+//				i.putExtra("song_path", songPath);
 				startService(i);
 
 			} catch (Exception e) {
