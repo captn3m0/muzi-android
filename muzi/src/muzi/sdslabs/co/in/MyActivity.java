@@ -36,7 +36,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	// private MusicService mServ;
 	// private ServiceConnection Scon;
 	public static ArrayList<String> nowPlayingList, nowPlayingPathsList;
-	static int currentSongIndex = 0;
+	public static int currentSongIndex = 0;
 	Context context;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,10 +112,27 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		Toast.makeText(getContext(), v.getId(), Toast.LENGTH_SHORT).show();
 	}
 
+	void playSong(String songName, String songPath, Context context) {
+		Intent i = new Intent(context, MusicService.class);
+
+		if (!nowPlayingList.contains(songName)) {
+			nowPlayingList.add(songName);
+			nowPlayingPathsList.add(songPath);
+			currentSongIndex = nowPlayingList.size() - 1;
+		} else {
+			currentSongIndex = nowPlayingList.indexOf(songName);
+		}
+
+		for (int j = 0; j < nowPlayingPathsList.size(); j++) {
+			Log.i("song " + j, nowPlayingPathsList.get(j));
+		}
+
+		startService(i);
+	}
+
 	public void footerPlayToggle(View view) {
 
 		int id = view.getId();
-
 
 		// if (id == R.id.tbPlayPause) {
 		// boolean on = ((ToggleButton) view).isChecked();

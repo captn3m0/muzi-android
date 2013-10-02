@@ -16,7 +16,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -332,7 +331,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		// // Get song path by requesting the url below
 		requestedTrackURL = GlobalVariables.api_root + "track/?id="
 				+ songsIdList.get(pos);
-		
+
 		Log.i("Requested track url", requestedTrackURL);
 
 		/** Parse the string to remove the number before it **/
@@ -425,32 +424,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 						+ jsonObject.getString("file");
 
 				Log.i("Song Path", songPath);
-
-				Intent i = new Intent(SongsFromAlbums.this, MusicService.class);
-
-				Log.i("requestedURL", requestedTrackURL);
-				// add the song to now playing list
-
-				/** To-do: Write a subroutine **/
-
-				// if the song doesn't exist in the list
-
-				if (!nowPlayingList.contains(songName)) {
-					nowPlayingList.add(songName);
-					nowPlayingPathsList.add(songPath);
-					currentSongIndex = nowPlayingList.size() - 1;
-					// currentSongIndex++;
-				} else {
-					currentSongIndex = nowPlayingList.indexOf(songName);
-				}
-
-				for (int j = 0; j < nowPlayingPathsList.size(); j++) {
-					Log.i("song " + j, nowPlayingPathsList.get(j));
-				}
-
-//				i.setData(Uri.parse(songPath));
-//				i.putExtra("song_path", songPath);
-				startService(i);
+				playSong(songName, songPath, SongsFromAlbums.this);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
