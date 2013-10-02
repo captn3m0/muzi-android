@@ -41,7 +41,7 @@ public class MusicService extends Service implements
 		// Log.i("uri in music service", uri.toString());
 
 		mp = new MediaPlayer();
-		
+
 		mp.setOnErrorListener(this);
 
 		if (mp != null) {
@@ -52,13 +52,19 @@ public class MusicService extends Service implements
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		
-		
+
 		try {
-			String song = MyActivity.nowPlayingPathsList.get(MyActivity.currentSongIndex);
-			
-//			GlobalVariables.music_root
-//					+ "English/John Williams/1987 - Empire of The Sun/01 - Suo Gan.mp3";
+
+			if (mp.isPlaying()) {
+				mp.stop();
+				mp.reset();
+			}
+			String song = MyActivity.nowPlayingPathsList
+					.get(MyActivity.currentSongIndex);
+
+			// GlobalVariables.music_root
+			// +
+			// "English/John Williams/1987 - Empire of The Sun/01 - Suo Gan.mp3";
 			song = song.replaceAll(" ", "%20");
 			mp.setDataSource(song);
 			Log.i("song path", song);
@@ -74,7 +80,7 @@ public class MusicService extends Service implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return START_STICKY;
 	}
 
