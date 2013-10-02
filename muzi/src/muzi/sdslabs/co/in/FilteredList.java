@@ -188,7 +188,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 					|| !Arrays.asList(fileList()).contains(type + getDate())) {
 				Log.i("", "deleted");
 				deleteFileList();
-
+				
 				InternetData test = new InternetData();
 				try {
 					Log.i("url", GlobalVariables.api_root + type + "/list.php");
@@ -210,6 +210,8 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 			} else {
 				// return it from database
+				
+				Log.i("Coming form local storage", "true");
 				try {
 					FileInputStream fis = openFileInput(type + getDate());
 					StringBuffer fileContent = new StringBuffer("");
