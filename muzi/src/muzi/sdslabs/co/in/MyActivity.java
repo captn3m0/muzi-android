@@ -99,17 +99,13 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	// }
 	// }
 
-	protected Context getContext() {
-		return null;
-	};
-
 	public void setMyContentView(int layout_id, Context c) {
 		this.layout_id = layout_id;
 		this.context = c;
 	}
 
 	public void footerClickControls(View v) {
-		Toast.makeText(getContext(), v.getId(), Toast.LENGTH_SHORT).show();
+		Toast.makeText(context, v.getId(), Toast.LENGTH_SHORT).show();
 	}
 
 	void playSong(String songName, String songPath, Context context) {
@@ -163,10 +159,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		return true;
 	}
 
-	protected int getLayoutResourceId() {
-		return 0;
-	}
-
 	@Override
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
@@ -175,7 +167,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		if (id == R.id.ibPrevious) {
 			if (currentSongIndex != 0) {
 				currentSongIndex--;
-				Intent i = new Intent(getContext(), MusicService.class);
+				Intent i = new Intent(context, MusicService.class);
 				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
 				i.putExtra("song_path",
 						nowPlayingPathsList.get(currentSongIndex));
@@ -184,7 +176,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		} else if (id == R.id.ibNext) {
 			if (currentSongIndex < nowPlayingPathsList.size() - 1) {
 				currentSongIndex++;
-				Intent i = new Intent(getContext(), MusicService.class);
+				Intent i = new Intent(context, MusicService.class);
 				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
 				i.putExtra("song_path",
 						nowPlayingPathsList.get(currentSongIndex));
