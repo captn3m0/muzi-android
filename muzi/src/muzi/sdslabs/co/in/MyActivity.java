@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -109,11 +108,11 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	}
 
 	void playSong(String songName, String songPath, Context context) {
-		Intent i = new Intent(context, MusicService.class);
+		Intent i = new Intent(this, MusicService.class);
 
 		if (!nowPlayingList.contains(songName)) {
 			nowPlayingList.add(songName);
-			nowPlayingPathsList.add(songPath);
+			nowPlayingPathsList.add(GlobalVariables.music_root + songPath);
 			currentSongIndex = nowPlayingList.size() - 1;
 		} else {
 			currentSongIndex = nowPlayingList.indexOf(songName);

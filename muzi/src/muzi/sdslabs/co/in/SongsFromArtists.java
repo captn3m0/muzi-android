@@ -21,10 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-
-public class SongsFromArtists extends SherlockListActivity implements
-		OnItemClickListener {
+public class SongsFromArtists extends MyActivity implements OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -34,15 +31,17 @@ public class SongsFromArtists extends SherlockListActivity implements
 
 	// JSON keys
 	private static final String TAG_TITLE = "title";
+	private static final String TAG_FILE = "file";
 
 	JSONArray FilteredJSONArray = null;
 	ListView lv;
-	ArrayList<String> SongsList;
+	ArrayList<String> songsNameList, songsPathList;
 	JSONObject jsonObject;
 	LoadSongs task;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setMyContentView(R.layout.songs_from_artists, SongsFromArtists.this);
 		super.onCreate(savedInstanceState);
 		// if (!isNetworkAvailable()) {
 		// finish();
@@ -51,17 +50,15 @@ public class SongsFromArtists extends SherlockListActivity implements
 		// .show();
 		// }
 
-		/* To customize action bar */
-		// getSupportActionBar().setDisplayShowCustomEnabled(true);
-		// getSupportActionBar().setCustomView(R.layout.my_custom_view);
-
-		lv = getListView();
+		lv = (ListView) findViewById(R.id.lvSongsFromArtists);
 		lv.getRootView().setBackgroundColor(
 				getResources().getColor(R.color.Black));
-		getListView().setCacheColorHint(Color.TRANSPARENT);
+		lv.setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
+		lv.setOnItemClickListener(SongsFromArtists.this);
 
-		SongsList = new ArrayList<String>();
+		songsNameList = new ArrayList<String>();
+		songsPathList = new ArrayList<String>();
 
 		String type = getIntent().getStringExtra("search_type2");
 		String album_id = getIntent().getStringExtra("search_id2");
@@ -144,11 +141,12 @@ public class SongsFromArtists extends SherlockListActivity implements
 
 						jsonObject = FilteredJSONArray.getJSONObject(i);
 
-						SongsList.add((i + 1) + ". "
+						songsNameList.add((i + 1) + ". "
 								+ jsonObject.getString(TAG_TITLE));
+						songsPathList.add(jsonObject.getString(TAG_FILE));
 						// creating new HashMap
 
-						Log.i((i + 1) + "", jsonObject.getString(TAG_TITLE));
+						Log.i((i + 1) + "", jsonObject.getString(TAG_FILE));
 					}
 					// if php query doesn't give sorted results comment out
 					// the
@@ -170,12 +168,12 @@ public class SongsFromArtists extends SherlockListActivity implements
 			/**
 			 * Updating parsed JSON data into ListView
 			 * */
-			if (SongsList.size() == 0) {
+			if (songsNameList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						SongsFromArtists.this, R.layout.list_item_with_one_tv,
-						R.id.tv_in_list_item_with_one_tv, SongsList);
+						R.id.tv_in_list_item_with_one_tv, songsNameList);
 				lv.setAdapter(adapter);
 				lv.setOnItemClickListener(SongsFromArtists.this);
 			}
@@ -183,9 +181,9 @@ public class SongsFromArtists extends SherlockListActivity implements
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> av, View arg1, int position,
-			long arg3) {
+	public void onItemClick(AdapterView<?> av, View arg1, int position, long id) {
 		// TODO Auto-generated method stub
-
+		playSong(songsNameList.get(position), songsPathList.get(position),
+				SongsFromArtists.this);
 	}
 }

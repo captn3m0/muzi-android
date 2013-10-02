@@ -420,8 +420,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 			try {
 				jsonObject = new JSONObject(
 						test.getInternetData(requestedTrackURL));
-				songPath = GlobalVariables.music_root
-						+ jsonObject.getString("file");
+				songPath = jsonObject.getString("file");
 
 				Log.i("Song Path", songPath);
 				playSong(songName, songPath, SongsFromAlbums.this);
