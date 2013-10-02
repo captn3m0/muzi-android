@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000"
     android:orientation="vertical" >
-
-    <muzi.sdslabs.co.in.FooterForPlayerControls
-        android:id="@+id/footer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
 
     <ListView
         android:id="@+id/lvSongsFromArtists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
         android:cacheColorHint="#000000"
         android:fadeScrollbars="true" >
     </ListView>
 
-</LinearLayout>
+    <muzi.sdslabs.co.in.FooterForPlayerControls
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
