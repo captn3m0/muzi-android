@@ -49,15 +49,20 @@ public class MusicService extends Service implements
 	}
 
 	void playMusic() {
+
+		Log.i("Current song index", MyActivity.currentSongIndex + "");
+		Log.i("Temp song index", MyActivity.tempSongIndex + "");
+
 		try {
 			if (mp.isPlaying()) {
 				mp.stop();
 				mp.reset();
 			}
 			String song = MyActivity.nowPlayingPathsList.get(
-					MyActivity.currentSongIndex).replaceAll(" ", "%20");
+					MyActivity.tempSongIndex).replaceAll(" ", "%20");
 
 			mp.setDataSource(song);
+			
 			Log.i("Final song path", song);
 			mp.prepareAsync();
 			mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -65,8 +70,10 @@ public class MusicService extends Service implements
 				public void onPrepared(MediaPlayer mp) {
 					// TODO Auto-generated method stub
 					mp.start();
+					MyActivity.currentSongIndex = MyActivity.tempSongIndex;
 				}
 			});
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -112,11 +119,10 @@ public class MusicService extends Service implements
 		Toast.makeText(this,
 				"Music player failed. Couldn't find the requested song.",
 				Toast.LENGTH_SHORT).show();
-		
-		MyActivity.nowPlayingPathsList.remove(MyActivity.nowPlayingPathsList
-				.size() - 1);
-		MyActivity.nowPlayingList.remove(MyActivity.nowPlayingList.size() - 1);
-		MyActivity.currentSongIndex = MyActivity.nowPlayingList.size() - 1;
+
+		MyActivity.nowPlayingPathsList.remove(MyActivity.tempSongIndex);
+		MyActivity.nowPlayingList.remove(MyActivity.tempSongIndex);
+		MyActivity.tempSongIndex = MyActivity.currentSongIndex;
 
 		if (mp != null) {
 			mp.stop();

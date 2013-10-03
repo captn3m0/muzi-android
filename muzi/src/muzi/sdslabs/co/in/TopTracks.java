@@ -147,6 +147,7 @@ public class TopTracks extends MyActivity implements OnItemClickListener {
 
 		requestedTrackURL = GlobalVariables.api_root + "/track/?id="
 				+ FilteredArrayList.get(position).get(TAG_TRACKID);
+		Log.i("Requested track id", requestedTrackURL);
 		songName = FilteredArrayList.get(position).get(TAG_TITLE);
 		new PlaySong().execute();
 
@@ -196,20 +197,5 @@ public class TopTracks extends MyActivity implements OnItemClickListener {
 		protected void onPostExecute(String file_url) {
 			Toast.makeText(TopTracks.this, songName, Toast.LENGTH_SHORT).show();
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			Intent mainIntent = new Intent(getApplicationContext(),
-					HomeScreen.class);
-			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(mainIntent);
-		}
-		return true;
 	}
 }

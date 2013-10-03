@@ -35,7 +35,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	// private MusicService mServ;
 	// private ServiceConnection Scon;
 	public static ArrayList<String> nowPlayingList, nowPlayingPathsList;
-	public static int currentSongIndex = 0;
+	public static int currentSongIndex = 0, tempSongIndex = 0;
 	Context context;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -112,10 +112,12 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 		if (!nowPlayingList.contains(songName)) {
 			nowPlayingList.add(songName);
+
+			Log.i("Requested song", GlobalVariables.music_root + songPath);
 			nowPlayingPathsList.add(GlobalVariables.music_root + songPath);
-			currentSongIndex = nowPlayingList.size() - 1;
+			tempSongIndex = nowPlayingList.size() - 1;
 		} else {
-			currentSongIndex = nowPlayingList.indexOf(songName);
+			tempSongIndex = nowPlayingList.indexOf(songName);
 		}
 
 		for (int j = 0; j < nowPlayingPathsList.size(); j++) {
