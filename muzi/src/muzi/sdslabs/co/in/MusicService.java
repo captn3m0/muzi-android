@@ -33,15 +33,7 @@ public class MusicService extends Service implements
 	public void onCreate() {
 		super.onCreate();
 
-		// mp = new MediaPlayer();
-		//
-		// Uri uri = Uri.parse(GlobalVariables.music_root
-		// + "Adele___Set_Fire_To_The_Rain_Adele.mp3");
-		//
-		// Log.i("uri in music service", uri.toString());
-
 		mp = new MediaPlayer();
-
 		mp.setOnErrorListener(this);
 
 		if (mp != null) {
@@ -52,22 +44,21 @@ public class MusicService extends Service implements
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		playMusic();
+		return START_STICKY;
+	}
 
+	void playMusic() {
 		try {
-
 			if (mp.isPlaying()) {
 				mp.stop();
 				mp.reset();
 			}
-			String song = MyActivity.nowPlayingPathsList
-					.get(MyActivity.currentSongIndex);
+			String song = MyActivity.nowPlayingPathsList.get(
+					MyActivity.currentSongIndex).replaceAll(" ", "%20");
 
-			// GlobalVariables.music_root
-			// +
-			// "English/John Williams/1987 - Empire of The Sun/01 - Suo Gan.mp3";
-			song = song.replaceAll(" ", "%20");
 			mp.setDataSource(song);
-			Log.i("song path", song);
+			Log.i("Final song path", song);
 			mp.prepareAsync();
 			mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 				@Override
@@ -80,8 +71,6 @@ public class MusicService extends Service implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		return START_STICKY;
 	}
 
 	public void pauseMusic() {
@@ -113,19 +102,35 @@ public class MusicService extends Service implements
 				mp.release();
 			} finally {
 				mp = null;
+				Log.i("MusicService destroyed", "true");
 			}
 		}
 	}
 
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 
-		Toast.makeText(this, "music player failed", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this,
+				"Music player failed. Couldn't find the requested song.",
+				Toast.LENGTH_SHORT).show();
+		
+		MyActivity.nowPlayingPathsList.remove(MyActivity.nowPlayingPathsList
+				.size() - 1);
+		MyActivity.nowPlayingList.remove(MyActivity.nowPlayingList.size() - 1);
+		MyActivity.currentSongIndex = MyActivity.nowPlayingList.size() - 1;
+
 		if (mp != null) {
-			try {
-				mp.stop();
-				mp.release();
-			} finally {
-				mp = null;
+			mp.stop();
+			mp.reset();
+			playMusic();
+		}
+
+		if (mp == null) {
+			mp = new MediaPlayer();
+			Log.i("MusicService reinitialized", "true");
+
+			if (mp != null) {
+				mp.setLooping(true);
+				mp.setVolume(100, 100);
 			}
 		}
 		return false;
