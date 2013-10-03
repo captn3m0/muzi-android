@@ -20,18 +20,18 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-public class TopTracks extends SherlockListActivity implements OnItemClickListener {
+public class TopTracks extends MyActivity implements OnItemClickListener {
 
 	private ProgressDialog pDialog;
 	boolean artist, album;
 
 	// JSON keys
-	private static final String TAG_ID = "id";
+	private static final String TAG_TRACKID = "trackid";
 	private static final String TAG_TITLE = "title";
 
 	JSONArray FilteredJSONArray = null;
@@ -42,22 +42,22 @@ public class TopTracks extends SherlockListActivity implements OnItemClickListen
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setMyContentView(R.layout.songs_from_artists, TopTracks.this);
 		super.onCreate(savedInstanceState);
 
 		/*
 		 * if (!isNetworkAvailable()) { TopTracks.this.finish();
 		 * Toast.makeText(TopTracks.this,
-		 * "Please check your internet connection.", Toast.LENGTH_LONG) .show();
+		 * "Please check your Internet connection.", Toast.LENGTH_LONG) .show();
 		 * }
 		 */
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		lv = getListView();
+		lv = (ListView) findViewById(R.id.lvSongsFromArtists);
 		lv.setFastScrollEnabled(true);
 		lv.getRootView().setBackgroundColor(
 				getResources().getColor(R.color.Black));
-		getListView().setCacheColorHint(Color.TRANSPARENT);
+		lv.setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
-		
+
 		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
 		new LoadAllProducts().execute();
@@ -93,21 +93,21 @@ public class TopTracks extends SherlockListActivity implements OnItemClickListen
 						JSONObject c = FilteredJSONArray.getJSONObject(i);
 
 						// Storing each json item in variable
-						String id = c.getString(TAG_ID);
+						String id = c.getString(TAG_TRACKID);
 						String title = c.getString(TAG_TITLE);
 
 						FilteredNamesList.add(title);
+
 						// creating new HashMap
 						HashMap<String, String> map = new HashMap<String, String>();
 
 						// adding each child node to HashMap key =>
 						// value
-						map.put(TAG_ID, id);
+						map.put(TAG_TRACKID, id);
 						map.put(TAG_TITLE, title);
 
 						// adding HashList to ArrayList
 						FilteredArrayList.add(map);
-
 					}
 				}
 
@@ -136,13 +136,66 @@ public class TopTracks extends SherlockListActivity implements OnItemClickListen
 				lv.setOnItemClickListener(TopTracks.this);
 			}
 		}
-
 	}
+
+	String requestedTrackURL, songName, songPath;
 
 	@Override
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
 		// TODO Auto-generated method stub
+
+		requestedTrackURL = GlobalVariables.api_root + "/track/?id="
+				+ FilteredArrayList.get(position).get(TAG_TRACKID);
+		songName = FilteredArrayList.get(position).get(TAG_TITLE);
+		new PlaySong().execute();
+
+	}
+
+	class PlaySong extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+		}
+
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			super.onCancelled();
+			TopTracks.this.finish();
+		}
+
+		/**
+		 * getting All products from url
+		 * */
+		protected String doInBackground(String... args) {
+			InternetData test = new InternetData();
+
+			try {
+				JSONObject jsonObject = new JSONObject(
+						test.getInternetData(requestedTrackURL));
+				songPath = jsonObject.getString("file");
+
+				Log.i("Song Path", songPath);
+				playSong(songName, songPath, TopTracks.this);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			Toast.makeText(TopTracks.this, songName, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override

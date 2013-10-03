@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
@@ -337,62 +338,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		/** Parse the string to remove the number before it **/
 		songName = songsNameList.get(pos);
 		new PlaySong().execute();
-		//
-		// Log.i("requestedURL", requestedTrackURL);
-		// // add the song to now playing list
-		//
-		// /** To-do: Write a subroutine **/
-		//
-		// // if the song doesn't exist in the list
-		// nowPlayingList.add(songsNameList.get(pos));
-		// nowPlayingPathsList.add(songPath);
-		// currentSongIndex++;
-		//
-		// // for (int j = 0; j < nowPlayingPathsList.size(); j++) {
-		// // Log.i("song " + j, nowPlayingPathsList.get(j));
-		// // }
-		//
-		// i.setData(Uri.parse(songPath));
-		// i.putExtra("song_path", songPath);
-		// startService(i);
-		// }
-		// };
-		// t.start();
-		// new PlaySong().execute();
 	}
-
-	/** Starting service with an AsyncTask **/
-
-	// class PlaySong extends AsyncTask<String, String, String> {
-	//
-	// /**
-	// * Before starting background thread Show Progress Dialog
-	// * */
-	// @Override
-	// protected void onPreExecute() {
-	// super.onPreExecute();
-	//
-	// }
-	//
-	// /**
-	// * getting All products from url
-	// * */
-	// protected String doInBackground(String... args) {
-	// Intent i = new Intent(SongsFromAlbums.this, LocalService.class);
-	// startService(i);
-	// return null;
-	// }
-	//
-	// /**
-	// * After completing background task Dismiss the progress dialog
-	// * **/
-	// protected void onPostExecute(String file_url) {
-	// // has to be before setting up the adapter
-	// Toast.makeText(SongsFromAlbums.this, "Your song has started ;)",
-	// Toast.LENGTH_SHORT).show();
-	//
-	// }
-	// }
 
 	class PlaySong extends AsyncTask<String, String, String> {
 
@@ -436,23 +382,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
-			// has to be before setting up the adapter
-			if (image_avail == true) {
-				ivAlbumCover.setImageBitmap(bitmap);
-				Log.i("Image available", "true");
-			}
-
-			if (year != 0) {
-				tvAlbumYear.setText("RELEASED IN " + year);
-			} else {
-				tvAlbumYear.setText("");
-			}
-
-			if (album_artist != null) {
-				tvAlbumArtist.setText("BY " + album_artist);
-			} else {
-				tvAlbumArtist.setText("");
-			}
+			Toast.makeText(SongsFromAlbums.this, songName, Toast.LENGTH_SHORT)
+					.show();
 		}
 	}
 
