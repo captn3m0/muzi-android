@@ -12,7 +12,7 @@ public class MusicService extends Service implements
 		MediaPlayer.OnErrorListener {
 
 	public final IBinder mBinder = new ServiceBinder();
-	MediaPlayer mp;
+	public static MediaPlayer mp;
 	private int length = 0;
 
 	public MusicService() {
@@ -62,7 +62,7 @@ public class MusicService extends Service implements
 					MyActivity.tempSongIndex).replaceAll(" ", "%20");
 
 			mp.setDataSource(song);
-			
+
 			Log.i("Final song path", song);
 			mp.prepareAsync();
 			mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -73,7 +73,7 @@ public class MusicService extends Service implements
 					MyActivity.currentSongIndex = MyActivity.tempSongIndex;
 				}
 			});
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,6 +81,10 @@ public class MusicService extends Service implements
 	}
 
 	public void pauseMusic() {
+		
+		Log.i("mp", mp+"");
+		
+		
 		if (mp.isPlaying()) {
 			mp.pause();
 			length = mp.getCurrentPosition();
@@ -88,6 +92,8 @@ public class MusicService extends Service implements
 	}
 
 	public void resumeMusic() {
+		
+		
 		if (mp.isPlaying() == false) {
 			mp.seekTo(length);
 			mp.start();
@@ -116,9 +122,10 @@ public class MusicService extends Service implements
 
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 
-		Toast.makeText(this,
-				"Music player failed. Couldn't find the requested song.",
-				Toast.LENGTH_SHORT).show();
+		Toast.makeText(
+				this,
+				MyActivity.nowPlayingPathsList.get(MyActivity.tempSongIndex)
+						+ " couldn't be loaded.", Toast.LENGTH_SHORT).show();
 
 		MyActivity.nowPlayingPathsList.remove(MyActivity.tempSongIndex);
 		MyActivity.nowPlayingList.remove(MyActivity.tempSongIndex);

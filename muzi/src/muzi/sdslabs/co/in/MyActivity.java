@@ -2,15 +2,20 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 
+import muzi.sdslabs.co.in.MusicService.ServiceBinder;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -31,9 +36,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
 	int layout_id;
 
-	// private boolean mIsBound = false;
-	// private MusicService mServ;
-	// private ServiceConnection Scon;
+	private boolean mIsBound = false;
+	private MusicService mServ;
+	private ServiceConnection Scon;
 	public static ArrayList<String> nowPlayingList, nowPlayingPathsList;
 	public static int currentSongIndex = 0, tempSongIndex = 0;
 	Context context;
@@ -68,35 +73,43 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		// to check if these lists get initialized before every activity
 		Log.i("Size of nowPlayingList", nowPlayingList.size() + "");
 
-		// Scon = new ServiceConnection() {
-		//
-		// public void onServiceConnected(ComponentName name, IBinder binder) {
-		// MusicService ms = new MusicService();
-		// MusicService.ServiceBinder sv = ms.new ServiceBinder();
-		// mServ = sv.getService();
-		// }
-		//
-		// public void onServiceDisconnected(ComponentName name) {
-		// mServ = null;
-		// }
-		// };
-		//
-		// doBindService();
+		Scon = new ServiceConnection() {
+
+			public void onServiceConnected(ComponentName name, IBinder binder) {
+				MusicService ms = new MusicService();
+				MusicService.ServiceBinder sv = ms.new ServiceBinder();
+				mServ = sv.getService();
+			}
+
+			public void onServiceDisconnected(ComponentName name) {
+				mServ = null;
+			}
+		};
 	}
 
-	//
-	// void doBindService() {
-	// bindService(new Intent(this, MusicService.class), Scon,
-	// Context.BIND_AUTO_CREATE);
-	// mIsBound = true;
-	// }
-	//
-	// void doUnbindService() {
-	// if (mIsBound) {
-	// unbindService(Scon);
-	// mIsBound = false;
-	// }
-	// }
+	protected void onStart() {
+		super.onStart();
+		doBindService();
+	};
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		doUnbindService();
+	};
+
+	void doBindService() {
+		bindService(new Intent(this, MusicService.class), Scon,
+				Context.BIND_AUTO_CREATE);
+		mIsBound = true;
+	}
+
+	void doUnbindService() {
+		if (mIsBound) {
+			unbindService(Scon);
+			mIsBound = false;
+		}
+	}
 
 	public void setMyContentView(int layout_id, Context c) {
 		this.layout_id = layout_id;
@@ -131,23 +144,17 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 		int id = view.getId();
 
-		// if (id == R.id.tbPlayPause) {
-		// boolean on = ((ToggleButton) view).isChecked();
-		//
-		// if (on) {
-		// mServ.resumeMusic();
-		// } else {
-		// mServ.pauseMusic();
-		// // stopService(new Intent(this, LocalService.class));
-		// }
-		// }
-	}
+		if (id == R.id.tbPlayPause) {
+			boolean on = ((ToggleButton) view).isChecked();
 
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		// doUnbindService();
+			if (on) {
+				Log.i("Service", mServ + "");
+				mServ.pauseMusic();
+			} else {
+				mServ.resumeMusic();
+				// stopService(new Intent(this, LocalService.class));
+			}
+		}
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
