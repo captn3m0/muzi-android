@@ -41,7 +41,7 @@ public class SongsFromArtists extends MyActivity implements OnItemClickListener 
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setMyContentView(R.layout.songs_from_artists, SongsFromArtists.this);
+		setMyContentView(R.layout.simple_list_view_with_footer, SongsFromArtists.this);
 		super.onCreate(savedInstanceState);
 		// if (!isNetworkAvailable()) {
 		// finish();
@@ -50,7 +50,7 @@ public class SongsFromArtists extends MyActivity implements OnItemClickListener 
 		// .show();
 		// }
 
-		lv = (ListView) findViewById(R.id.lvSongsFromArtists);
+		lv = (ListView) findViewById(R.id.lvSimple);
 		lv.getRootView().setBackgroundColor(
 				getResources().getColor(R.color.Black));
 		lv.setCacheColorHint(Color.TRANSPARENT);

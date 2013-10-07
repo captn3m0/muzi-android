@@ -152,7 +152,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 				mServ.pauseMusic();
 			} else {
 				mServ.resumeMusic();
-				// stopService(new Intent(this, LocalService.class));
 			}
 		}
 	}
