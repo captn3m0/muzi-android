@@ -69,6 +69,10 @@
             android:name=".UserSettings"
             android:label="Settings" >
         </activity>
+        <activity
+            android:name=".NowPlayingList"
+            android:label="Now Playing List" >
+        </activity>
 
         <service android:name=".MusicService" />
     </application>

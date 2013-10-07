@@ -2,7 +2,6 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 
-import muzi.sdslabs.co.in.MusicService.ServiceBinder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -39,7 +38,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	private boolean mIsBound = false;
 	private MusicService mServ;
 	private ServiceConnection Scon;
-	public static ArrayList<String> nowPlayingList, nowPlayingPathsList;
+	public static ArrayList<String> nowPlayingList = new ArrayList<String>(),
+			nowPlayingPathsList = new ArrayList<String>();
 	public static int currentSongIndex = 0, tempSongIndex = 0;
 	Context context;
 
@@ -67,8 +67,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 		// should be initialized in first activity only
-		nowPlayingList = new ArrayList<String>();
-		nowPlayingPathsList = new ArrayList<String>();
+		// nowPlayingList = new ArrayList<String>();
+		// nowPlayingPathsList = new ArrayList<String>();
 
 		// to check if these lists get initialized before every activity
 		Log.i("Size of nowPlayingList", nowPlayingList.size() + "");
@@ -189,6 +189,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 						nowPlayingPathsList.get(currentSongIndex));
 				startService(i);
 			}
+		} else if (id == R.id.ibCurrentList) {
+			Intent i = new Intent(context, NowPlayingList.class);
+			startActivity(i);
 		}
 	}
 }
