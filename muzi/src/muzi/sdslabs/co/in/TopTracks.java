@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,9 +20,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 public class TopTracks extends MyActivity implements OnItemClickListener {
 
@@ -42,7 +38,7 @@ public class TopTracks extends MyActivity implements OnItemClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setMyContentView(R.layout.songs_from_artists, TopTracks.this);
+		setMyContentView(R.layout.simple_list_view_with_footer, TopTracks.this);
 		super.onCreate(savedInstanceState);
 
 		/*
@@ -51,7 +47,7 @@ public class TopTracks extends MyActivity implements OnItemClickListener {
 		 * "Please check your Internet connection.", Toast.LENGTH_LONG) .show();
 		 * }
 		 */
-		lv = (ListView) findViewById(R.id.lvSongsFromArtists);
+		lv = (ListView) findViewById(R.id.lvSimple);
 		lv.setFastScrollEnabled(true);
 		lv.getRootView().setBackgroundColor(
 				getResources().getColor(R.color.Black));

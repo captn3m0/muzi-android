@@ -47,7 +47,6 @@ public class TopAlbums extends MyActivity implements OnItemClickListener {
 		 * "Please check your internet connection.", Toast.LENGTH_LONG) .show();
 		 * }
 		 */
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		lv = (ListView) findViewById(R.id.lvSimple);
 		lv.setFastScrollEnabled(true);
 		lv.getRootView().setBackgroundColor(
