@@ -32,7 +32,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class MyActivity extends SherlockActivity implements OnClickListener {
 
-	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
+	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat, ibRadio;
 	int layout_id;
 
 	private boolean mIsBound = false;
@@ -57,12 +57,14 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
 		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
 		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
+		ibRadio = (ImageButton) findViewById(R.id.ibRadio);
 
 		ibNext.setOnClickListener(MyActivity.this);
 		ibPrevious.setOnClickListener(MyActivity.this);
 		ibCurrentList.setOnClickListener(MyActivity.this);
 		ibShuffle.setOnClickListener(MyActivity.this);
 		ibRepeat.setOnClickListener(MyActivity.this);
+		ibRadio.setOnClickListener(MyActivity.this);
 
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -191,6 +193,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			}
 		} else if (id == R.id.ibCurrentList) {
 			Intent i = new Intent(context, NowPlayingList.class);
+			startActivity(i);
+		} else if (id == R.id.ibRadio) {
+			Intent i = new Intent (context , Radio.class);
 			startActivity(i);
 		}
 	}
