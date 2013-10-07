@@ -1,7 +1,5 @@
 package muzi.sdslabs.co.in;
 
-
-
 /*if writable cursor isn't available then pass this hashmap to database file & then parse
  * it or rather use its strings to put in array*/
 
@@ -23,11 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-public class TopAlbums extends SherlockListActivity implements OnItemClickListener {
+public class TopAlbums extends MyActivity implements OnItemClickListener {
 
 	private ProgressDialog pDialog;
 	boolean artist, album;
@@ -44,6 +38,7 @@ public class TopAlbums extends SherlockListActivity implements OnItemClickListen
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setMyContentView(R.layout.simple_list_view_with_footer, TopAlbums.this);
 		super.onCreate(savedInstanceState);
 
 		/*
@@ -53,19 +48,19 @@ public class TopAlbums extends SherlockListActivity implements OnItemClickListen
 		 * }
 		 */
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		lv = getListView();
+		lv = (ListView) findViewById(R.id.lvSimple);
 		lv.setFastScrollEnabled(true);
 		lv.getRootView().setBackgroundColor(
 				getResources().getColor(R.color.Black));
-		getListView().setCacheColorHint(Color.TRANSPARENT);
+		lv.setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
-		
+
 		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
-		new LoadAllProducts().execute();
+		new LoadAlbums().execute();
 	}
 
-	class LoadAllProducts extends AsyncTask<String, String, String> {
+	class LoadAlbums extends AsyncTask<String, String, String> {
 
 		/**
 		 * Before starting background thread Show Progress Dialog
@@ -144,34 +139,19 @@ public class TopAlbums extends SherlockListActivity implements OnItemClickListen
 	@Override
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
-		
-		    for (int i = 0; i < FilteredJSONArray.length(); i++)
-			{
-		    	String albumName = FilteredNamesList.get(position).toString();
-		    	if(FilteredArrayList.contains(albumName))
-		    	{
-		    		String id=FilteredArrayList.get(i).get(TAG_ID);
-		    		Intent intent = new Intent(TopAlbums.this, SongsFromAlbums.class);
-		    		intent.putExtra("search_type1", "album");
-		    		intent.putExtra("search_id1", id);
-		    		intent.putExtra("search_title1", FilteredNamesList.get(position));
-		    		startActivity(intent);
-		    	}
+
+		for (int i = 0; i < FilteredJSONArray.length(); i++) {
+			String albumName = FilteredNamesList.get(position).toString();
+			if (FilteredArrayList.contains(albumName)) {
+				String id = FilteredArrayList.get(i).get(TAG_ID);
+				Intent intent = new Intent(TopAlbums.this,
+						SongsFromAlbums.class);
+				intent.putExtra("search_type1", "album");
+				intent.putExtra("search_id1", id);
+				intent.putExtra("search_title1",
+						FilteredNamesList.get(position));
+				startActivity(intent);
 			}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			Intent mainIntent = new Intent(getApplicationContext(),
-					HomeScreen.class);
-			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(mainIntent);
 		}
-		return true;
 	}
 }
