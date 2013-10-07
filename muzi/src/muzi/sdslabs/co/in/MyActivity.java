@@ -172,23 +172,16 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 		int id = arg0.getId();
 		if (id == R.id.ibPrevious) {
-			if (currentSongIndex != 0) {
-				currentSongIndex--;
-				Intent i = new Intent(context, MusicService.class);
-				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
-				i.putExtra("song_path",
-						nowPlayingPathsList.get(currentSongIndex));
-				startService(i);
-			}
+			tempSongIndex = (currentSongIndex - 1) % nowPlayingPathsList.size();
+			Intent i = new Intent(context, MusicService.class);
+			startService(i);
+
 		} else if (id == R.id.ibNext) {
-			if (currentSongIndex < nowPlayingPathsList.size() - 1) {
-				currentSongIndex++;
-				Intent i = new Intent(context, MusicService.class);
-				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
-				i.putExtra("song_path",
-						nowPlayingPathsList.get(currentSongIndex));
-				startService(i);
-			}
+
+			tempSongIndex = (currentSongIndex + 1) % nowPlayingPathsList.size();
+			Intent i = new Intent(context, MusicService.class);
+			startService(i);
+
 		} else if (id == R.id.ibCurrentList) {
 			Intent i = new Intent(context, NowPlayingList.class);
 			startActivity(i);
