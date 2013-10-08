@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -36,6 +35,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	int layout_id;
 
 	private boolean mIsBound = false;
+	public static boolean shouldShuffle = false;
 	private MusicService mServ;
 	private ServiceConnection Scon;
 	public static ArrayList<String> nowPlayingList = new ArrayList<String>(),
@@ -63,15 +63,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		ibCurrentList.setOnClickListener(MyActivity.this);
 		ibShuffle.setOnClickListener(MyActivity.this);
 		ibRepeat.setOnClickListener(MyActivity.this);
-
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-		// should be initialized in first activity only
-		// nowPlayingList = new ArrayList<String>();
-		// nowPlayingPathsList = new ArrayList<String>();
-
-		// to check if these lists get initialized before every activity
-		Log.i("Size of nowPlayingList", nowPlayingList.size() + "");
 
 		Scon = new ServiceConnection() {
 
@@ -185,6 +176,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		} else if (id == R.id.ibCurrentList) {
 			Intent i = new Intent(context, NowPlayingList.class);
 			startActivity(i);
+		} else if (id == R.id.ibShuffle) {
+			shouldShuffle = !shouldShuffle;
 		}
 	}
 }
