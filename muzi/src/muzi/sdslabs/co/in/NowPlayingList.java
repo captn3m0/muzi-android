@@ -1,8 +1,5 @@
 package muzi.sdslabs.co.in;
 
-/*if writable cursor isn't available then pass this hashmap to database file & then parse
- * it or rather use its strings to put in array*/
-
 import java.util.ArrayList;
 
 import android.graphics.Color;
@@ -23,10 +20,10 @@ public class NowPlayingList extends MyActivity implements OnItemClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
+
 		setMyContentView(R.layout.simple_list_view_with_footer,
 				NowPlayingList.this);
-		
+
 		super.onCreate(savedInstanceState);
 
 		lv = (ListView) findViewById(R.id.lvSimple);
@@ -48,5 +45,7 @@ public class NowPlayingList extends MyActivity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> av, View arg1, int position,
 			long arg3) {
+		playSong(nowPlayingList.get(position),
+				nowPlayingPathsList.get(position), NowPlayingList.this);
 	}
 }
