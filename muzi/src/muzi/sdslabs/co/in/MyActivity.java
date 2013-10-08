@@ -31,7 +31,8 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class MyActivity extends SherlockActivity implements OnClickListener {
 
-	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat, ibRadio;
+	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat,
+			ibRadio;
 	int layout_id;
 
 	private boolean mIsBound = false;
@@ -180,14 +181,12 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			startActivity(i);
 
 		} else if (id == R.id.ibRadio) {
-			Intent i =new Intent(context , Radio.class);
+			Intent i = new Intent(context, Radio.class);
 			startActivity(i);
-			this.finish();
-
 		} else if (id == R.id.ibShuffle) {
 			shouldShuffle = !shouldShuffle;
 
 		}
-		
+
 	}
 }
