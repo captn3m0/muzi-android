@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -36,6 +35,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	int layout_id;
 
 	private boolean mIsBound = false;
+	public static boolean shouldShuffle = false;
 	private MusicService mServ;
 	private ServiceConnection Scon;
 	public static ArrayList<String> nowPlayingList = new ArrayList<String>(),
@@ -65,15 +65,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		ibShuffle.setOnClickListener(MyActivity.this);
 		ibRepeat.setOnClickListener(MyActivity.this);
 		ibRadio.setOnClickListener(MyActivity.this);
-
-		getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-		// should be initialized in first activity only
-		// nowPlayingList = new ArrayList<String>();
-		// nowPlayingPathsList = new ArrayList<String>();
-
-		// to check if these lists get initialized before every activity
-		Log.i("Size of nowPlayingList", nowPlayingList.size() + "");
 
 		Scon = new ServiceConnection() {
 
@@ -174,30 +165,28 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 		int id = arg0.getId();
 		if (id == R.id.ibPrevious) {
-			if (currentSongIndex != 0) {
-				currentSongIndex--;
-				Intent i = new Intent(context, MusicService.class);
-				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
-				i.putExtra("song_path",
-						nowPlayingPathsList.get(currentSongIndex));
-				startService(i);
-			}
+			tempSongIndex = (currentSongIndex - 1) % nowPlayingPathsList.size();
+			Intent i = new Intent(context, MusicService.class);
+			startService(i);
+
 		} else if (id == R.id.ibNext) {
-			if (currentSongIndex < nowPlayingPathsList.size() - 1) {
-				currentSongIndex++;
-				Intent i = new Intent(context, MusicService.class);
-				i.setData(Uri.parse(nowPlayingPathsList.get(currentSongIndex)));
-				i.putExtra("song_path",
-						nowPlayingPathsList.get(currentSongIndex));
-				startService(i);
-			}
+
+			tempSongIndex = (currentSongIndex + 1) % nowPlayingPathsList.size();
+			Intent i = new Intent(context, MusicService.class);
+			startService(i);
+
 		} else if (id == R.id.ibCurrentList) {
 			Intent i = new Intent(context, NowPlayingList.class);
 			startActivity(i);
+
 		} else if (id == R.id.ibRadio) {
 			Intent i =new Intent(context , Radio.class);
 			startActivity(i);
 			this.finish();
+
+		} else if (id == R.id.ibShuffle) {
+			shouldShuffle = !shouldShuffle;
+
 		}
 		
 	}

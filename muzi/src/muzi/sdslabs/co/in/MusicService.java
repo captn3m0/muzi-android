@@ -1,15 +1,24 @@
 package muzi.sdslabs.co.in;
 
+import java.util.Random;
+
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * 
+ * @author shivam - Music doesn't stop when you call someone.
+ * 
+ */
+
 public class MusicService extends Service implements
-		MediaPlayer.OnErrorListener {
+		MediaPlayer.OnErrorListener, OnCompletionListener {
 
 	public final IBinder mBinder = new ServiceBinder();
 	public static MediaPlayer mp;
@@ -35,6 +44,7 @@ public class MusicService extends Service implements
 
 		mp = new MediaPlayer();
 		mp.setOnErrorListener(this);
+		mp.setOnCompletionListener(this);
 
 		if (mp != null) {
 			mp.setLooping(true);
@@ -81,10 +91,6 @@ public class MusicService extends Service implements
 	}
 
 	public void pauseMusic() {
-		
-		Log.i("mp", mp+"");
-		
-		
 		if (mp.isPlaying()) {
 			mp.pause();
 			length = mp.getCurrentPosition();
@@ -92,8 +98,7 @@ public class MusicService extends Service implements
 	}
 
 	public void resumeMusic() {
-		
-		
+
 		if (mp.isPlaying() == false) {
 			mp.seekTo(length);
 			mp.start();
@@ -123,6 +128,8 @@ public class MusicService extends Service implements
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 
 		Toast.makeText(
+
+
 				this,
 				MyActivity.nowPlayingPathsList.get(MyActivity.tempSongIndex)
 						+ " couldn't be loaded.", Toast.LENGTH_SHORT).show();
@@ -147,5 +154,23 @@ public class MusicService extends Service implements
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer arg0) {
+		// TODO Auto-generated method stub
+
+		mp.stop();
+		mp.reset();
+		if (!MyActivity.shouldShuffle) {
+			MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
+					% MyActivity.nowPlayingList.size();
+			playMusic();
+		} else {
+			Random randGenerator = new Random();
+			MyActivity.tempSongIndex = randGenerator
+					.nextInt(MyActivity.nowPlayingList.size());
+			playMusic();
+		}
 	}
 }
