@@ -73,6 +73,10 @@
             android:name=".NowPlayingList"
             android:label="Now Playing List" >
         </activity>
+        <activity
+            android:name=".Radio"
+            android:label="Radio" >
+        </activity>
 
         <service android:name=".MusicService" />
     </application>

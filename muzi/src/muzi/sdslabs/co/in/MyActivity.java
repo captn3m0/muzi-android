@@ -195,8 +195,10 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			Intent i = new Intent(context, NowPlayingList.class);
 			startActivity(i);
 		} else if (id == R.id.ibRadio) {
-			Intent i = new Intent (context , Radio.class);
+			Intent i =new Intent(context , Radio.class);
 			startActivity(i);
+			this.finish();
 		}
+		
 	}
 }
