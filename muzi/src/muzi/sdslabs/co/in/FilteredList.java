@@ -100,7 +100,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 	}
 
 	/*--------------------To enable alphabetical scrollbar-----------------*/
-	public void onClick(View v) {
+	public void onAlphabetClick(View v) {
 		// Toast.makeText(FilteredJSONArrayAfterQuery.this, "Clicked",
 		// Toast.LENGTH_SHORT).show();
 		String firstLetter = (String) v.getTag();
@@ -113,7 +113,6 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 				break;
 			}
 		}
-
 		lv.setSelectionFromTop(index, 0);
 	}
 
@@ -188,7 +187,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 					|| !Arrays.asList(fileList()).contains(type + getDate())) {
 				Log.i("", "deleted");
 				deleteFileList();
-				
+
 				InternetData test = new InternetData();
 				try {
 					Log.i("url", GlobalVariables.api_root + type + "/list.php");
@@ -210,7 +209,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 			} else {
 				// return it from database
-				
+
 				Log.i("Coming form local storage", "true");
 				try {
 					FileInputStream fis = openFileInput(type + getDate());
