@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,11 +16,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-public class SearchResults extends SherlockActivity {
+public class SearchResults extends MyActivity {
 
 	// url to make request
 	// remember that its album & not albums
@@ -40,9 +35,8 @@ public class SearchResults extends SherlockActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		setMyContentView(R.layout.search_results, SearchResults.this);
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.search_results);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		String text = getIntent().getStringExtra("search_query");
 		url = GlobalVariables.api_root + "search/?search=" + text;
@@ -206,22 +200,5 @@ public class SearchResults extends SherlockActivity {
 				lv3.setAdapter(adapter);
 			}
 		}
-	}
-
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		menu.add("Nothing");
-		// getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
-			Intent mainIntent = new Intent(getApplicationContext(),
-					HomeScreen.class);
-			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(mainIntent);
-		}
-		return true;
 	}
 }
