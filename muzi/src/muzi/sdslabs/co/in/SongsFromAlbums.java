@@ -256,7 +256,7 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				// Log.i("Image url", "http://localhost/muzi/images/pics/"
 				// + album_id + ".jpg");
 				bitmap = BitmapFactory.decodeStream((InputStream) new URL(
-						GlobalVariables.album_pic_root + album_id + ".jpg")
+						GlobalVariables.pic_root + album_id + ".jpg")
 						.getContent());
 
 				image_avail = true;
