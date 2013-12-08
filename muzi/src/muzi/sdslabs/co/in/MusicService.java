@@ -1,6 +1,5 @@
 package muzi.sdslabs.co.in;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Random;
 
@@ -93,17 +92,16 @@ public class MusicService extends Service implements
 				String song = MyActivity.nowPlayingPathsList
 						.get(MyActivity.tempSongIndex);
 
-				try {
-					song = URLEncoder.encode(song, "utf-8");
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				String[] songArray = song.split("/");
+				song = songArray[0];
+				for (int i = 1; i < songArray.length; i++) {
+					songArray[i] = URLEncoder.encode(songArray[i], "UTF-8")
+							.replace("+", "%20");
+					song += "/" + songArray[i];
 				}
-				;
-
-				mp.setDataSource(song);
 
 				Log.i("Final song path", song);
+				mp.setDataSource(song);
 				mp.prepareAsync();
 				mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 					@Override
