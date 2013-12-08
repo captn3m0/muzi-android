@@ -56,14 +56,6 @@
             android:onClick="footerClickControls"
             android:src="@drawable/repeat_button"
             android:layout_weight="1" />
-        
-         <ImageButton
-            android:id="@+id/ibRadio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:onClick="footerClickControls"
-            android:src="@drawable/radio_button"
-            android:layout_weight="1" />
     </LinearLayout>
 
 </merge>
