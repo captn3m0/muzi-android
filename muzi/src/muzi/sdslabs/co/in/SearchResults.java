@@ -3,20 +3,26 @@ package muzi.sdslabs.co.in;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import muzi.sdslabs.co.in.SongsFromAlbums.PlaySong;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-public class SearchResults extends MyActivity {
+public class SearchResults extends MyActivity implements OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -28,10 +34,13 @@ public class SearchResults extends MyActivity {
 	// JSON keys
 	private static final String TAG_NAME = "name";
 	private static final String TAG_TITLE = "title";
+	private static final String TAG_ID = "id";
 
 	JSONArray FilteredJSONArray = null;
-	ArrayList<String> arrayList1, arrayList2, arrayList3;
+	ArrayList<String> arrayList1, arrayList2, arrayList3, arrayTrackIds;
 	ListView lv1, lv2, lv3;
+
+	String requestedTrackURL, songName;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +56,8 @@ public class SearchResults extends MyActivity {
 		arrayList1 = new ArrayList<String>();
 		arrayList2 = new ArrayList<String>();
 		arrayList3 = new ArrayList<String>();
+		arrayTrackIds = new ArrayList<String>();
+
 		lv1 = (ListView) findViewById(R.id.lvTab1);
 		lv2 = (ListView) findViewById(R.id.lvTab2);
 		lv3 = (ListView) findViewById(R.id.lvTab3);
@@ -54,6 +65,10 @@ public class SearchResults extends MyActivity {
 		lv1.setFastScrollEnabled(true);
 		lv2.setFastScrollEnabled(true);
 		lv3.setFastScrollEnabled(true);
+
+		lv1.setOnItemClickListener(this);
+		lv2.setOnItemClickListener(this);
+		lv3.setOnItemClickListener(this);
 
 		th.setup();
 		TabSpec specs = th.newTabSpec("tag1");
@@ -113,8 +128,9 @@ public class SearchResults extends MyActivity {
 				JSONArray jsonArray1 = json.getJSONArray("albums");
 				JSONArray jsonArray2 = json.getJSONArray("artists");
 
-				Log.i("artist list", jsonArray2.toString());
+				Log.i("Search Results", "Artists: " + jsonArray2.toString());
 				JSONArray jsonArray3 = json.getJSONArray("tracks");
+				Log.i("Search Results", "Tracks: " + jsonArray3.toString());
 
 				int len = jsonArray1.length() + jsonArray2.length()
 						+ jsonArray3.length();
@@ -139,6 +155,7 @@ public class SearchResults extends MyActivity {
 					JSONObject c = jsonArray3.getJSONObject(i);
 					String title = c.getString(TAG_TITLE);
 					arrayList3.add(title);
+					arrayTrackIds.add(c.getString(TAG_ID));
 				}
 				// if php query doesn't give sorted results comment out
 				// the
@@ -199,6 +216,74 @@ public class SearchResults extends MyActivity {
 						R.id.tv_in_list_item_with_one_tv, arrayList3);
 				lv3.setAdapter(adapter);
 			}
+		}
+	}
+
+	public void stopPlayer(View v) {
+		stopService(new Intent(this, MusicService.class));
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+			long arg3) {
+		// TODO Auto-generated method stub
+
+		Log.i("Search Results", "list item position clicked" + position);
+		if (arg0.getId() == R.id.lvTab3) {
+			Log.i("Search Results: onItemClick()", "Tab 3 clicked");
+			requestedTrackURL = GlobalVariables.api_root + "track/?id="
+					+ arrayTrackIds.get(position);
+			songName = arrayList3.get(position);
+
+			new PlaySong().execute();
+
+		}
+	}
+
+	class PlaySong extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+		}
+
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			super.onCancelled();
+			SearchResults.this.finish();
+		}
+
+		/**
+		 * getting All products from url
+		 * */
+		protected String doInBackground(String... args) {
+			InternetData test = new InternetData();
+
+			try {
+				JSONObject jsonObject = new JSONObject(
+						test.getInternetData(requestedTrackURL));
+				String songPath = jsonObject.getString("file");
+
+				Log.i("Song Path", songPath);
+				playSong(songName, songPath, SearchResults.this);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+			Toast.makeText(SearchResults.this, songName, Toast.LENGTH_SHORT)
+					.show();
 		}
 	}
 }
