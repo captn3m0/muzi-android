@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +35,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
-	SeekBar sbSongTimer;
+	public SeekBar sbSongTimer;
 	int layout_id;
 
 	private boolean mIsBound = false;
@@ -45,6 +46,23 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			nowPlayingPathsList = new ArrayList<String>();
 	public static int currentSongIndex = 0, tempSongIndex = 0;
 	Context context;
+
+	private Handler mHandler = new Handler();
+	private Runnable mRunnable = new Runnable() {
+
+		@Override
+		public void run() {
+			if (mServ.mp != null && mServ.mp.isPlaying()) {
+				if (mServ.mp.getDuration() > 0) {
+					// sbSongTimer.incrementProgressBy(diff);
+					int mCurrentPosition = (mServ.mp.getCurrentPosition()) / 1000;
+					sbSongTimer.setMax(mServ.mp.getDuration() / 1000);
+					sbSongTimer.setProgress(mCurrentPosition);
+				}
+			}
+			mHandler.postDelayed(this, 1000);
+		}
+	};
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,31 +79,14 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
 		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
 		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimer);
-		sbSongTimer.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-
-				mServ.pauseMusic();
-				mServ.length = (progress * mServ.mp.getDuration()) / 100;
-				// setListWidth(seekBar.getProgress());
-			}
-
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// TODO Auto-generated method stub
-			}
-
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				mServ.resumeMusic();
-				// setListWidth(seekBar.getProgress());
-			}
-		});
 
 		ibNext.setOnClickListener(MyActivity.this);
 		ibPrevious.setOnClickListener(MyActivity.this);
 		ibCurrentList.setOnClickListener(MyActivity.this);
 		ibShuffle.setOnClickListener(MyActivity.this);
 		ibRepeat.setOnClickListener(MyActivity.this);
+
+		mRunnable.run();
 
 		Scon = new ServiceConnection() {
 
@@ -99,6 +100,28 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 				mServ = null;
 			}
 		};
+
+		sbSongTimer.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+
+				Log.i("MyActivity: onSeekBarChangeListener: onProgressChanged",
+						"progress " + progress);
+
+				if (mServ.mp != null && fromUser) {
+					mServ.mp.seekTo(progress * 1000);
+				}
+			}
+
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+			}
+
+			public void onStopTrackingTouch(SeekBar seekBar) {
+
+			}
+		});
 	}
 
 	protected void onStart() {
@@ -151,6 +174,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			Log.i("song " + j, nowPlayingPathsList.get(j));
 		}
 
+		/** Set the icon to pause when music service is called **/
+
 		startService(i);
 	}
 
@@ -163,9 +188,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 			if (on) {
 				Log.i("Service", mServ + "");
-				mServ.pauseMusic();
-			} else {
 				mServ.resumeMusic();
+			} else {
+				mServ.pauseMusic();
 			}
 		}
 	}
@@ -204,6 +229,5 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			shouldShuffle = !shouldShuffle;
 
 		}
-
 	}
 }
