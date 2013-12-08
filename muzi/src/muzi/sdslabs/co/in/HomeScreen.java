@@ -121,8 +121,6 @@ public class HomeScreen extends MyActivity implements OnItemClickListener {
 		// Learnt it the hard way that position starts from 1 here
 		// May be it's because of header otherwise the count starts from 0 in
 		// general
-		position -= 1;
-
 		// if clicked on artist or album
 		if (position == 0 || position == 1) {
 			try {
@@ -154,6 +152,5 @@ public class HomeScreen extends MyActivity implements OnItemClickListener {
 			EmailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
 			startActivity(EmailIntent);
 		}
-
 	}
 }
