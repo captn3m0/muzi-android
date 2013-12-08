@@ -18,34 +18,29 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.SubMenu;
 
-public class HomeScreen extends SherlockListActivity implements
-		OnItemClickListener {
+public class HomeScreen extends MyActivity implements OnItemClickListener {
 
 	ListView lv;
 	ArrayAdapter<String> adapter;
 	String listItems[] = { "Albums", "Artists", "Top Tracks", "Top Albums",
-			"Language" , "Feedback" };
+			"Language", "Feedback" };
 	EditText etSearch;
-	//Button Search;
+
+	// Button Search;
 
 	public void onCreate(Bundle savedInstanceState) {
+		setMyContentView(R.layout.homescreen, this);
 		super.onCreate(savedInstanceState);
-		lv = getListView();
-		lv.getRootView().setBackgroundColor(
-				getResources().getColor(R.color.Black));
-		getListView().setCacheColorHint(Color.TRANSPARENT);
+		lv = (ListView) findViewById(R.id.lvHome);
+		lv.setCacheColorHint(Color.TRANSPARENT);
 		lv.setFastScrollEnabled(true);
 
 		lv.setOnItemClickListener(HomeScreen.this);
 
-		View header = getLayoutInflater().inflate(
-				R.layout.header_for_homescreen, null, false);
-		lv.addHeaderView(header);
 		etSearch = (EditText) findViewById(R.id.etSearchBoxHomeScreen);
 
 		adapter = new ArrayAdapter<String>(this,
@@ -53,8 +48,6 @@ public class HomeScreen extends SherlockListActivity implements
 				R.id.tv_in_list_item_with_one_tv, listItems);
 
 		lv.setAdapter(adapter);
-		
-		
 
 		etSearch.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
@@ -67,9 +60,9 @@ public class HomeScreen extends SherlockListActivity implements
 								"Enter at least 3 characters to search",
 								Toast.LENGTH_SHORT).show();
 					} else {
-						InputMethodManager imm = (InputMethodManager)getSystemService(
-							      Context.INPUT_METHOD_SERVICE);
-							imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(etSearch.getWindowToken(),
+								0);
 						Intent i1 = new Intent(HomeScreen.this,
 								SearchResults.class);
 						i1.putExtra("search_query", etSearch.getText()
@@ -81,44 +74,43 @@ public class HomeScreen extends SherlockListActivity implements
 				return handled;
 			}
 		});
-		
+
 	}
-	
-//	public void startSearch (View view)
-//	{
-//		//this function starts the search when the image button is pressed
-//		if (etSearch.getText().toString().length() < 3) {
-//			Toast.makeText(HomeScreen.this,
-//					"Enter minimum of 3 characters to search",
-//					Toast.LENGTH_SHORT).show();
-//		} else {
-//			InputMethodManager imm = (InputMethodManager)getSystemService(
-//				      Context.INPUT_METHOD_SERVICE);
-//				imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-//			Intent i1 = new Intent(HomeScreen.this,
-//					SearchResults.class);
-//			i1.putExtra("search_query", etSearch.getText()
-//					.toString());
-//			startActivity(i1);
-//			}
-//	    	
-//	}
+
+	// public void startSearch (View view)
+	// {
+	// //this function starts the search when the image button is pressed
+	// if (etSearch.getText().toString().length() < 3) {
+	// Toast.makeText(HomeScreen.this,
+	// "Enter minimum of 3 characters to search",
+	// Toast.LENGTH_SHORT).show();
+	// } else {
+	// InputMethodManager imm = (InputMethodManager)getSystemService(
+	// Context.INPUT_METHOD_SERVICE);
+	// imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+	// Intent i1 = new Intent(HomeScreen.this,
+	// SearchResults.class);
+	// i1.putExtra("search_query", etSearch.getText()
+	// .toString());
+	// startActivity(i1);
+	// }
+	//
+	// }
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		SubMenu sub = menu.addSubMenu("Settings");
-		sub.getItem().setShowAsAction(
-				MenuItem.SHOW_AS_ACTION_ALWAYS);	
+		sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		// getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	
-    	Intent i = new Intent(HomeScreen.this, UserSettings.class);
-    	startActivity(i);
-    	return true;	
-    }
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		Intent i = new Intent(HomeScreen.this, UserSettings.class);
+		startActivity(i);
+		return true;
+	}
 
 	@Override
 	public void onItemClick(AdapterView<?> av, View v, int position, long arg3) {
@@ -147,23 +139,21 @@ public class HomeScreen extends SherlockListActivity implements
 			Intent i = new Intent(HomeScreen.this, TopTracks.class);
 			startActivity(i);
 		} else if (position == 3) {
-			Intent i= new Intent(HomeScreen.this , TopAlbums.class);
+			Intent i = new Intent(HomeScreen.this, TopAlbums.class);
 			startActivity(i);
 		} else if (position == 4) {
-			Intent i = new Intent(HomeScreen.this , LangSettings.class);
+			Intent i = new Intent(HomeScreen.this, LangSettings.class);
 			startActivity(i);
 		} else if (position == 5) {
-			String email[] = {"contact+muzi@sdslabs.co.in"};
+			String email[] = { "contact+muzi@sdslabs.co.in" };
 			Intent EmailIntent = new Intent(android.content.Intent.ACTION_SEND);
 			EmailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, email);
-			EmailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback for Muzi" );
+			EmailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+					"Feedback for Muzi");
 			EmailIntent.setType("plain/Text");
 			EmailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-			startActivity(EmailIntent);	
+			startActivity(EmailIntent);
 		}
-		
-		
-		
-		
+
 	}
 }

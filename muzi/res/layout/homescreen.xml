@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Black"
+    android:padding="10dp" >
+
+    <EditText
+        android:id="@+id/etSearchBoxHomeScreen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:hint="@string/etSearch"
+        android:imeOptions="actionSearch"
+        android:singleLine="true" />
+
+    <ListView
+        android:id="@+id/lvHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
+        android:layout_below="@id/etSearchBoxHomeScreen" >
+    </ListView>
+
+    <muzi.sdslabs.co.in.FooterForPlayerControls
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
