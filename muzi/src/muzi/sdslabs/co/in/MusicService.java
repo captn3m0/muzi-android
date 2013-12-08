@@ -1,5 +1,7 @@
 package muzi.sdslabs.co.in;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Random;
 
 import android.app.Service;
@@ -88,8 +90,16 @@ public class MusicService extends Service implements
 					mp.stop();
 					mp.reset();
 				}
-				String song = MyActivity.nowPlayingPathsList.get(
-						MyActivity.tempSongIndex).replaceAll(" ", "%20");
+				String song = MyActivity.nowPlayingPathsList
+						.get(MyActivity.tempSongIndex);
+
+				try {
+					song = URLEncoder.encode(song, "utf-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				;
 
 				mp.setDataSource(song);
 
