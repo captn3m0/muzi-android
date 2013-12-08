@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -32,6 +34,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
+	SeekBar sbSongTimer;
 	int layout_id;
 
 	private boolean mIsBound = false;
@@ -57,6 +60,26 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
 		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
 		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
+		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimer);
+		sbSongTimer.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+
+				mServ.pauseMusic();
+				mServ.length = (progress * mServ.mp.getDuration()) / 100;
+				// setListWidth(seekBar.getProgress());
+			}
+
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+			}
+
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				mServ.resumeMusic();
+				// setListWidth(seekBar.getProgress());
+			}
+		});
 
 		ibNext.setOnClickListener(MyActivity.this);
 		ibPrevious.setOnClickListener(MyActivity.this);

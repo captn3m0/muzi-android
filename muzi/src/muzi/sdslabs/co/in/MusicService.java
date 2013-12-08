@@ -22,7 +22,7 @@ public class MusicService extends Service implements
 
 	public final IBinder mBinder = new ServiceBinder();
 	public static MediaPlayer mp;
-	private int length = 0;
+	public int length = 0;
 
 	/** Constructor for the class **/
 	public MusicService() {
