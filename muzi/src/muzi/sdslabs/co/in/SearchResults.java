@@ -3,8 +3,6 @@ package muzi.sdslabs.co.in;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import muzi.sdslabs.co.in.SongsFromAlbums.PlaySong;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,7 +35,8 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 	private static final String TAG_ID = "id";
 
 	JSONArray FilteredJSONArray = null;
-	ArrayList<String> arrayList1, arrayList2, arrayList3, arrayTrackIds;
+	ArrayList<String> arrayList1, arrayList2, arrayList3, arrayIdList1,
+			arrayIdList2, arrayIdList3;
 	ListView lv1, lv2, lv3;
 
 	String requestedTrackURL, songName;
@@ -56,7 +55,9 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 		arrayList1 = new ArrayList<String>();
 		arrayList2 = new ArrayList<String>();
 		arrayList3 = new ArrayList<String>();
-		arrayTrackIds = new ArrayList<String>();
+		arrayIdList1 = new ArrayList<String>();
+		arrayIdList2 = new ArrayList<String>();
+		arrayIdList3 = new ArrayList<String>();
 
 		lv1 = (ListView) findViewById(R.id.lvTab1);
 		lv2 = (ListView) findViewById(R.id.lvTab2);
@@ -139,6 +140,7 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 					JSONObject c = jsonArray1.getJSONObject(i);
 					String name = c.getString(TAG_NAME);
 					arrayList1.add(name);
+					arrayIdList1.add(c.getString(TAG_ID));
 				}
 				this.publishProgress((jsonArray1.length() / len) + "");
 
@@ -146,6 +148,7 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 					JSONObject c = jsonArray2.getJSONObject(i);
 					String name = c.getString(TAG_NAME);
 					arrayList2.add(name);
+					arrayIdList2.add(c.getString(TAG_ID));
 				}
 
 				this.publishProgress(((jsonArray1.length() + jsonArray2
@@ -155,7 +158,7 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 					JSONObject c = jsonArray3.getJSONObject(i);
 					String title = c.getString(TAG_TITLE);
 					arrayList3.add(title);
-					arrayTrackIds.add(c.getString(TAG_ID));
+					arrayIdList3.add(c.getString(TAG_ID));
 				}
 				// if php query doesn't give sorted results comment out
 				// the
@@ -185,7 +188,6 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						SearchResults.this, R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, arrayList1);
-
 				lv1.setAdapter(adapter);
 			}
 
@@ -229,10 +231,26 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 		// TODO Auto-generated method stub
 
 		Log.i("Search Results", "list item position clicked" + position);
-		if (arg0.getId() == R.id.lvTab3) {
+
+		if (arg0.getId() == R.id.lvTab1) {
+			Intent i = new Intent(SearchResults.this, SongsFromAlbums.class);
+			i.putExtra("search_type1", "album");
+			i.putExtra("search_id1", arrayIdList1.get(position));
+			i.putExtra("search_title1", arrayList1.get(position));
+			startActivity(i);
+
+		} else if (arg0.getId() == R.id.lvTab2) {
+
+			Intent i = new Intent(SearchResults.this, SongsFromArtists.class);
+			i.putExtra("search_type2", "band");
+			i.putExtra("search_id2", arrayIdList2.get(position));
+			i.putExtra("search_title2", arrayList2.get(position));
+			startActivity(i);
+
+		} else if (arg0.getId() == R.id.lvTab3) {
 			Log.i("Search Results: onItemClick()", "Tab 3 clicked");
 			requestedTrackURL = GlobalVariables.api_root + "track/?id="
-					+ arrayTrackIds.get(position);
+					+ arrayIdList3.get(position);
 			songName = arrayList3.get(position);
 
 			new PlaySong().execute();
