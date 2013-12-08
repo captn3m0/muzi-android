@@ -24,9 +24,11 @@ public class MusicService extends Service implements
 	public static MediaPlayer mp;
 	private int length = 0;
 
+	/** Constructor for the class **/
 	public MusicService() {
 	}
 
+	/** To bind the service. Used in activities later. **/
 	public class ServiceBinder extends Binder {
 		public MusicService getService() {
 			return MusicService.this;
@@ -38,6 +40,11 @@ public class MusicService extends Service implements
 		return mBinder;
 	}
 
+	/**
+	 * First method which is called when MusicService is created i.e. any song
+	 * is played. Creates a new object mp of class MediaPlayer() to be later
+	 * used to play music. Sets completion & error listener to the object.
+	 **/
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -52,44 +59,65 @@ public class MusicService extends Service implements
 		}
 	}
 
+	/**
+	 * Called after onCreate method in life cycle of Music Service. Calls
+	 * playMusic() method which basically plays the appropriate song from now
+	 * playing list.
+	 **/
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		playMusic();
 		return START_STICKY;
 	}
 
+	/**
+	 * tempSongIndex gives the song which has been added recently by the user if
+	 * this index is valid then currSongIndex is assigned this value otherwise
+	 * currSong is continued
+	 */
+
 	void playMusic() {
 
 		Log.i("Current song index", MyActivity.currentSongIndex + "");
 		Log.i("Temp song index", MyActivity.tempSongIndex + "");
 
-		try {
-			if (mp.isPlaying()) {
-				mp.stop();
-				mp.reset();
-			}
-			String song = MyActivity.nowPlayingPathsList.get(
-					MyActivity.tempSongIndex).replaceAll(" ", "%20");
+		if (MyActivity.nowPlayingList.size() > 0) {
 
-			mp.setDataSource(song);
-
-			Log.i("Final song path", song);
-			mp.prepareAsync();
-			mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-				@Override
-				public void onPrepared(MediaPlayer mp) {
-					// TODO Auto-generated method stub
-					mp.start();
-					MyActivity.currentSongIndex = MyActivity.tempSongIndex;
+			try {
+				if (mp.isPlaying()) {
+					mp.stop();
+					mp.reset();
 				}
-			});
+				String song = MyActivity.nowPlayingPathsList.get(
+						MyActivity.tempSongIndex).replaceAll(" ", "%20");
 
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				mp.setDataSource(song);
+
+				Log.i("Final song path", song);
+				mp.prepareAsync();
+				mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+					@Override
+					public void onPrepared(MediaPlayer mp) {
+						// TODO Auto-generated method stub
+						mp.start();
+						MyActivity.currentSongIndex = MyActivity.tempSongIndex;
+					}
+				});
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			Toast.makeText(getApplicationContext(),
+					"There is nothing to play.", Toast.LENGTH_SHORT).show();
 		}
 	}
 
+	/**
+	 * This method checks if mp is playing any song & if it is so, then it
+	 * pauses & records the current position for later use.
+	 */
 	public void pauseMusic() {
 		if (mp.isPlaying()) {
 			mp.pause();
@@ -97,6 +125,10 @@ public class MusicService extends Service implements
 		}
 	}
 
+	/**
+	 * This method checks if mp is playing & if it's not so, then it plays the
+	 * current song starting from length saved in pauseMusic
+	 */
 	public void resumeMusic() {
 
 		if (mp.isPlaying() == false) {
@@ -105,12 +137,20 @@ public class MusicService extends Service implements
 		}
 	}
 
+	/**
+	 * This method is called to stop playing songs & to tell media player to
+	 * release all the objects it has acquired
+	 */
 	public void stopMusic() {
 		mp.stop();
 		mp.release();
 		mp = null;
 	}
 
+	/**
+	 * This method is called when Music Service is destroyed. It basically tells
+	 * mp to free/release all the resources.
+	 */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -125,13 +165,24 @@ public class MusicService extends Service implements
 		}
 	}
 
+	/**
+	 * If tempSong throws any error then this method removes the song
+	 * corresponding to the tempSongIndex. Then tempSongIndex is assigned the
+	 * value of currentSongIndex & song which was playing before the latest
+	 * click is played again.
+	 */
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 
+		Log.i("Music Service", "Size of now playing list is "
+				+ MyActivity.nowPlayingList.size());
+
+		if (MyActivity.nowPlayingList.size() == 0) {
+			return true;
+		}
+
 		Toast.makeText(
-
-
 				this,
-				MyActivity.nowPlayingPathsList.get(MyActivity.tempSongIndex)
+				MyActivity.nowPlayingList.get(MyActivity.tempSongIndex)
 						+ " couldn't be loaded.", Toast.LENGTH_SHORT).show();
 
 		MyActivity.nowPlayingPathsList.remove(MyActivity.tempSongIndex);
@@ -156,21 +207,28 @@ public class MusicService extends Service implements
 		return false;
 	}
 
+	/**
+	 * When a song completes then this method defines which song has to be
+	 * played next according to shouldShuffle variable
+	 */
 	@Override
 	public void onCompletion(MediaPlayer arg0) {
 		// TODO Auto-generated method stub
 
 		mp.stop();
-		mp.reset();
-		if (!MyActivity.shouldShuffle) {
-			MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
-					% MyActivity.nowPlayingList.size();
-			playMusic();
-		} else {
-			Random randGenerator = new Random();
-			MyActivity.tempSongIndex = randGenerator
-					.nextInt(MyActivity.nowPlayingList.size());
-			playMusic();
+
+		if (MyActivity.nowPlayingList.size() > 0) {
+			mp.reset();
+			if (!MyActivity.shouldShuffle) {
+				MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
+						% MyActivity.nowPlayingList.size();
+				playMusic();
+			} else {
+				Random randGenerator = new Random();
+				MyActivity.tempSongIndex = randGenerator
+						.nextInt(MyActivity.nowPlayingList.size());
+				playMusic();
+			}
 		}
 	}
 }
