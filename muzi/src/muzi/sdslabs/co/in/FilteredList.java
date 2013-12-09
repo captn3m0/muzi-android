@@ -195,7 +195,11 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 					string = test.getInternetData(GlobalVariables.api_root
 							+ type + "/list.php");
 
-					if (string != null && string != "") {
+					Log.i("Filtered List", string);
+
+					if (string != null && !string.equals("")) {
+						
+						Log.i("Filtered List", " is writing in cache.");
 						FileOutputStream fos = openFileOutput(type + getDate(),
 								Context.MODE_PRIVATE);
 						fos.write(string.getBytes());
