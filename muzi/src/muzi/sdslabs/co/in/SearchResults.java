@@ -241,7 +241,7 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 
 		} else if (arg0.getId() == R.id.lvTab2) {
 
-			Intent i = new Intent(SearchResults.this, SongsFromArtists.class);
+			Intent i = new Intent(SearchResults.this, AlbumsFromArtists.class);
 			i.putExtra("search_type2", "band");
 			i.putExtra("search_id2", arrayIdList2.get(position));
 			i.putExtra("search_title2", arrayList2.get(position));

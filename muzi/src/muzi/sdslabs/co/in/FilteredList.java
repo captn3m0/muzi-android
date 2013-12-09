@@ -309,7 +309,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 			// For Artists
 		} else if (type == "band") {
-			Intent i = new Intent(FilteredList.this, SongsFromArtists.class);
+			Intent i = new Intent(FilteredList.this, AlbumsFromArtists.class);
 
 			i.putExtra("search_type2", type);
 			i.putExtra("search_id2", FilteredIdList.get(position));
