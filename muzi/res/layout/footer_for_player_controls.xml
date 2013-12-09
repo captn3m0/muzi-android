@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
@@ -13,29 +13,29 @@
             android:onClick="footerClickControls" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <ImageButton
                 android:id="@+id/ibCurrentList"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="footerClickControls"
-                android:src="@drawable/current_list_button" />
+                android:background="@drawable/current_list_button"
+                android:onClick="footerClickControls" />
 
             <ImageButton
                 android:id="@+id/ibPrevious"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="footerClickControls"
-                android:src="@drawable/previous" />
+                android:background="@drawable/previous"
+                android:onClick="footerClickControls" />
 
             <ToggleButton
                 android:id="@+id/tbPlayPause"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/play_pause_toggle"
@@ -45,27 +45,27 @@
 
             <ImageButton
                 android:id="@+id/ibNext"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="footerClickControls"
-                android:src="@drawable/next" />
+                android:background="@drawable/next"
+                android:onClick="footerClickControls" />
 
             <ImageButton
                 android:id="@+id/ibShuffle"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="footerClickControls"
-                android:src="@drawable/shuffle_button" />
+                android:background="@drawable/shuffle_button"
+                android:onClick="footerClickControls" />
 
             <ImageButton
                 android:id="@+id/ibRepeat"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="footerClickControls"
-                android:src="@drawable/repeat_button" />
+                android:background="@drawable/repeat_button"
+                android:onClick="footerClickControls" />
         </LinearLayout>
     </LinearLayout>
 

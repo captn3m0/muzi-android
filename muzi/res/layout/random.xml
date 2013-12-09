@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <SeekBar
+        android:id="@+id/sbSongTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="footerClickControls" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/ibCurrentList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="footerClickControls"
+            android:background="@drawable/current_list_button" />
+
+        <ImageButton
+            android:id="@+id/ibPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="footerClickControls"
+            android:background="@drawable/previous" />
+
+        <ToggleButton
+            android:id="@+id/tbPlayPause"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/play_pause_toggle"
+            android:onClick="footerPlayToggle"
+            android:textOff=""
+            android:textOn="" />
+
+        <ImageButton
+            android:id="@+id/ibNext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="footerClickControls"
+            android:background="@drawable/next" />
+
+        <ImageButton
+            android:id="@+id/ibShuffle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="footerClickControls"
+            android:background="@drawable/shuffle_button" />
+
+        <ImageButton
+            android:id="@+id/ibRepeat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="footerClickControls"
+            android:background="@drawable/repeat_button" />
+    </LinearLayout>
+
+</LinearLayout>
