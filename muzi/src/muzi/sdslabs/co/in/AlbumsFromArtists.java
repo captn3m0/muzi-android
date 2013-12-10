@@ -11,6 +11,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,7 +23,9 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,7 @@ public class AlbumsFromArtists extends MyActivity implements
 	// remember that its album & not albums
 	private static String root;
 
+	private static LruCache<String, Bitmap> mMemoryCache;
 	private ProgressDialog pDialog;
 
 	// JSON keys
@@ -110,6 +114,11 @@ public class AlbumsFromArtists extends MyActivity implements
 		}
 	}
 
+	/**
+	 * Doubt: Should the default drawable be cached at different places for
+	 * different ids
+	 */
+
 	public static Bitmap decodeSampledBitmapFromResource(Resources res, int id,
 			int reqWidth, int reqHeight) {
 
@@ -140,9 +149,11 @@ public class AlbumsFromArtists extends MyActivity implements
 		options.inJustDecodeBounds = false;
 
 		try {
-			return bitmap = BitmapFactory.decodeStream((InputStream) new URL(
+			bitmap = BitmapFactory.decodeStream((InputStream) new URL(
 					GlobalVariables.pic_root + id + ".jpg").getContent(), null,
 					options);
+			addBitmapToMemoryCache(String.valueOf(id), bitmap);
+			return bitmap;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -176,7 +187,13 @@ public class AlbumsFromArtists extends MyActivity implements
 	}
 
 	public void loadBitmap(int id, ImageView imageView) {
-		if (cancelPotentialWork(id, imageView)) {
+
+		final String imageKey = String.valueOf(id);
+
+		final Bitmap bitmap = getBitmapFromMemCache(imageKey);
+		if (bitmap != null) {
+			imageView.setImageBitmap(bitmap);
+		} else if (cancelPotentialWork(id, imageView)) {
 			final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
 			final AsyncDrawable asyncDrawable = new AsyncDrawable(
 					getResources(), mPlaceHolderBitmap, task);
@@ -290,6 +307,34 @@ public class AlbumsFromArtists extends MyActivity implements
 
 		task = new LoadSongs();
 		task.execute();
+
+		// Get max available VM memory, exceeding this amount will throw an
+		// OutOfMemory exception. Stored in kilobytes as LruCache takes an
+		// int in its constructor.
+		final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+		// Use 1/8th of the available memory for this memory cache.
+		final int cacheSize = maxMemory / 8;
+
+		mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+			@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+			@Override
+			protected int sizeOf(String key, Bitmap bitmap) {
+				// The cache size will be measured in kilobytes rather than
+				// number of items.
+				return bitmap.getByteCount() / 1024;
+			}
+		};
+	}
+
+	public static void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+		if (getBitmapFromMemCache(key) == null) {
+			mMemoryCache.put(key, bitmap);
+		}
+	}
+
+	public static Bitmap getBitmapFromMemCache(String key) {
+		return mMemoryCache.get(key);
 	}
 
 	class LoadSongs extends AsyncTask<String, String, String> {
