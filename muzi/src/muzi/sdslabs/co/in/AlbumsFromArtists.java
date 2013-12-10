@@ -1,14 +1,20 @@
 package muzi.sdslabs.co.in;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -20,18 +26,36 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class AlbumsFromArtists extends MyActivity implements
 		OnItemClickListener {
 
 	Bitmap mPlaceHolderBitmap;
+	// url to make request
+	// remember that its album & not albums
+	private static String root;
+
+	private ProgressDialog pDialog;
+
+	// JSON keys
+	private static final String TAG_NAME = "name";
+	private static final String TAG_ID = "id";
+
+	JSONArray FilteredJSONArray = null;
+	ListView lv;
+	ArrayList<HashMap<String, String>> albumList;// , albumIdList;
+	JSONObject jsonObject;
+	LoadSongs task;
 
 	static class AsyncDrawable extends BitmapDrawable {
 		private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
@@ -76,28 +100,44 @@ public class AlbumsFromArtists extends MyActivity implements
 			if (imageViewReference != null && bitmap != null) {
 				final ImageView imageView = imageViewReference.get();
 				final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-				if (this == bitmapWorkerTask && imageView != null) {
+				if (this == bitmapWorkerTask && imageView != null
+						&& bitmap != null) {
 					imageView.setImageBitmap(bitmap);
+				} else {
+					imageView.setImageResource(R.drawable.default_album_cover);
 				}
 			}
 		}
 	}
 
-	public static Bitmap decodeSampledBitmapFromResource(Resources res,
-			int resId, int reqWidth, int reqHeight) {
+	public static Bitmap decodeSampledBitmapFromResource(Resources res, int id,
+			int reqWidth, int reqHeight) {
 
-		// First decode with inJustDecodeBounds=true to check dimensions
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeResource(res, resId, options);
+		try {
+			return BitmapFactory.decodeStream((InputStream) new URL(
+					GlobalVariables.pic_root + id + ".jpg").getContent());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		// Calculate inSampleSize
-		options.inSampleSize = calculateInSampleSize(options, reqWidth,
-				reqHeight);
+		return null;
 
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeResource(res, resId, options);
+		// // First decode with inJustDecodeBounds=true to check dimensions
+		// final BitmapFactory.Options options = new BitmapFactory.Options();
+		// options.inJustDecodeBounds = true;
+		// BitmapFactory.decodeResource(res, resId, options);
+		//
+		// // Calculate inSampleSize
+		// options.inSampleSize = calculateInSampleSize(options, reqWidth,
+		// reqHeight);
+		//
+		// // Decode bitmap with inSampleSize set
+		// options.inJustDecodeBounds = false;
+		// return BitmapFactory.decodeResource(res, resId, options);
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
@@ -124,13 +164,13 @@ public class AlbumsFromArtists extends MyActivity implements
 		return inSampleSize;
 	}
 
-	public void loadBitmap(int resId, ImageView imageView) {
-		if (cancelPotentialWork(resId, imageView)) {
+	public void loadBitmap(int id, ImageView imageView) {
+		if (cancelPotentialWork(id, imageView)) {
 			final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
 			final AsyncDrawable asyncDrawable = new AsyncDrawable(
 					getResources(), mPlaceHolderBitmap, task);
 			imageView.setImageDrawable(asyncDrawable);
-			task.execute(resId);
+			task.execute(id);
 		}
 	}
 
@@ -163,21 +203,49 @@ public class AlbumsFromArtists extends MyActivity implements
 		return null;
 	}
 
-	// url to make request
-	// remember that its album & not albums
-	private static String root;
+	// Keys used in Hashmap
+	String[] from = { TAG_ID, TAG_NAME };
 
-	private ProgressDialog pDialog;
+	// Ids of views in listview_layout
+	int[] to = { R.id.iv_in_li, R.id.tv_in_li };
 
-	// JSON keys
-	private static final String TAG_NAME = "name";
-	private static final String TAG_ID = "id";
+	public class MyAdapter extends SimpleAdapter {
 
-	JSONArray FilteredJSONArray = null;
-	ListView lv;
-	ArrayList<String> albumList, albumIdList;
-	JSONObject jsonObject;
-	LoadSongs task;
+		Context mContext;
+		HashMap<String, String> map = new HashMap<String, String>();
+
+		public MyAdapter(Context context, List<? extends Map<String, ?>> data,
+				int resource, String[] from, int[] to) {
+
+			super(context, data, resource, from, to);
+			// TODO Auto-generated constructor stub
+			mContext = context;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+
+			View row = super.getView(position, convertView, parent);
+			// if (row == null) {
+			LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			row = mInflater.inflate(R.layout.li_with_one_iv_and_one_tv, parent,
+					false);
+			// }
+			// row.setBackgroundColor(0xFF0000FF);
+			TextView tv = (TextView) row.findViewById(R.id.tv_in_li);
+			ImageView iv = (ImageView) row.findViewById(R.id.iv_in_li);
+
+			Log.i("Albums From Artists: MyAdapter: getView",
+					albumList.get(position).get(TAG_NAME));
+
+			// TextView rw2 = (TextView)findViewById(R.id.row2);
+			tv.setText(albumList.get(position).get(TAG_NAME) + "");// .get(TAG_NAME));
+			loadBitmap(Integer.parseInt(albumList.get(position).get(TAG_ID)),
+					iv);
+			return row;
+		}
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -192,8 +260,7 @@ public class AlbumsFromArtists extends MyActivity implements
 		lv.setFastScrollEnabled(true);
 		lv.setOnItemClickListener(AlbumsFromArtists.this);
 
-		albumList = new ArrayList<String>();
-		albumIdList = new ArrayList<String>();
+		albumList = new ArrayList<HashMap<String, String>>();
 
 		String type = getIntent().getStringExtra("search_type2");
 		String album_id = getIntent().getStringExtra("search_id2");
@@ -270,8 +337,16 @@ public class AlbumsFromArtists extends MyActivity implements
 
 						jsonObject = FilteredJSONArray.getJSONObject(i);
 
-						albumList.add(jsonObject.getString(TAG_NAME));
-						albumIdList.add(jsonObject.getString(TAG_ID));
+						// albumList.add(jsonObject.getString(TAG_NAME));
+
+						HashMap<String, String> map = new HashMap<String, String>();
+						map.put(TAG_ID, jsonObject.getString(TAG_ID));
+						map.put(TAG_NAME, jsonObject.getString(TAG_NAME));
+
+						albumList.add(map);
+						// albumIdList.add(jsonObject.getString(TAG_ID));
+						// loadBitmap(jsonObject.getString(TAG_ID), ImageView
+						// imageView);
 						//
 						// Bitmap bitmap = BitmapFactory
 						// .decodeStream((InputStream) new URL(
@@ -308,9 +383,10 @@ public class AlbumsFromArtists extends MyActivity implements
 			if (albumList.size() == 0) {
 				lv.setAdapter(null);
 			} else {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						AlbumsFromArtists.this, R.layout.list_item_with_one_tv,
-						R.id.tv_in_list_item_with_one_tv, albumList);
+
+				Log.i("Size of list", albumList.size() + "");
+				MyAdapter adapter = new MyAdapter(AlbumsFromArtists.this,
+						albumList, R.layout.li_with_one_iv_and_one_tv, from, to);
 				lv.setAdapter(adapter);
 				lv.setOnItemClickListener(AlbumsFromArtists.this);
 			}
@@ -324,8 +400,8 @@ public class AlbumsFromArtists extends MyActivity implements
 		Intent i = new Intent(AlbumsFromArtists.this, SongsFromAlbums.class);
 
 		i.putExtra("search_type1", "album");
-		i.putExtra("search_id1", albumIdList.get(position));
-		i.putExtra("search_title1", albumList.get(position));
+		i.putExtra("search_id1", albumList.get(position).get(TAG_ID));
+		i.putExtra("search_title1", albumList.get(position).get(TAG_NAME));
 		startActivity(i);
 
 	}
