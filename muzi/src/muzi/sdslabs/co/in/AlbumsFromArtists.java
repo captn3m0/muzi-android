@@ -1,9 +1,7 @@
 package muzi.sdslabs.co.in;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +55,8 @@ public class AlbumsFromArtists extends MyActivity implements
 	JSONObject jsonObject;
 	LoadSongs task;
 
+	int reqHeight = 60, reqWidth = 60;
+
 	static class AsyncDrawable extends BitmapDrawable {
 		private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
 
@@ -86,8 +86,8 @@ public class AlbumsFromArtists extends MyActivity implements
 		@Override
 		protected Bitmap doInBackground(Integer... params) {
 			data = params[0];
-			return decodeSampledBitmapFromResource(getResources(), data, 100,
-					100);
+			return decodeSampledBitmapFromResource(getResources(), data,
+					reqWidth, reqHeight);
 		}
 
 		// Once complete, see if ImageView is still around and set bitmap.
@@ -113,31 +113,42 @@ public class AlbumsFromArtists extends MyActivity implements
 	public static Bitmap decodeSampledBitmapFromResource(Resources res, int id,
 			int reqWidth, int reqHeight) {
 
+		// First decode with inJustDecodeBounds=true to check dimensions
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+
+		Bitmap bitmap = null;
+
 		try {
-			return BitmapFactory.decodeStream((InputStream) new URL(
-					GlobalVariables.pic_root + id + ".jpg").getContent());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+			bitmap = BitmapFactory.decodeStream((InputStream) new URL(
+					GlobalVariables.pic_root + id + ".jpg").getContent(), null,
+					options);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return null;
+		if (bitmap == null) {
+			BitmapFactory.decodeResource(res, R.drawable.default_album_cover,
+					options);
+		}
+		// Calculate inSampleSize
+		options.inSampleSize = calculateInSampleSize(options, reqWidth,
+				reqHeight);
 
-		// // First decode with inJustDecodeBounds=true to check dimensions
-		// final BitmapFactory.Options options = new BitmapFactory.Options();
-		// options.inJustDecodeBounds = true;
-		// BitmapFactory.decodeResource(res, resId, options);
-		//
-		// // Calculate inSampleSize
-		// options.inSampleSize = calculateInSampleSize(options, reqWidth,
-		// reqHeight);
-		//
-		// // Decode bitmap with inSampleSize set
-		// options.inJustDecodeBounds = false;
-		// return BitmapFactory.decodeResource(res, resId, options);
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+
+		try {
+			return bitmap = BitmapFactory.decodeStream((InputStream) new URL(
+					GlobalVariables.pic_root + id + ".jpg").getContent(), null,
+					options);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return BitmapFactory.decodeResource(res,
+					R.drawable.default_album_cover, options);
+		}
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
@@ -227,12 +238,12 @@ public class AlbumsFromArtists extends MyActivity implements
 			// TODO Auto-generated method stub
 
 			View row = super.getView(position, convertView, parent);
-			// if (row == null) {
-			LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			row = mInflater.inflate(R.layout.li_with_one_iv_and_one_tv, parent,
-					false);
-			// }
-			// row.setBackgroundColor(0xFF0000FF);
+			if (row == null) {
+				LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				row = mInflater.inflate(R.layout.li_with_one_iv_and_one_tv,
+						parent, false);
+			}
+
 			TextView tv = (TextView) row.findViewById(R.id.tv_in_li);
 			ImageView iv = (ImageView) row.findViewById(R.id.iv_in_li);
 
