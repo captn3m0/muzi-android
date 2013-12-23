@@ -87,8 +87,9 @@ public class MusicService extends Service implements
 			try {
 				if (mp.isPlaying()) {
 					mp.stop();
-					mp.reset();
 				}
+
+				mp.reset();
 				String song = MyActivity.nowPlayingPathsList
 						.get(MyActivity.tempSongIndex);
 
