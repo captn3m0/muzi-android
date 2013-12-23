@@ -5,6 +5,11 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SectionIndexer;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
@@ -99,34 +105,6 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		new LoadAllProducts().execute();
 	}
 
-	/*--------------------To enable alphabetical scrollbar-----------------*/
-	public void onAlphabetClick(View v) {
-		// Toast.makeText(FilteredJSONArrayAfterQuery.this, "Clicked",
-		// Toast.LENGTH_SHORT).show();
-		String firstLetter = (String) v.getTag();
-		int index = 0;
-		for (index = 0; index < FilteredNamesList.size(); index++) {
-			char alpha = FilteredNamesList.get(index).charAt(0);
-			if (Character.toLowerCase(alpha) == Character
-					.toLowerCase(firstLetter.charAt(0))) {
-				// index = stringlist.indexOf(alpha);
-				break;
-			}
-		}
-		lv.setSelectionFromTop(index, 0);
-	}
-
-	public boolean isNetworkAvailable() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-		// if no network is available networkInfo will be null
-		// otherwise check if we are connected
-		if (networkInfo != null && networkInfo.isConnected()) {
-			return true;
-		}
-		return false;
-	}
-
 	class LoadAllProducts extends AsyncTask<String, String, String> {
 
 		/**
@@ -198,7 +176,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 					Log.i("Filtered List", string);
 
 					if (string != null && !string.equals("")) {
-						
+
 						Log.i("Filtered List", " is writing in cache.");
 						FileOutputStream fos = openFileOutput(type + getDate(),
 								Context.MODE_PRIVATE);
@@ -283,13 +261,84 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 				lv.setAdapter(null);
 			} else {
 
-				lv.setAdapter(new ArrayAdapter<String>(FilteredList.this,
-						R.layout.list_item_with_one_tv,
-						R.id.tv_in_list_item_with_one_tv, FilteredNamesList));
+				lv.setAdapter(new MyIndexerAdapter<String>(FilteredList.this,
+						android.R.layout.simple_list_item_1, FilteredNamesList));
 				lv.setOnItemClickListener(FilteredList.this);
 			}
 		}
 
+	}
+
+	class MyIndexerAdapter<T> extends ArrayAdapter<T> implements SectionIndexer {
+
+		ArrayList<String> myElements;
+		HashMap<String, Integer> alphaIndexer;
+
+		String[] sections;
+
+		public MyIndexerAdapter(Context context, int textViewResourceId,
+				List<T> objects) {
+			super(context, textViewResourceId, objects);
+			myElements = (ArrayList<String>) objects;
+			// here is the tricky stuff
+			alphaIndexer = new HashMap<String, Integer>();
+			// in this hashmap we will store here the positions for
+			// the sections
+
+			int size = FilteredNamesList.size();
+			for (int i = size - 1; i >= 0; i--) {
+				String element = FilteredNamesList.get(i);
+				alphaIndexer.put(element.substring(0, 1), i);
+				// We store the first letter of the word, and its index.
+				// The Hashmap will replace the value for identical keys are
+				// putted in
+			}
+
+			// now we have an hashmap containing for each first-letter
+			// sections(key), the index(value) in where this sections begins
+
+			// We've now to build the sections (letters to be displayed)
+			// array, it must contain the keys, and must be
+			// ordered alphabetically
+
+			Set<String> keys = alphaIndexer.keySet(); // set of letters ...sets
+			// cannot be sorted...
+
+			Iterator<String> it = keys.iterator();
+			ArrayList<String> keyList = new ArrayList<String>(); // list can be
+			// sorted
+
+			while (it.hasNext()) {
+				String key = it.next();
+				keyList.add(key);
+			}
+
+			Collections.sort(keyList);
+
+			sections = new String[keyList.size()]; // simple conversion to an
+			// array of object
+			keyList.toArray(sections);
+		}
+
+		@Override
+		public int getPositionForSection(int section) {
+			// Log.v("getPositionForSection", ""+section);
+			String letter = sections[section];
+			return alphaIndexer.get(letter);
+		}
+
+		@Override
+		public int getSectionForPosition(int position) {
+			// It's never called (right?)
+			Log.i("getSectionForPosition", "called");
+			return 0;
+		}
+
+		@Override
+		public Object[] getSections() {
+			// to string will be called each object, to display the letter
+			return sections;
+		}
 	}
 
 	@Override
@@ -317,12 +366,5 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 			startActivity(i);
 		}
-	}
-
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		menu.add("Settings");
-		// getMenuInflater().inflate(R.menu.main, menu);
-		return true;
 	}
 }
