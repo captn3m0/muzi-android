@@ -113,6 +113,8 @@ public class MusicService extends Service implements
 					}
 				});
 
+				MyActivity.tbPlayPause.setChecked(true);
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -185,6 +187,8 @@ public class MusicService extends Service implements
 		Log.i("Music Service", "Size of now playing list is "
 				+ MyActivity.nowPlayingList.size());
 
+		MyActivity.tbPlayPause.setChecked(false);
+
 		if (MyActivity.nowPlayingList.size() == 0) {
 			return true;
 		}
@@ -225,6 +229,7 @@ public class MusicService extends Service implements
 		// TODO Auto-generated method stub
 
 		mp.stop();
+		MyActivity.tbPlayPause.setChecked(false);
 
 		if (MyActivity.nowPlayingList.size() > 0) {
 			mp.reset();

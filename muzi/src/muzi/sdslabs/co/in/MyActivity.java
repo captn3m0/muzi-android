@@ -35,6 +35,7 @@ import com.actionbarsherlock.view.MenuItem;
 public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
+	static ToggleButton tbPlayPause;
 	public SeekBar sbSongTimer;
 	int layout_id;
 
@@ -78,6 +79,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
 		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
 		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
+		tbPlayPause = (ToggleButton) findViewById(R.id.tbPlayPause);
 		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimer);
 
 		ibNext.setOnClickListener(MyActivity.this);
@@ -105,9 +107,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-//
-//				Log.i("MyActivity: onSeekBarChangeListener: onProgressChanged",
-//						"progress " + progress);
+				//
+				// Log.i("MyActivity: onSeekBarChangeListener: onProgressChanged",
+				// "progress " + progress);
 
 				if (mServ.mp != null && fromUser) {
 					mServ.mp.seekTo(progress * 1000);
