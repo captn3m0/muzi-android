@@ -192,8 +192,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 						}
 						jsonObject = FilteredJSONArray.getJSONObject(i);
 
-						songsNameList.add((i + 1) + ". "
-								+ jsonObject.getString(TAG_TITLE));
+						songsNameList.add(// (i + 1) + ". "+
+								jsonObject.getString(TAG_TITLE));
 						songsIdList.add(jsonObject.getInt(TAG_ID));
 					}
 				}

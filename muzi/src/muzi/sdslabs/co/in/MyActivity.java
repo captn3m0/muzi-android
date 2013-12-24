@@ -105,9 +105,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-
-				Log.i("MyActivity: onSeekBarChangeListener: onProgressChanged",
-						"progress " + progress);
+//
+//				Log.i("MyActivity: onSeekBarChangeListener: onProgressChanged",
+//						"progress " + progress);
 
 				if (mServ.mp != null && fromUser) {
 					mServ.mp.seekTo(progress * 1000);
