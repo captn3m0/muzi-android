@@ -20,7 +20,6 @@ public class LangSettings extends SherlockActivity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lang_settings);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		PRIVATE_MODE = 0;
 		pref = getApplicationContext().getSharedPreferences("Lang Pref",
 				PRIVATE_MODE);
