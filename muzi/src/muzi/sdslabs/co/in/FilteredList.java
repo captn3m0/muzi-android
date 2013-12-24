@@ -288,7 +288,12 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 			int size = FilteredNamesList.size();
 			for (int i = size - 1; i >= 0; i--) {
 				String element = FilteredNamesList.get(i);
-				alphaIndexer.put(element.substring(0, 1), i);
+				if (Character.isLetter(element.charAt(0)) == true) {
+					alphaIndexer.put(element.substring(0, 1).toUpperCase(), i);
+				} else {
+					alphaIndexer.put("A", i);
+				}
+
 				// We store the first letter of the word, and its index.
 				// The Hashmap will replace the value for identical keys are
 				// putted in
@@ -329,7 +334,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 		@Override
 		public int getSectionForPosition(int position) {
-			// It's never called (right?)
+			// Called when scrolled up & down without using index bar
 			Log.i("getSectionForPosition", "called");
 			return 0;
 		}
