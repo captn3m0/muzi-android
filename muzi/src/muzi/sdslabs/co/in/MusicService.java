@@ -3,12 +3,17 @@ package muzi.sdslabs.co.in;
 import java.net.URLEncoder;
 import java.util.Random;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -115,6 +120,7 @@ public class MusicService extends Service implements
 
 				MyActivity.tbPlayPause.setChecked(true);
 
+				showNotification();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -123,6 +129,34 @@ public class MusicService extends Service implements
 			Toast.makeText(getApplicationContext(),
 					"There is nothing to play.", Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	private void showNotification() {
+		final int mId = 10;
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+				this)
+				.setSmallIcon(R.drawable.icon)
+				.setContentTitle("Muzi")
+				.setContentText(
+						MyActivity.nowPlayingList
+								.get(MyActivity.currentSongIndex));
+		// Creates an explicit intent for an Activity in your app
+		Intent resultIntent = new Intent(this, NowPlayingList.class);
+
+		// The stack builder object will contain an artificial back stack for
+		// the started Activity. This ensures that navigating backward from the
+		// Activity leads out of your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// Adds the back stack for the Intent (but not the Intent itself)
+		stackBuilder.addParentStack(HomeScreen.class);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(mId, mBuilder.build());
 	}
 
 	/**

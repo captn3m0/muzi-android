@@ -2,8 +2,6 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +9,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -182,7 +178,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 		/** Set the icon to pause when music service is called **/
 
-		createNotification(songName);
 		startService(i);
 	}
 
@@ -242,33 +237,5 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		} else if (id == R.id.ibShuffle) {
 			shouldShuffle = !shouldShuffle;
 		}
-	}
-
-	public void createNotification(String songName) {
-		// Prepare intent which is triggered if the
-		// notification is selected
-
-		final int mId = 10;
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
-				.setContentText(songName);
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(this, NowPlayingList.class);
-
-		// The stack builder object will contain an artificial back stack for
-		// the started Activity. This ensures that navigating backward from the
-		// Activity leads out of your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(HomeScreen.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-				PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
-
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(mId, mBuilder.build());
 	}
 }
