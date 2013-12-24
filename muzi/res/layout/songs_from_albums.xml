@@ -10,21 +10,24 @@
         style="@style/tv_header_for_songs_from_album"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="Album Name" />
+        android:text="Album Name"
+        android:textSize="@dimen/standard_text_size" />
 
     <TextView
         android:id="@+id/tvAlbumArtist"
         style="@style/tv_header_for_songs_from_album"
         android:layout_alignParentRight="true"
         android:layout_below="@id/tvAlbumName"
-        android:text="Artist" />
+        android:text="Artist"
+        android:textSize="@dimen/standard_text_size" />
 
     <TextView
         android:id="@+id/tvAlbumYear"
         style="@style/tv_header_for_songs_from_album"
         android:layout_alignParentRight="true"
         android:layout_below="@id/tvAlbumArtist"
-        android:text="Year" />
+        android:text="Year"
+        android:textSize="@dimen/standard_text_size" />
 
     <ImageView
         android:id="@+id/ivAlbumCover"
