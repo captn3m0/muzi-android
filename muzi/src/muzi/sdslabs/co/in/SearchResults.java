@@ -1,7 +1,8 @@
 package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.TreeSet;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,8 +36,9 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 	private static final String TAG_ID = "id";
 
 	JSONArray FilteredJSONArray = null;
-	ArrayList<String> arrayList1, arrayList2, arrayList3, arrayIdList1,
-			arrayIdList2, arrayIdList3;
+	HashMap<String, String> hashMap1, hashMap2, hashMap3;
+	ArrayList<String> arrayList1, arrayList2, arrayList3;
+
 	ListView lv1, lv2, lv3;
 
 	String requestedTrackURL, songName;
@@ -52,12 +54,9 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 		Log.i("url", url);
 
 		th = (TabHost) findViewById(R.id.tabhost);
-		arrayList1 = new ArrayList<String>();
-		arrayList2 = new ArrayList<String>();
-		arrayList3 = new ArrayList<String>();
-		arrayIdList1 = new ArrayList<String>();
-		arrayIdList2 = new ArrayList<String>();
-		arrayIdList3 = new ArrayList<String>();
+		hashMap1 = new HashMap<String, String>();
+		hashMap2 = new HashMap<String, String>();
+		hashMap3 = new HashMap<String, String>();
 
 		lv1 = (ListView) findViewById(R.id.lvTab1);
 		lv2 = (ListView) findViewById(R.id.lvTab2);
@@ -139,16 +138,14 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 				for (int i = 0; i < jsonArray1.length(); i++) {
 					JSONObject c = jsonArray1.getJSONObject(i);
 					String name = c.getString(TAG_NAME);
-					arrayList1.add(name);
-					arrayIdList1.add(c.getString(TAG_ID));
+					hashMap1.put(name, c.getString(TAG_ID));
 				}
 				this.publishProgress((jsonArray1.length() / len) + "");
 
 				for (int i = 0; i < jsonArray2.length(); i++) {
 					JSONObject c = jsonArray2.getJSONObject(i);
 					String name = c.getString(TAG_NAME);
-					arrayList2.add(name);
-					arrayIdList2.add(c.getString(TAG_ID));
+					hashMap2.put(name, c.getString(TAG_ID));
 				}
 
 				this.publishProgress(((jsonArray1.length() + jsonArray2
@@ -157,8 +154,7 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 				for (int i = 0; i < jsonArray3.length(); i++) {
 					JSONObject c = jsonArray3.getJSONObject(i);
 					String title = c.getString(TAG_TITLE);
-					arrayList3.add(title);
-					arrayIdList3.add(c.getString(TAG_ID));
+					hashMap3.put(title, c.getString(TAG_ID));
 				}
 				// if php query doesn't give sorted results comment out
 				// the
@@ -180,30 +176,33 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 			/**
 			 * Updating parsed JSON data into ListView
 			 * */
-			if (arrayList1.size() == 0) {
+			if (hashMap1.size() == 0) {
 				lv1.setAdapter(null);
 				th.setCurrentTab(1);
 			} else {
-				Collections.sort(arrayList1);
+
+				arrayList1 = new ArrayList<String>(new TreeSet<String>(
+						hashMap1.keySet()));
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						SearchResults.this, R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, arrayList1);
 				lv1.setAdapter(adapter);
 			}
 
-			if (arrayList2.size() == 0) {
+			if (hashMap2.size() == 0) {
 				lv2.setAdapter(null);
 				if (th.getCurrentTab() == 1)
 					th.setCurrentTab(2);
 			} else {
-				Collections.sort(arrayList2);
+				arrayList2 = new ArrayList<String>(new TreeSet<String>(
+						hashMap2.keySet()));
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						SearchResults.this, R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, arrayList2);
 				lv2.setAdapter(adapter);
 			}
 
-			if (arrayList3.size() == 0) {
+			if (hashMap3.size() == 0) {
 				lv3.setAdapter(null);
 				if (th.getCurrentTab() == 2) {
 					// SearchResults.this.finish();
@@ -212,7 +211,8 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 							Toast.LENGTH_LONG).show();
 				}
 			} else {
-				Collections.sort(arrayList3);
+				arrayList3 = new ArrayList<String>(new TreeSet<String>(
+						hashMap3.keySet()));
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
 						SearchResults.this, R.layout.list_item_with_one_tv,
 						R.id.tv_in_list_item_with_one_tv, arrayList3);
@@ -229,13 +229,12 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 			long arg3) {
 		// TODO Auto-generated method stub
-
 		Log.i("Search Results", "list item position clicked" + position);
 
 		if (arg0.getId() == R.id.lvTab1) {
 			Intent i = new Intent(SearchResults.this, SongsFromAlbums.class);
 			i.putExtra("search_type1", "album");
-			i.putExtra("search_id1", arrayIdList1.get(position));
+			i.putExtra("search_id1", hashMap1.get(arrayList1.get(position)));
 			i.putExtra("search_title1", arrayList1.get(position));
 			startActivity(i);
 
@@ -243,14 +242,14 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 
 			Intent i = new Intent(SearchResults.this, AlbumsFromArtists.class);
 			i.putExtra("search_type2", "band");
-			i.putExtra("search_id2", arrayIdList2.get(position));
+			i.putExtra("search_id2", hashMap2.get(arrayList2.get(position)));
 			i.putExtra("search_title2", arrayList2.get(position));
 			startActivity(i);
 
 		} else if (arg0.getId() == R.id.lvTab3) {
 			Log.i("Search Results: onItemClick()", "Tab 3 clicked");
 			requestedTrackURL = GlobalVariables.api_root + "track/?id="
-					+ arrayIdList3.get(position);
+					+ hashMap3.get(arrayList3.get(position));
 			songName = arrayList3.get(position);
 
 			new PlaySong().execute();
