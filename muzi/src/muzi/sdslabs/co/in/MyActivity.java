@@ -88,6 +88,10 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		ibShuffle.setOnClickListener(MyActivity.this);
 		ibRepeat.setOnClickListener(MyActivity.this);
 
+		if (context.getClass().equals(NowPlayingList.class)) {
+			ibCurrentList.setVisibility(View.GONE);
+		}
+
 		mRunnable.run();
 
 		Scon = new ServiceConnection() {
