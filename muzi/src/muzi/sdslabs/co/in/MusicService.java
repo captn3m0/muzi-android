@@ -74,6 +74,7 @@ public class MusicService extends Service implements
 	 **/
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+
 		playMusic();
 		return START_STICKY;
 	}
@@ -121,8 +122,8 @@ public class MusicService extends Service implements
 				});
 
 				MyActivity.tbPlayPause.setChecked(true);
-
 				showNotification();
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -159,7 +160,7 @@ public class MusicService extends Service implements
 		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
 				active, 0);
 		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
-		
+
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
 				.setContent(notiView).setOngoing(true);

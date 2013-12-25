@@ -2,17 +2,25 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.ResultReceiver;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
@@ -38,7 +46,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	static ToggleButton tbPlayPause;
 	public SeekBar sbSongTimer;
 	int layout_id;
-
+	public static final int PLAY_PAUSE = 103, NEXT = 104, PREVIOUS = 105,
+			NOTIFICATION_RECEIVER = 106, MUSIC_READY = 107;
+	NotificationReceiver myReceiver;
 	private boolean mIsBound = false;
 	public static boolean shouldShuffle = false;
 	private MusicService mServ;
@@ -132,6 +142,13 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	protected void onStart() {
 		super.onStart();
+
+		// Register BroadcastReceiver
+		// to receive event from our service
+		myReceiver = new NotificationReceiver();
+		IntentFilter intentFilter = new IntentFilter();
+//		intentFilter.addAction(MyService.MY_ACTION);
+		registerReceiver(myReceiver, intentFilter);
 		doBindService();
 	};
 
@@ -180,9 +197,106 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			Log.i("song " + j, nowPlayingPathsList.get(j));
 		}
 
-		/** Set the icon to pause when music service is called **/
-
 		startService(i);
+	}
+
+	private void showNotification() {
+		final int mId = 10;
+
+		RemoteViews notiView = new RemoteViews(this.getPackageName(),
+				R.layout.notification);
+
+		// for next song
+		Intent active = new Intent(this, NotificationReceiver.class);
+		active.putExtra("action", NEXT);
+		active.putExtra("RECEIVER", new DownloadReceiver(new Handler()));
+
+		PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,
+				NEXT, active, 0);
+		notiView.setOnClickPendingIntent(R.id.nibNext, actionPendingIntent);
+
+		// for previous song
+		new Intent(this, NotificationReceiver.class);
+		active.putExtra("action", PREVIOUS);
+		actionPendingIntent = PendingIntent.getBroadcast(this, PREVIOUS,
+				active, 0);
+		notiView.setOnClickPendingIntent(R.id.nibPrevious, actionPendingIntent);
+
+		// for play pause
+		new Intent(this, NotificationReceiver.class);
+		active.putExtra("action", PLAY_PAUSE);
+		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
+				active, 0);
+		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
+
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
+				.setContent(notiView).setOngoing(true);
+
+		// .setAutoCancel(true) will be used later when notification will be
+		// shown only when muzi isn't on screen
+
+		mBuilder.build().contentView = notiView;
+
+		// .setContentText(
+		// MyActivity.nowPlayingList
+		// .get(MyActivity.currentSongIndex));
+		// Creates an explicit intent for an Activity in your app
+		Intent resultIntent = new Intent(this, NowPlayingList.class);
+
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(HomeScreen.class);
+		stackBuilder.addNextIntent(resultIntent);
+
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
+		mBuilder.setContentIntent(resultPendingIntent);
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(mId, mBuilder.build());
+	}
+
+	public class DownloadReceiver extends ResultReceiver {
+		public DownloadReceiver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		protected void onReceiveResult(int resultCode, Bundle resultData) {
+			super.onReceiveResult(resultCode, resultData);
+
+			if (resultCode == MUSIC_READY) {
+				showNotification();
+			} else if (resultCode == NOTIFICATION_RECEIVER) {
+				int action = resultData.getInt("action");
+
+				if (action == NEXT) {
+
+					if (nowPlayingList.size() > 0) {
+						tempSongIndex = (currentSongIndex + 1)
+								% nowPlayingPathsList.size();
+						startMusicService();
+					}
+				} else if (action == PLAY_PAUSE) {
+
+					boolean on = tbPlayPause.isChecked();
+
+					if (on) {
+						Log.i("Service", mServ + "");
+						mServ.resumeMusic();
+					} else {
+						mServ.pauseMusic();
+					}
+				} else if (action == PREVIOUS) {
+
+					if (nowPlayingList.size() > 0) {
+						tempSongIndex = (currentSongIndex - 1)
+								% nowPlayingPathsList.size();
+						startMusicService();
+					}
+				}
+			}
+		}
 	}
 
 	public void footerPlayToggle(View view) {
@@ -211,6 +325,36 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		return true;
 	}
 
+	void startMusicService() {
+		Intent i = new Intent(context, MusicService.class);
+		i.putExtra("RECEIVER", new DownloadReceiver(new Handler()));
+		startService(i);
+	}
+
+	public class NotificationReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			Log.i("MusicService: DownloadReceiver",
+					intent.getIntExtra("action", 0) + "received");
+			Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
+
+			// ResultReceiver receiver = (ResultReceiver) intent
+			// .getParcelableExtra("RECEIVER");
+			//
+			// Bundle resultData = new Bundle();
+			// resultData.putInt("action", intent.getIntExtra("action", 0));
+			// receiver.send(MyActivity.NOTIFICATION_RECEIVER, resultData);
+
+			// if (resultCode == MusicService.PLAY_PAUSE) {
+			// // MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
+			// // % MyActivity.nowPlayingPathsList.size();
+			// // Intent i = new Intent(this, MusicService.class);
+			// // startService(i);
+			// }
+		}
+	}
+
 	@Override
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
@@ -221,8 +365,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			if (nowPlayingList.size() > 0) {
 				tempSongIndex = (currentSongIndex - 1)
 						% nowPlayingPathsList.size();
-				Intent i = new Intent(context, MusicService.class);
-				startService(i);
+				startMusicService();
 			}
 
 		} else if (id == R.id.ibNext) {
@@ -230,8 +373,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			if (nowPlayingList.size() > 0) {
 				tempSongIndex = (currentSongIndex + 1)
 						% nowPlayingPathsList.size();
-				Intent i = new Intent(context, MusicService.class);
-				startService(i);
+				startMusicService();
 			}
 
 		} else if (id == R.id.ibCurrentList) {

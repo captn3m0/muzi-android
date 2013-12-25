@@ -12,16 +12,17 @@ public class NotificationReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		Log.i("MusicService: DownloadReceiver", "received");
+		Log.i("MusicService: DownloadReceiver", intent.getIntExtra("action", 0)
+				+ "received");
 		Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
-//
-//		ResultReceiver receiver = (ResultReceiver) intent
-//				.getParcelableExtra("RECEIVER");
-//
-//		Bundle resultData = new Bundle();
-//		resultData.putInt("progress", 100);
-//		receiver.send(UPDATE_PROGRESS, resultData);
-		
+
+		ResultReceiver receiver = (ResultReceiver) intent
+				.getParcelableExtra("RECEIVER");
+
+		Bundle resultData = new Bundle();
+		resultData.putInt("action", intent.getIntExtra("action", 0));
+		receiver.send(MyActivity.NOTIFICATION_RECEIVER, resultData);
+
 		// if (resultCode == MusicService.PLAY_PAUSE) {
 		// // MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
 		// // % MyActivity.nowPlayingPathsList.size();
