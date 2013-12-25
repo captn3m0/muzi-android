@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,7 +36,9 @@ import com.actionbarsherlock.view.MenuItem;
  * */
 
 /**
- * @author shivam To do: Add the capability of ordering songs by dragging
+ * @author shivam To do: Add the capability of ordering songs by dragging Note:
+ *         Dynamically registered receiver works only when app is in foreground.
+ *         So, it won't be called from notification.
  */
 
 public class MyActivity extends SherlockActivity implements OnClickListener {
@@ -48,7 +49,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	int layout_id;
 	public static final int PLAY_PAUSE = 103, NEXT = 104, PREVIOUS = 105,
 			NOTIFICATION_RECEIVER = 106, MUSIC_READY = 107;
-	NotificationReceiver myReceiver;
 	private boolean mIsBound = false;
 	public static boolean shouldShuffle = false;
 	private MusicService mServ;
@@ -63,11 +63,12 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 		@Override
 		public void run() {
-			if (mServ.mp != null && mServ.mp.isPlaying()) {
-				if (mServ.mp.getDuration() > 0) {
+			if (MusicService.mp != null && MusicService.mp.isPlaying()) {
+				if (MusicService.mp.getDuration() > 0) {
 					// sbSongTimer.incrementProgressBy(diff);
-					int mCurrentPosition = (mServ.mp.getCurrentPosition()) / 1000;
-					sbSongTimer.setMax(mServ.mp.getDuration() / 1000);
+					int mCurrentPosition = (MusicService.mp
+							.getCurrentPosition()) / 1000;
+					sbSongTimer.setMax(MusicService.mp.getDuration() / 1000);
 					sbSongTimer.setProgress(mCurrentPosition);
 				}
 			}
@@ -78,7 +79,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(layout_id);
-
 		FooterForPlayerControls footer = new FooterForPlayerControls(context);
 
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
@@ -125,8 +125,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 				// Log.i("MyActivity: onSeekBarChangeListener: onProgressChanged",
 				// "progress " + progress);
 
-				if (mServ.mp != null && fromUser) {
-					mServ.mp.seekTo(progress * 1000);
+				if (MusicService.mp != null && fromUser) {
+					MusicService.mp.seekTo(progress * 1000);
 				}
 			}
 
@@ -140,16 +140,10 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		});
 	}
 
+	@Override
 	protected void onStart() {
-		super.onStart();
-
-		// Register BroadcastReceiver
-		// to receive event from our service
-		myReceiver = new NotificationReceiver();
-		IntentFilter intentFilter = new IntentFilter();
-//		intentFilter.addAction(MyService.MY_ACTION);
-		registerReceiver(myReceiver, intentFilter);
 		doBindService();
+		super.onStart();
 	};
 
 	@Override
@@ -176,10 +170,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		this.context = c;
 	}
 
-	public void footerClickControls(View v) {
-		Toast.makeText(context, v.getId(), Toast.LENGTH_SHORT).show();
-	}
-
 	void playSong(String songName, String songPath, Context context) {
 		Intent i = new Intent(this, MusicService.class);
 
@@ -198,6 +188,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		}
 
 		startService(i);
+		showNotification();
 	}
 
 	private void showNotification() {
@@ -209,21 +200,19 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		// for next song
 		Intent active = new Intent(this, NotificationReceiver.class);
 		active.putExtra("action", NEXT);
-		active.putExtra("RECEIVER", new DownloadReceiver(new Handler()));
-
 		PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,
 				NEXT, active, 0);
 		notiView.setOnClickPendingIntent(R.id.nibNext, actionPendingIntent);
 
 		// for previous song
-		new Intent(this, NotificationReceiver.class);
+		active = new Intent(this, NotificationReceiver.class);
 		active.putExtra("action", PREVIOUS);
 		actionPendingIntent = PendingIntent.getBroadcast(this, PREVIOUS,
 				active, 0);
 		notiView.setOnClickPendingIntent(R.id.nibPrevious, actionPendingIntent);
 
 		// for play pause
-		new Intent(this, NotificationReceiver.class);
+		active = new Intent(this, NotificationReceiver.class);
 		active.putExtra("action", PLAY_PAUSE);
 		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
 				active, 0);
@@ -327,11 +316,12 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	void startMusicService() {
 		Intent i = new Intent(context, MusicService.class);
-		i.putExtra("RECEIVER", new DownloadReceiver(new Handler()));
+		// i.putExtra("RECEIVER", new DownloadReceiver(new Handler()));
 		startService(i);
 	}
 
 	public class NotificationReceiver extends BroadcastReceiver {
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -339,18 +329,32 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 					intent.getIntExtra("action", 0) + "received");
 			Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
 
-			// ResultReceiver receiver = (ResultReceiver) intent
-			// .getParcelableExtra("RECEIVER");
+			// int action = resultData.getInt("action");
 			//
-			// Bundle resultData = new Bundle();
-			// resultData.putInt("action", intent.getIntExtra("action", 0));
-			// receiver.send(MyActivity.NOTIFICATION_RECEIVER, resultData);
-
-			// if (resultCode == MusicService.PLAY_PAUSE) {
-			// // MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
-			// // % MyActivity.nowPlayingPathsList.size();
-			// // Intent i = new Intent(this, MusicService.class);
-			// // startService(i);
+			// if (action == NEXT) {
+			//
+			// if (nowPlayingList.size() > 0) {
+			// tempSongIndex = (currentSongIndex + 1)
+			// % nowPlayingPathsList.size();
+			// startMusicService();
+			// }
+			// } else if (action == PLAY_PAUSE) {
+			//
+			// boolean on = tbPlayPause.isChecked();
+			//
+			// if (on) {
+			// Log.i("Service", mServ + "");
+			// mServ.resumeMusic();
+			// } else {
+			// mServ.pauseMusic();
+			// }
+			// } else if (action == PREVIOUS) {
+			//
+			// if (nowPlayingList.size() > 0) {
+			// tempSongIndex = (currentSongIndex - 1)
+			// % nowPlayingPathsList.size();
+			// startMusicService();
+			// }
 			// }
 		}
 	}
