@@ -3,6 +3,7 @@ package muzi.sdslabs.co.in;
 import java.net.URLEncoder;
 import java.util.Random;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -15,6 +16,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 /**
@@ -133,13 +135,22 @@ public class MusicService extends Service implements
 
 	private void showNotification() {
 		final int mId = 10;
+
+		RemoteViews notiView = new RemoteViews(this.getPackageName(),
+				R.layout.notification);
+
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this)
-				.setSmallIcon(R.drawable.icon)
-				.setContentTitle("Muzi")
-				.setContentText(
-						MyActivity.nowPlayingList
-								.get(MyActivity.currentSongIndex));
+				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
+				.setContent(notiView).setOngoing(true);
+
+		// .setAutoCancel(true) will be used later when notification will be
+		// shown only when muzi isn't on screen
+
+		mBuilder.build().contentView = notiView;
+
+		// .setContentText(
+		// MyActivity.nowPlayingList
+		// .get(MyActivity.currentSongIndex));
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, NowPlayingList.class);
 
@@ -154,6 +165,7 @@ public class MusicService extends Service implements
 
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
 				PendingIntent.FLAG_UPDATE_CURRENT);
+
 		mBuilder.setContentIntent(resultPendingIntent);
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.notify(mId, mBuilder.build());
