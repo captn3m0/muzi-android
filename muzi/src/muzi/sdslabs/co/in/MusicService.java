@@ -3,7 +3,6 @@ package muzi.sdslabs.co.in;
 import java.net.URLEncoder;
 import java.util.Random;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -31,6 +30,7 @@ public class MusicService extends Service implements
 	public final IBinder mBinder = new ServiceBinder();
 	public static MediaPlayer mp;
 	public int length = 0;
+	public static final int PLAY_PAUSE = 103, NEXT = 104, PREVIOUS = 105;
 
 	/** Constructor for the class **/
 	public MusicService() {
@@ -139,6 +139,11 @@ public class MusicService extends Service implements
 		RemoteViews notiView = new RemoteViews(this.getPackageName(),
 				R.layout.notification);
 
+		Intent active = new Intent(this, NotificationReceiver.class);
+		PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,
+				PLAY_PAUSE, active, 0);
+		notiView.setOnClickPendingIntent(R.id.nibNext, actionPendingIntent);
+
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
 				.setContent(notiView).setOngoing(true);
@@ -154,13 +159,8 @@ public class MusicService extends Service implements
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, NowPlayingList.class);
 
-		// The stack builder object will contain an artificial back stack for
-		// the started Activity. This ensures that navigating backward from the
-		// Activity leads out of your application to the Home screen.
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
 		stackBuilder.addParentStack(HomeScreen.class);
-		// Adds the Intent that starts the Activity to the top of the stack
 		stackBuilder.addNextIntent(resultIntent);
 
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
