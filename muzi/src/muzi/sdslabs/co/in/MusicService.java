@@ -139,19 +139,27 @@ public class MusicService extends Service implements
 		RemoteViews notiView = new RemoteViews(this.getPackageName(),
 				R.layout.notification);
 
+		// for next song
 		Intent active = new Intent(this, NotificationReceiver.class);
+		active.putExtra("action", NEXT);
 		PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,
 				NEXT, active, 0);
 		notiView.setOnClickPendingIntent(R.id.nibNext, actionPendingIntent);
 
-		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
-				active, 0);
-		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
-
+		// for previous song
+		new Intent(this, NotificationReceiver.class);
+		active.putExtra("action", PREVIOUS);
 		actionPendingIntent = PendingIntent.getBroadcast(this, PREVIOUS,
 				active, 0);
 		notiView.setOnClickPendingIntent(R.id.nibPrevious, actionPendingIntent);
 
+		// for play pause
+		new Intent(this, NotificationReceiver.class);
+		active.putExtra("action", PLAY_PAUSE);
+		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
+				active, 0);
+		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
+		
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
 				.setContent(notiView).setOngoing(true);
