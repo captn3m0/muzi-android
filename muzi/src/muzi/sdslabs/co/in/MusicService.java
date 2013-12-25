@@ -141,8 +141,16 @@ public class MusicService extends Service implements
 
 		Intent active = new Intent(this, NotificationReceiver.class);
 		PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,
-				PLAY_PAUSE, active, 0);
+				NEXT, active, 0);
 		notiView.setOnClickPendingIntent(R.id.nibNext, actionPendingIntent);
+
+		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
+				active, 0);
+		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
+
+		actionPendingIntent = PendingIntent.getBroadcast(this, PREVIOUS,
+				active, 0);
+		notiView.setOnClickPendingIntent(R.id.nibPrevious, actionPendingIntent);
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
