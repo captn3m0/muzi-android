@@ -123,7 +123,7 @@ public class MusicService extends Service implements
 				});
 
 				MyActivity.tbPlayPause.setChecked(true);
-//				showNotification();
+				// showNotification();
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

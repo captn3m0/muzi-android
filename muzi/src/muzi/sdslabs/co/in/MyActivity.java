@@ -53,7 +53,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			CLOSE = 106;
 	private boolean mIsBound = false;
 	private static boolean isApplicationVisible;
-	final int mId = 10;
+	final static int mId = 10;
 
 	public static boolean shouldShuffle = false;
 	private static MusicService mServ;
@@ -152,7 +152,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	protected void onStart() {
 		doBindService();
 		super.onStart();
-		cancelNotification();
+		cancelNotification(context);
 	};
 
 	@Override
@@ -325,8 +325,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		mNotificationManager.notify(mId, mBuilder.build());
 	}
 
-	void cancelNotification() {
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+	static void cancelNotification(Context ctx) {
+		NotificationManager mNotificationManager = (NotificationManager) ctx
+				.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(mId);
 	}
 
@@ -396,6 +397,13 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 							.size()) % nowPlayingPathsList.size();
 					startMusicService(context);
 				}
+			} else if (action == CLOSE) {
+				// Has a little problem if close is pressed & application state
+				// is restored from android cache
+				// Then it force closes the app on pressing play/pause button
+				mServ.stopMusic();
+				cancelNotification(context);
+
 			}
 		}
 	}
