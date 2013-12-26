@@ -257,49 +257,6 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		mNotificationManager.cancel(mId);
 	}
 
-	public class DownloadReceiver extends ResultReceiver {
-		public DownloadReceiver(Handler handler) {
-			super(handler);
-		}
-
-		@Override
-		protected void onReceiveResult(int resultCode, Bundle resultData) {
-			super.onReceiveResult(resultCode, resultData);
-
-			if (resultCode == MUSIC_READY) {
-				showNotification();
-			} else if (resultCode == NOTIFICATION_RECEIVER) {
-				int action = resultData.getInt("action");
-
-				if (action == NEXT) {
-
-					if (nowPlayingList.size() > 0) {
-						tempSongIndex = (currentSongIndex + 1)
-								% nowPlayingPathsList.size();
-						startMusicService();
-					}
-				} else if (action == PLAY_PAUSE) {
-
-					boolean on = tbPlayPause.isChecked();
-
-					if (on) {
-						Log.i("Service", mServ + "");
-						mServ.resumeMusic();
-					} else {
-						mServ.pauseMusic();
-					}
-				} else if (action == PREVIOUS) {
-
-					if (nowPlayingList.size() > 0) {
-						tempSongIndex = (currentSongIndex - 1)
-								% nowPlayingPathsList.size();
-						startMusicService();
-					}
-				}
-			}
-		}
-	}
-
 	public void footerPlayToggle(View view) {
 
 		int id = view.getId();
@@ -326,10 +283,10 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		return true;
 	}
 
-	void startMusicService() {
+	static void startMusicService(Context context) {
 		Intent i = new Intent(context, MusicService.class);
 		// i.putExtra("RECEIVER", new DownloadReceiver(new Handler()));
-		startService(i);
+		context.startService(i);
 	}
 
 	public static class NotificationReceiver extends BroadcastReceiver {
@@ -342,7 +299,15 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
 
 			int action = intent.getIntExtra("action", 0);
-			if (action == PLAY_PAUSE) {
+
+			if (action == NEXT) {
+
+				if (nowPlayingList.size() > 0) {
+					tempSongIndex = (currentSongIndex + 1)
+							% nowPlayingPathsList.size();
+					startMusicService(context);
+				}
+			} else if (action == PLAY_PAUSE) {
 				Log.i("MyActivity: NotificationReceiver", "play pause clicked");
 				// boolean on = tbPlayPause.isChecked();
 				//
@@ -351,6 +316,13 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 				// } else {
 				mServ.pauseMusic();
 				// }
+			} else if (action == PREVIOUS) {
+
+				if (nowPlayingList.size() > 0) {
+					tempSongIndex = (currentSongIndex - 1 + nowPlayingPathsList
+							.size()) % nowPlayingPathsList.size();
+					startMusicService(context);
+				}
 			}
 		}
 	}
@@ -363,9 +335,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		if (id == R.id.ibPrevious) {
 
 			if (nowPlayingList.size() > 0) {
-				tempSongIndex = (currentSongIndex - 1)
-						% nowPlayingPathsList.size();
-				startMusicService();
+				tempSongIndex = (currentSongIndex - 1 + nowPlayingPathsList
+						.size()) % nowPlayingPathsList.size();
+				startMusicService(context);
 			}
 
 		} else if (id == R.id.ibNext) {
@@ -373,7 +345,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			if (nowPlayingList.size() > 0) {
 				tempSongIndex = (currentSongIndex + 1)
 						% nowPlayingPathsList.size();
-				startMusicService();
+				startMusicService(context);
 			}
 
 		} else if (id == R.id.ibCurrentList) {

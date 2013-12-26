@@ -3,6 +3,7 @@ package muzi.sdslabs.co.in;
 import java.net.URLEncoder;
 import java.util.Random;
 
+import muzi.sdslabs.co.in.MyActivity.NotificationReceiver;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -122,7 +123,7 @@ public class MusicService extends Service implements
 				});
 
 				MyActivity.tbPlayPause.setChecked(true);
-				showNotification();
+//				showNotification();
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
