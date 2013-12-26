@@ -8,6 +8,7 @@
     <!-- 68 dp isn't standard size but it's just a workaround according to my device -->
 
     <ImageView
+        android:id="@+id/nivAlbumPic"
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:background="@drawable/default_album_cover"
@@ -19,7 +20,7 @@
         android:orientation="horizontal" >
 
         <TextView
-            android:id="@+id/tvTitle"
+            android:id="@+id/ntvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"

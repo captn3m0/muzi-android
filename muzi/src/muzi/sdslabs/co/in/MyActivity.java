@@ -263,6 +263,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		actionPendingIntent = PendingIntent
 				.getBroadcast(this, CLOSE, active, 0);
 		notiView.setOnClickPendingIntent(R.id.nibClose, actionPendingIntent);
+		notiView.setTextViewText(R.id.ntvTitle,
+				nowPlayingList.get(MyActivity.currentSongIndex));
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this)
@@ -270,10 +272,11 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 				.setLargeIcon(
 						BitmapFactory.decodeResource(context.getResources(),
 								R.drawable.icon))
-				.setContentTitle("Muzi")
+				// .setContentTitle("Muzi")
 				.setContent(notiView)
 				.setOngoing(true)
-				.setContentText(nowPlayingList.get(MyActivity.currentSongIndex))
+				.setContentTitle(
+						nowPlayingList.get(MyActivity.currentSongIndex))
 				.setAutoCancel(true);
 		mBuilder.build().contentView = notiView;
 
