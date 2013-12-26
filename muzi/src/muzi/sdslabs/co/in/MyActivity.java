@@ -84,8 +84,11 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(layout_id);
-		FooterForPlayerControls footer = new FooterForPlayerControls(context);
 
+		getSupportActionBar().setHomeButtonEnabled(true);
+		
+		FooterForPlayerControls footer = new FooterForPlayerControls(context);
+		getSupportActionBar().setHomeButtonEnabled(true);
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
 
@@ -269,14 +272,17 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		// }
 
 		// Creates an explicit intent for an Activity in your app
+
 		Intent resultIntent = new Intent(this, NowPlayingList.class);
 
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		stackBuilder.addParentStack(HomeScreen.class);
+		stackBuilder.addParentStack(NowPlayingList.class);
 		stackBuilder.addNextIntent(resultIntent);
 
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		Log.i("MyActivity: showNotification",
+				"" + stackBuilder.getIntentCount());
+
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		mBuilder.setContentIntent(resultPendingIntent);
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

@@ -70,7 +70,11 @@
         </activity>
         <activity
             android:name=".NowPlayingList"
-            android:label="Now Playing List" >
+            android:label="Now Playing List"
+            android:parentActivityName=".HomeScreen" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeScreen" />
         </activity>
         <activity
             android:name=".Radio"
