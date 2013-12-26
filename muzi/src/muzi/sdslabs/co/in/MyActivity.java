@@ -2,6 +2,7 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -9,10 +10,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -41,6 +42,7 @@ import com.actionbarsherlock.view.MenuItem;
  *         So, it won't be called from notification.
  */
 
+@SuppressLint("NewApi")
 public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
@@ -147,8 +149,22 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	protected void onStart() {
 		doBindService();
 		super.onStart();
-		isApplicationVisible = true;
+		cancelNotification();
 	};
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		isApplicationVisible = true;
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		isApplicationVisible = false;
+	}
 
 	@Override
 	protected void onStop() {
@@ -156,9 +172,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		doUnbindService();
 		// isApplicationVisible = false;
 
-		if (isApplicationVisible) {
-			isApplicationVisible = false;
-		} else {
+		if (!isApplicationVisible && MusicService.mp != null
+				&& MusicService.mp.isPlaying()) {
 			showNotification();
 		}
 	};
@@ -227,16 +242,32 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
-				.setContent(notiView).setOngoing(true).setAutoCancel(true);
-		// will be used later when notification will be
-		// shown only when muzi isn't on screen
-
+				this)
+				.setSmallIcon(R.drawable.icon)
+				.setLargeIcon(
+						BitmapFactory.decodeResource(context.getResources(),
+								R.drawable.icon))
+				.setContentTitle("Muzi")
+				.setContent(notiView)
+				.setOngoing(true)
+				.setContentText(nowPlayingList.get(MyActivity.currentSongIndex))
+				.setAutoCancel(true);
 		mBuilder.build().contentView = notiView;
 
-		// .setContentText(
-		// MyActivity.nowPlayingList
-		// .get(MyActivity.currentSongIndex));
+		// shows big notification in Android > 3.0 (Honeycomb)
+		mBuilder.setStyle(new NotificationCompat.BigPictureStyle()
+				.bigPicture(BitmapFactory.decodeResource(getResources(),
+						R.drawable.default_album_cover)));
+		/**
+		 * Apparently Build.VERSION.RELEASE will have to be used 'cos it may not
+		 * work on rooted devices. Should show bigger content according to
+		 * documentation but apparently it doesn't make any difference
+		 */
+		// if (android.os.Build.VERSION.SDK_INT >=
+		// android.os.Build.VERSION_CODES.JELLY_BEAN) {
+		// mBuilder.build().bigContentView = notiView;
+		// }
+
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, NowPlayingList.class);
 
