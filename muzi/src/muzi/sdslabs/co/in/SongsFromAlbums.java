@@ -8,14 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,28 +59,11 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		setMyContentView(R.layout.songs_from_albums, this);
 		super.onCreate(savedInstanceState);
-		//
-		// if (!isNetworkAvailable()) {
-		// finish();
-		// Toast.makeText(SongsFromAlbums.this,
-		// "Please check your internet connection.", Toast.LENGTH_LONG)
-		// .show();
-		// }
-		// setContentView(R.layout.songs_from_albums);
 
 		/*------------------------style list view-----------------*/
 		{
-			// lv = getListView();
 			lv = (ListView) findViewById(R.id.lvSongsFromAlbums);
 			lv.setFastScrollEnabled(true);
-			// lv.getRootView().setBackgroundColor(
-			// getResources().getColor(R.color.Black));
-			// getListView().setCacheColorHint(Color.TRANSPARENT);
-
-			/*-------add header to list view-------*/
-			// View header = getLayoutInflater().inflate(
-			// R.layout.header_for_songs_from_album, null);
-			// lv.addHeaderView(header);
 			ivAlbumCover = (ImageView) findViewById(R.id.ivAlbumCover);
 			tvAlbumName = (TextView) findViewById(R.id.tvAlbumName);
 			tvAlbumArtist = (TextView) findViewById(R.id.tvAlbumArtist);
@@ -107,12 +87,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				tvAlbumName
 						.setText(getIntent().getStringExtra("search_title1"));
 			}
-			// else {
-			// SongsFromAlbums.this.finish();
-			// Toast.makeText(SongsFromAlbums.this,
-			// "Sorry, the request couldn't be executed",
-			// Toast.LENGTH_LONG).show();
-			// }
 		}
 
 		/*----------------------call async method---------------------*/
@@ -123,17 +97,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		task2 = new LoadAlbumCover();
 		task1.execute();
 		task2.execute();
-	}
-
-	public boolean isNetworkAvailable() {
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-		// if no network is available networkInfo will be null
-		// otherwise check if we are connected
-		if (networkInfo != null && networkInfo.isConnected()) {
-			return true;
-		}
-		return false;
 	}
 
 	class LoadSongs extends AsyncTask<String, String, String> {
@@ -326,12 +289,6 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 		// TODO Auto-generated method
 
 		final int pos = position;
-
-		// Thread t = new Thread() {
-		// @Override
-		// public void run() {
-		// Intent i = new Intent(SongsFromAlbums.this, MusicService.class);
-		//
 		// // Let's see which one to implement setData or setExtra
 		// // Get song path by requesting the url below
 		requestedTrackURL = GlobalVariables.api_root + "track/?id="

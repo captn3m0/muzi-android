@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -85,6 +87,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(layout_id);
 
+		Log.i("MyActivity: onCreate", isNetworkAvailable(context)
+				+ " = network availability");
+
 		getSupportActionBar().setHomeButtonEnabled(true);
 
 		FooterForPlayerControls footer = new FooterForPlayerControls(context);
@@ -146,6 +151,14 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 			}
 		});
+	}
+
+	private boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectivityManager = (ConnectivityManager) context
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager
+				.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
 	}
 
 	@Override
