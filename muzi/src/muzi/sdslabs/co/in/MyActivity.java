@@ -50,7 +50,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	public SeekBar sbSongTimer;
 	int layout_id;
 	public static final int PLAY_PAUSE = 103, NEXT = 104, PREVIOUS = 105,
-			NOTIFICATION_RECEIVER = 106, MUSIC_READY = 107;
+			CLOSE = 106;
 	private boolean mIsBound = false;
 	private static boolean isApplicationVisible;
 	final int mId = 10;
@@ -86,7 +86,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		setContentView(layout_id);
 
 		getSupportActionBar().setHomeButtonEnabled(true);
-		
+
 		FooterForPlayerControls footer = new FooterForPlayerControls(context);
 		getSupportActionBar().setHomeButtonEnabled(true);
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
@@ -242,7 +242,14 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		active.putExtra("action", PLAY_PAUSE);
 		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
 				active, 0);
-		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
+		notiView.setOnClickPendingIntent(R.id.nibPlayPause, actionPendingIntent);
+
+		// to close the app
+		active = new Intent(this, NotificationReceiver.class);
+		active.putExtra("action", CLOSE);
+		actionPendingIntent = PendingIntent
+				.getBroadcast(this, CLOSE, active, 0);
+		notiView.setOnClickPendingIntent(R.id.nibClose, actionPendingIntent);
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this)
@@ -258,9 +265,37 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		mBuilder.build().contentView = notiView;
 
 		// shows big notification in Android > 3.0 (Honeycomb)
-		mBuilder.setStyle(new NotificationCompat.BigPictureStyle()
-				.bigPicture(BitmapFactory.decodeResource(getResources(),
-						R.drawable.default_album_cover)));
+		mBuilder.setStyle(
+				new NotificationCompat.BigPictureStyle().bigPicture(BitmapFactory
+						.decodeResource(getResources(),
+								R.drawable.default_album_cover)))
+				.addAction(
+						R.drawable.previous,
+						"",
+						PendingIntent.getBroadcast(this, PREVIOUS, (new Intent(
+								this, NotificationReceiver.class)).putExtra(
+								"action", PREVIOUS), 0))
+				.addAction(
+						R.drawable.play_button,
+						"",
+						PendingIntent.getBroadcast(this, PLAY_PAUSE,
+								(new Intent(this, NotificationReceiver.class))
+										.putExtra("action", PLAY_PAUSE), 0))
+				.addAction(
+						R.drawable.next,
+						"",
+						PendingIntent.getBroadcast(this, NEXT, (new Intent(
+								this, NotificationReceiver.class)).putExtra(
+								"action", NEXT), 0))
+
+				// For some reason android shows only 3 actions, so close isn't
+				// displayed
+				.addAction(
+						R.drawable.close_button,
+						"",
+						PendingIntent.getBroadcast(this, CLOSE, (new Intent(
+								this, NotificationReceiver.class)).putExtra(
+								"action", CLOSE), 0));
 		/**
 		 * Apparently Build.VERSION.RELEASE will have to be used 'cos it may not
 		 * work on rooted devices. Should show bigger content according to
@@ -282,7 +317,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		Log.i("MyActivity: showNotification",
 				"" + stackBuilder.getIntentCount());
 
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
+				PendingIntent.FLAG_CANCEL_CURRENT);
 
 		mBuilder.setContentIntent(resultPendingIntent);
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

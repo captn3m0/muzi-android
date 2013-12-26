@@ -160,7 +160,7 @@ public class MusicService extends Service implements
 		active.putExtra("action", PLAY_PAUSE);
 		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
 				active, 0);
-		notiView.setOnClickPendingIntent(R.id.ntbPlayPause, actionPendingIntent);
+		notiView.setOnClickPendingIntent(R.id.nibPlayPause, actionPendingIntent);
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")

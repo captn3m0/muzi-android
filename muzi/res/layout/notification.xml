@@ -40,7 +40,7 @@
                 android:background="@drawable/previous" />
 
             <ImageButton
-                android:id="@+id/ntbPlayPause"
+                android:id="@+id/nibPlayPause"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -56,11 +56,11 @@
                 android:background="@drawable/next" />
 
             <ImageButton
-                android:id="@+id/nibCross"
+                android:id="@+id/nibClose"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/cross_button" />
+                android:background="@drawable/close_button" />
         </LinearLayout>
     </LinearLayout>
 
