@@ -2,42 +2,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#545454"
     android:orientation="horizontal" >
 
+    <!-- 24 dp is standard size for notification icon -->
+    <!-- 68 dp isn't standard size but it's just a workaround according to my device -->
+
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:background="@drawable/default_album_cover"
         android:contentDescription="Album Pic" />
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/abs__action_bar_home_description" />
-
-    <ImageButton
-        android:id="@+id/nibPrevious"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/previous" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal" >
 
-    <ImageButton
-        android:id="@+id/ntbPlayPause"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/play_button" />
-    <!-- android:textOff="" -->
-    <!-- android:textOn="" /> -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="Song Name" />
 
-    <ImageButton
-        android:id="@+id/nibNext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/next" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/nibPrevious"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/previous" />
+
+            <ImageButton
+                android:id="@+id/ntbPlayPause"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/play_button" />
+            <!-- android:textOff="" -->
+            <!-- android:textOn="" /> -->
+
+            <ImageButton
+                android:id="@+id/nibNext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/next" />
+
+            <ImageButton
+                android:id="@+id/nibCross"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/cross_button" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
