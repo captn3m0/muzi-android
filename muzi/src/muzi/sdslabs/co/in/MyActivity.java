@@ -50,8 +50,11 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	public static final int PLAY_PAUSE = 103, NEXT = 104, PREVIOUS = 105,
 			NOTIFICATION_RECEIVER = 106, MUSIC_READY = 107;
 	private boolean mIsBound = false;
+	private static boolean isApplicationVisible;
+	final int mId = 10;
+
 	public static boolean shouldShuffle = false;
-	private MusicService mServ;
+	private static MusicService mServ;
 	private ServiceConnection Scon;
 	public static ArrayList<String> nowPlayingList = new ArrayList<String>(),
 			nowPlayingPathsList = new ArrayList<String>();
@@ -144,12 +147,20 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	protected void onStart() {
 		doBindService();
 		super.onStart();
+		isApplicationVisible = true;
 	};
 
 	@Override
 	protected void onStop() {
 		super.onStop();
 		doUnbindService();
+		// isApplicationVisible = false;
+
+		if (isApplicationVisible) {
+			isApplicationVisible = false;
+		} else {
+			showNotification();
+		}
 	};
 
 	void doBindService() {
@@ -188,12 +199,9 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		}
 
 		startService(i);
-		showNotification();
 	}
 
 	private void showNotification() {
-		final int mId = 10;
-
 		RemoteViews notiView = new RemoteViews(this.getPackageName(),
 				R.layout.notification);
 
@@ -220,9 +228,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
-				.setContent(notiView).setOngoing(true);
-
-		// .setAutoCancel(true) will be used later when notification will be
+				.setContent(notiView).setOngoing(true).setAutoCancel(true);
+		// will be used later when notification will be
 		// shown only when muzi isn't on screen
 
 		mBuilder.build().contentView = notiView;
@@ -243,6 +250,11 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		mBuilder.setContentIntent(resultPendingIntent);
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.notify(mId, mBuilder.build());
+	}
+
+	void cancelNotification() {
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(mId);
 	}
 
 	public class DownloadReceiver extends ResultReceiver {
@@ -320,7 +332,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		startService(i);
 	}
 
-	public class NotificationReceiver extends BroadcastReceiver {
+	public static class NotificationReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -329,33 +341,17 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 					intent.getIntExtra("action", 0) + "received");
 			Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
 
-			// int action = resultData.getInt("action");
-			//
-			// if (action == NEXT) {
-			//
-			// if (nowPlayingList.size() > 0) {
-			// tempSongIndex = (currentSongIndex + 1)
-			// % nowPlayingPathsList.size();
-			// startMusicService();
-			// }
-			// } else if (action == PLAY_PAUSE) {
-			//
-			// boolean on = tbPlayPause.isChecked();
-			//
-			// if (on) {
-			// Log.i("Service", mServ + "");
-			// mServ.resumeMusic();
-			// } else {
-			// mServ.pauseMusic();
-			// }
-			// } else if (action == PREVIOUS) {
-			//
-			// if (nowPlayingList.size() > 0) {
-			// tempSongIndex = (currentSongIndex - 1)
-			// % nowPlayingPathsList.size();
-			// startMusicService();
-			// }
-			// }
+			int action = intent.getIntExtra("action", 0);
+			if (action == PLAY_PAUSE) {
+				Log.i("MyActivity: NotificationReceiver", "play pause clicked");
+				// boolean on = tbPlayPause.isChecked();
+				//
+				// if (on) {
+				// mServ.resumeMusic();
+				// } else {
+				mServ.pauseMusic();
+				// }
+			}
 		}
 	}
 
