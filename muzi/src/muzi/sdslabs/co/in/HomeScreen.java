@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 
 public class HomeScreen extends MyActivity implements OnItemClickListener {
 
@@ -98,9 +97,7 @@ public class HomeScreen extends MyActivity implements OnItemClickListener {
 	// }
 
 	public boolean onCreateOptionsMenu(Menu menu) {
-		SubMenu sub = menu.addSubMenu("Settings");
-		sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		// getMenuInflater().inflate(R.menu.main, menu);
+		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 

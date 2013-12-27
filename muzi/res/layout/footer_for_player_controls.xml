@@ -5,14 +5,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#222"
-        android:padding="10dp"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:padding="10dp" >
 
         <SeekBar
             android:id="@+id/sbSongTimer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="footerClickControls" />
+
+        <TextView
+            android:id="@+id/tvSongTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Let Her Go"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
