@@ -3,20 +3,15 @@ package muzi.sdslabs.co.in;
 import java.net.URLEncoder;
 import java.util.Random;
 
-import muzi.sdslabs.co.in.MyActivity.NotificationReceiver;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.os.ResultReceiver;
 import android.util.Log;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
 /**
@@ -31,7 +26,7 @@ public class MusicService extends Service implements
 	public final IBinder mBinder = new ServiceBinder();
 	public static MediaPlayer mp;
 	public int length = 0;
-	public static final int PLAY_PAUSE = 103, NEXT = 104, PREVIOUS = 105;
+	private Intent intent = null;
 
 	/** Constructor for the class **/
 	public MusicService() {
@@ -76,7 +71,9 @@ public class MusicService extends Service implements
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
+		this.intent = intent;
 		playMusic();
+
 		return START_STICKY;
 	}
 
@@ -125,6 +122,10 @@ public class MusicService extends Service implements
 				MyActivity.tbPlayPause.setChecked(true);
 				// showNotification();
 
+				ResultReceiver receiver = (ResultReceiver) intent
+						.getParcelableExtra("RECEIVER");
+				Bundle resultData = new Bundle();
+				receiver.send(MyActivity.MUSIC_READY, resultData);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -133,60 +134,6 @@ public class MusicService extends Service implements
 			Toast.makeText(getApplicationContext(),
 					"There is nothing to play.", Toast.LENGTH_SHORT).show();
 		}
-	}
-
-	private void showNotification() {
-		final int mId = 10;
-
-		RemoteViews notiView = new RemoteViews(this.getPackageName(),
-				R.layout.notification);
-
-		// for next song
-		Intent active = new Intent(this, NotificationReceiver.class);
-		active.putExtra("action", NEXT);
-		PendingIntent actionPendingIntent = PendingIntent.getBroadcast(this,
-				NEXT, active, 0);
-		notiView.setOnClickPendingIntent(R.id.nibNext, actionPendingIntent);
-
-		// for previous song
-		new Intent(this, NotificationReceiver.class);
-		active.putExtra("action", PREVIOUS);
-		actionPendingIntent = PendingIntent.getBroadcast(this, PREVIOUS,
-				active, 0);
-		notiView.setOnClickPendingIntent(R.id.nibPrevious, actionPendingIntent);
-
-		// for play pause
-		new Intent(this, NotificationReceiver.class);
-		active.putExtra("action", PLAY_PAUSE);
-		actionPendingIntent = PendingIntent.getBroadcast(this, PLAY_PAUSE,
-				active, 0);
-		notiView.setOnClickPendingIntent(R.id.nibPlayPause, actionPendingIntent);
-
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this).setSmallIcon(R.drawable.icon).setContentTitle("Muzi")
-				.setContent(notiView).setOngoing(true);
-
-		// .setAutoCancel(true) will be used later when notification will be
-		// shown only when muzi isn't on screen
-
-		mBuilder.build().contentView = notiView;
-
-		// .setContentText(
-		// MyActivity.nowPlayingList
-		// .get(MyActivity.currentSongIndex));
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(this, NowPlayingList.class);
-
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		stackBuilder.addParentStack(HomeScreen.class);
-		stackBuilder.addNextIntent(resultIntent);
-
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-				PendingIntent.FLAG_UPDATE_CURRENT);
-
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(mId, mBuilder.build());
 	}
 
 	/**

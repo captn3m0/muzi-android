@@ -16,6 +16,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -52,7 +53,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 	public SeekBar sbSongTimer;
 	int layout_id;
 	public static final int PLAY_PAUSE = 103, NEXT = 104, PREVIOUS = 105,
-			CLOSE = 106;
+			CLOSE = 106, MUSIC_READY = 107;
 	private boolean mIsBound = false;
 	private static boolean isApplicationVisible;
 	final static int mId = 10;
@@ -64,8 +65,70 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			nowPlayingPathsList = new ArrayList<String>();
 	public static int currentSongIndex = 0, tempSongIndex = 0;
 	Context context;
+	static ResultReceiver serviceActionReceiver;
+
+	private class ServiceActionReceiver extends ResultReceiver {
+		public ServiceActionReceiver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		protected void onReceiveResult(int resultCode, Bundle resultData) {
+			super.onReceiveResult(resultCode, resultData);
+			if (resultCode == MUSIC_READY && !isApplicationVisible
+					&& MusicService.mp != null && MusicService.mp.isPlaying()) {
+				showNotification();
+			}
+		}
+	}
+
+	public static class NotificationReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			Log.i("MusicService: DownloadReceiver",
+					intent.getIntExtra("action", 0) + "received");
+			Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
+
+			int action = intent.getIntExtra("action", 0);
+
+			if (action == NEXT) {
+
+				if (nowPlayingList.size() > 0) {
+					tempSongIndex = (currentSongIndex + 1)
+							% nowPlayingPathsList.size();
+					startMusicService(context);
+				}
+			} else if (action == PLAY_PAUSE) {
+				Log.i("MyActivity: NotificationReceiver", "play pause clicked");
+				// boolean on = tbPlayPause.isChecked();
+				//
+				// if (on) {
+				// mServ.resumeMusic();
+				// } else {
+				mServ.pauseMusic();
+				// }
+			} else if (action == PREVIOUS) {
+
+				if (nowPlayingList.size() > 0) {
+					tempSongIndex = (currentSongIndex - 1 + nowPlayingPathsList
+							.size()) % nowPlayingPathsList.size();
+					startMusicService(context);
+				}
+			} else if (action == CLOSE) {
+				// Has a little problem if close is pressed & application state
+				// is restored from android cache
+				// Then it force closes the app on pressing play/pause button
+				mServ.stopMusic();
+				cancelNotification(context);
+
+			}
+		}
+	}
 
 	private Handler mHandler = new Handler();
+
 	private Runnable mRunnable = new Runnable() {
 
 		@Override
@@ -129,7 +192,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 				mServ = null;
 			}
 		};
-
+		serviceActionReceiver = new ServiceActionReceiver(new Handler());
 		sbSongTimer.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			public void onProgressChanged(SeekBar seekBar, int progress,
@@ -229,6 +292,7 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 			Log.i("song " + j, nowPlayingPathsList.get(j));
 		}
 
+		i.putExtra("RECEIVER", serviceActionReceiver);
 		startService(i);
 	}
 
@@ -375,53 +439,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 
 	static void startMusicService(Context context) {
 		Intent i = new Intent(context, MusicService.class);
-		// i.putExtra("RECEIVER", new DownloadReceiver(new Handler()));
+		i.putExtra("RECEIVER", serviceActionReceiver);
 		context.startService(i);
-	}
-
-	public static class NotificationReceiver extends BroadcastReceiver {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-
-			Log.i("MusicService: DownloadReceiver",
-					intent.getIntExtra("action", 0) + "received");
-			Toast.makeText(context, "received", Toast.LENGTH_SHORT).show();
-
-			int action = intent.getIntExtra("action", 0);
-
-			if (action == NEXT) {
-
-				if (nowPlayingList.size() > 0) {
-					tempSongIndex = (currentSongIndex + 1)
-							% nowPlayingPathsList.size();
-					startMusicService(context);
-				}
-			} else if (action == PLAY_PAUSE) {
-				Log.i("MyActivity: NotificationReceiver", "play pause clicked");
-				// boolean on = tbPlayPause.isChecked();
-				//
-				// if (on) {
-				// mServ.resumeMusic();
-				// } else {
-				mServ.pauseMusic();
-				// }
-			} else if (action == PREVIOUS) {
-
-				if (nowPlayingList.size() > 0) {
-					tempSongIndex = (currentSongIndex - 1 + nowPlayingPathsList
-							.size()) % nowPlayingPathsList.size();
-					startMusicService(context);
-				}
-			} else if (action == CLOSE) {
-				// Has a little problem if close is pressed & application state
-				// is restored from android cache
-				// Then it force closes the app on pressing play/pause button
-				mServ.stopMusic();
-				cancelNotification(context);
-
-			}
-		}
 	}
 
 	@Override
