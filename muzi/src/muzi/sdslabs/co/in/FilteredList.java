@@ -18,8 +18,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,8 +28,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SectionIndexer;
 import android.widget.Toast;
-
-import com.actionbarsherlock.view.Menu;
 
 /*if writable cursor isn't available then pass this hashmap to database file & then parse
  * it or rather use its strings to put in array*/
