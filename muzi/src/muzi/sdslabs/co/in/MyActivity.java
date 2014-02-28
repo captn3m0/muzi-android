@@ -1,6 +1,9 @@
 package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,18 +29,22 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -81,8 +88,16 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	private ActionBarDrawerToggle mDrawerToggle;
 	CharSequence mTitle, mDrawerTitle;
 
-	String listItems[] = { "Albums", "Artists", "Top Tracks", "Top Albums",
-			"Language", "Feedback" };
+	Integer listItems[] = { R.drawable.muzi, R.drawable.album,
+			R.drawable.artist, R.drawable.toptracks, R.drawable.topalbum,
+			R.drawable.settings };
+
+	// Keys used in Hashmap
+	String[] from = { "image" };
+
+	// Ids of views in listview_layout
+	int[] to = { R.id.ivTitleInDrawer };
+	ArrayList<HashMap<String, String>> listImages;
 
 	private class ServiceActionReceiver extends ResultReceiver {
 		public ServiceActionReceiver(Handler handler) {
@@ -146,6 +161,39 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 	private Handler mHandler = new Handler();
 
+	public class MyAdapter extends SimpleAdapter {
+
+		Context mContext;
+		HashMap<String, String> map = new HashMap<String, String>();
+
+		public MyAdapter(Context context, List<? extends Map<String, ?>> data,
+				int resource, String[] from, int[] to) {
+
+			super(context, data, resource, from, to);
+			// TODO Auto-generated constructor stub
+			mContext = context;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+
+			View row = super.getView(position, convertView, parent);
+			if (row == null) {
+				LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				row = mInflater.inflate(R.layout.drawer_list_item, parent,
+						false);
+			}
+			ImageView iv = (ImageView) row.findViewById(R.id.ivTitleInDrawer);
+			if (position == 0 || position == 1) {
+				iv.setBackgroundColor(getResources().getColor(
+						android.R.color.white));
+			}
+			iv.setImageResource(listItems[position]);
+			return row;
+		}
+	}
+
 	private Runnable mRunnable = new Runnable() {
 
 		@Override
@@ -175,14 +223,20 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		mDrawerTitle = mTitle = getSupportActionBar().getTitle();
+		listImages = new ArrayList<HashMap<String, String>>();
+		for (int i = 0; i < listItems.length; i++) {
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put("image", listItems[i] + "");
+			listImages.add(map);
+		}
 
 		// set a custom shadow that overlays the main content when the drawer
 		// opens
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
 				GravityCompat.START);
 		// set up the drawer's list view with items and click listener
-		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.drawer_list_item, listItems));
+		mDrawerList.setAdapter(new SimpleAdapter(this, listImages,
+				R.layout.drawer_list_item, from, to));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		// enable ActionBar app icon to behave as action to toggle nav drawer
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -211,6 +265,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				// onPrepareOptionsMenu()
 			}
 		};
+
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
 		if (savedInstanceState == null) {
