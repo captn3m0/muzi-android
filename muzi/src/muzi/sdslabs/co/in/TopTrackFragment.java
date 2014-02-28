@@ -188,7 +188,9 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 				songPath = jsonObject.getString("file");
 
 				Log.i("Song Path", songPath);
-				// playSong(songName, songPath, TopTrackFragment.this);
+
+				((MainActivity) getActivity()).playSong(songName, songPath,
+						getActivity());
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
