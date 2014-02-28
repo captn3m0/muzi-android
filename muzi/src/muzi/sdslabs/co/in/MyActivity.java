@@ -7,6 +7,7 @@ import java.util.Map;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -26,11 +27,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,7 +48,6 @@ import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -91,6 +94,9 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	Integer listItems[] = { R.drawable.muzi, R.drawable.album,
 			R.drawable.artist, R.drawable.toptracks, R.drawable.topalbum,
 			R.drawable.settings };
+
+	String titles[] = { "Muzi", "Albums", "Artists", "Top Tracks",
+			"Top Albums", "Settings" };
 
 	// Keys used in Hashmap
 	String[] from = { "image" };
@@ -344,7 +350,46 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 	private void selectItem(int position) {
 		// update the main content by replacing fragments
-		Fragment fragment = new TopTrackFragment();
+		Fragment fragment = null;
+
+		Log.i("position", position + "");
+
+		// Learnt it the hard way that position starts from 1 here
+		// May be it's because of header otherwise the count starts from 0 in
+		// general
+		// if clicked on artist or album
+
+		if (position == 1) {
+			fragment = new Artist_or_Album_Fragment();
+			Bundle args = new Bundle();
+			args.putString("list_type", "album");
+			fragment.setArguments(args);
+		}
+		if (position == 2) {
+			fragment = new Artist_or_Album_Fragment();
+			Bundle args = new Bundle();
+			args.putString("list_type", "band");
+			fragment.setArguments(args);
+		} else if (position == 3 || position == 0) {
+			fragment = new TopTrackFragment();
+		}
+		// else if (position == 3) {
+		// Intent i = new Intent(HomeScreen.this, TopAlbums.class);
+		// startActivity(i);
+		// } else if (position == 4) {
+		// Intent i = new Intent(HomeScreen.this, LangSettings.class);
+		// startActivity(i);
+		// } else if (position == 5) {
+		// String email[] = { "contact+muzi@sdslabs.co.in" };
+		// Intent EmailIntent = new Intent(android.content.Intent.ACTION_SEND);
+		// EmailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, email);
+		// EmailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
+		// "Feedback for Muzi");
+		// EmailIntent.setType("plain/Text");
+		// EmailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
+		// startActivity(EmailIntent);
+		// }
+
 		// Bundle args = new Bundle();
 		// fragment.setArguments(args);
 
@@ -354,7 +399,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		// update selected item and title, then close the drawer
 		mDrawerList.setItemChecked(position, true);
-		setTitle(listItems[position]);
+		setTitle(titles[position]);
 		mDrawerLayout.closeDrawer(mDrawerList);
 	}
 
@@ -440,27 +485,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	public void setMyContentView(int layout_id, Context c) {
 		this.layout_id = layout_id;
 		this.context = c;
-	}
-
-	void playSong(String songName, String songPath, Context context) {
-		Intent i = new Intent(this, MusicService.class);
-
-		if (!nowPlayingList.contains(songName)) {
-			nowPlayingList.add(songName);
-
-			Log.i("Requested song", GlobalVariables.music_root + songPath);
-			nowPlayingPathsList.add(GlobalVariables.music_root + songPath);
-			tempSongIndex = nowPlayingList.size() - 1;
-		} else {
-			tempSongIndex = nowPlayingList.indexOf(songName);
-		}
-
-		for (int j = 0; j < nowPlayingPathsList.size(); j++) {
-			Log.i("song " + j, nowPlayingPathsList.get(j));
-		}
-
-		i.putExtra("RECEIVER", serviceActionReceiver);
-		startService(i);
 	}
 
 	private void showNotification() {
@@ -595,16 +619,39 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main, menu);
-		//
-		// // Associate searchable configuration with the SearchView
-		// SearchManager searchManager = (SearchManager)
-		// getSystemService(Context.SEARCH_SERVICE);
-		// SearchView searchView = (SearchView) menu.findItem(R.id.search)
-		// .getActionView();
-		// searchView.setSearchableInfo(searchManager
-		// .getSearchableInfo(getComponentName()));
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		MenuItem searchItem = menu.findItem(R.id.search);
+
+		// Associate searchable configuration with the SearchView
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) MenuItemCompat
+				.getActionView(searchItem);
+		searchView.setSearchableInfo(searchManager
+				.getSearchableInfo(getComponentName()));
 		return true;
+	}
+
+	void playSong(String songName, String songPath, Context context) {
+		Intent i = new Intent(context, MusicService.class);
+
+		if (!nowPlayingList.contains(songName)) {
+			nowPlayingList.add(songName);
+
+			Log.i("Requested song", GlobalVariables.music_root + songPath);
+			nowPlayingPathsList.add(GlobalVariables.music_root + songPath);
+			tempSongIndex = nowPlayingList.size() - 1;
+		} else {
+			tempSongIndex = nowPlayingList.indexOf(songName);
+		}
+
+		for (int j = 0; j < nowPlayingPathsList.size(); j++) {
+			Log.i("song " + j, nowPlayingPathsList.get(j));
+		}
+
+		i.putExtra("RECEIVER", serviceActionReceiver);
+		startService(i);
 	}
 
 	/* Called whenever we call invalidateOptionsMenu() */
@@ -631,7 +678,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			startActivity(i);
 		} else if (item.getItemId() == android.R.id.home) {
 			Intent mainIntent = new Intent(getApplicationContext(),
-					HomeScreen.class);
+					MainActivity.class);
 			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(mainIntent);
 		}
