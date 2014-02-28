@@ -2,9 +2,9 @@ package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -19,18 +19,19 @@ import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.RemoteViews;
+import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
 
 /*
  * Caution: If you need a Context object within your Fragment, 
@@ -45,8 +46,7 @@ import com.actionbarsherlock.view.MenuItem;
  *         So, it won't be called from notification.
  */
 
-@SuppressLint("NewApi")
-public class MyActivity extends SherlockActivity implements OnClickListener {
+public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
 	static ToggleButton tbPlayPause;
@@ -154,9 +154,8 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 				+ " = network availability");
 
 		getSupportActionBar().setHomeButtonEnabled(true);
-
+		
 		FooterForPlayerControls footer = new FooterForPlayerControls(context);
-		getSupportActionBar().setHomeButtonEnabled(true);
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
 
@@ -427,8 +426,24 @@ public class MyActivity extends SherlockActivity implements OnClickListener {
 		}
 	}
 
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+//
+//		// Associate searchable configuration with the SearchView
+//		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//		SearchView searchView = (SearchView) menu.findItem(R.id.search)
+//				.getActionView();
+//		searchView.setSearchableInfo(searchManager
+//				.getSearchableInfo(getComponentName()));
+		return true;
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == android.R.id.home) {
+		if (item.getItemId() == R.id.action_settings) {
+			Intent i = new Intent(context, UserSettings.class);
+			startActivity(i);
+		} else if (item.getItemId() == android.R.id.home) {
 			Intent mainIntent = new Intent(getApplicationContext(),
 					HomeScreen.class);
 			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,15 +43,23 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 	ListView lv1, lv2, lv3;
 
 	String requestedTrackURL, songName;
+	String query;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setMyContentView(R.layout.search_results, SearchResults.this);
 		super.onCreate(savedInstanceState);
 
-		String text = getIntent().getStringExtra("search_query");
-		url = GlobalVariables.api_root + "search/?search=" + text;
-		this.setTitle("Search Results for " + text);
+		try {
+			query = getIntent().getStringExtra("search_query");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		handleIntent(getIntent());
+
+		url = GlobalVariables.api_root + "search/?search=" + query;
+		this.setTitle("Search Results for " + query);
 		Log.i("url", url);
 
 		th = (TabHost) findViewById(R.id.tabhost);
@@ -85,6 +94,17 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 		th.addTab(specs);
 
 		new LoadAllProducts().execute();
+	}
+
+	private void handleIntent(Intent intent) {
+
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+
+			query = intent.getStringExtra(SearchManager.QUERY);
+
+			Log.i("SerachResults: handleIntent()", query + "yes! it works");
+			// use the query to search your data somehow
+		}
 	}
 
 	class LoadAllProducts extends AsyncTask<String, String, String> {
