@@ -1,19 +1,17 @@
 package muzi.sdslabs.co.in;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.MenuItem;
-
-public class UserSettings extends SherlockListActivity implements
-		OnItemClickListener {
+public class UserSettings extends ListActivity implements OnItemClickListener {
 
 	ListView lv;
 	ArrayAdapter<String> adapter;
@@ -22,7 +20,6 @@ public class UserSettings extends SherlockListActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		lv = getListView();
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		lv.getRootView().setBackgroundColor(
 				getResources().getColor(R.color.Black));
 		getListView().setCacheColorHint(Color.TRANSPARENT);

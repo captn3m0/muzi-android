@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
-public class LangSettings extends SherlockActivity {
+public class LangSettings extends MyActivity {
 
 	SharedPreferences pref;
 	int PRIVATE_MODE;
@@ -16,8 +14,10 @@ public class LangSettings extends SherlockActivity {
 	ToggleButton tbEng, tbHindi, tbTamil;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+
+		setMyContentView(R.layout.lang_settings, LangSettings.this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lang_settings);
 		PRIVATE_MODE = 0;
