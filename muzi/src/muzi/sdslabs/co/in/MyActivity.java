@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -17,17 +17,25 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.RemoteViews;
-import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
@@ -66,6 +74,15 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	public static int currentSongIndex = 0, tempSongIndex = 0;
 	Context context;
 	static ResultReceiver serviceActionReceiver;
+
+	/* Navigation Drawer */
+	private DrawerLayout mDrawerLayout;
+	private ListView mDrawerList;
+	private ActionBarDrawerToggle mDrawerToggle;
+	CharSequence mTitle, mDrawerTitle;
+
+	String listItems[] = { "Albums", "Artists", "Top Tracks", "Top Albums",
+			"Language", "Feedback" };
 
 	private class ServiceActionReceiver extends ResultReceiver {
 		public ServiceActionReceiver(Handler handler) {
@@ -148,13 +165,58 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(layout_id);
 
 		Log.i("MyActivity: onCreate", isNetworkAvailable(context)
 				+ " = network availability");
 
 		getSupportActionBar().setHomeButtonEnabled(true);
-		
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerList = (ListView) findViewById(R.id.left_drawer);
+		mDrawerTitle = mTitle = getSupportActionBar().getTitle();
+
+		// set a custom shadow that overlays the main content when the drawer
+		// opens
+		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+				GravityCompat.START);
+		// set up the drawer's list view with items and click listener
+		mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+				R.layout.drawer_list_item, listItems));
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		// enable ActionBar app icon to behave as action to toggle nav drawer
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+
+		// ActionBarDrawerToggle ties together the the proper interactions
+		// between the sliding drawer and the action bar app icon
+		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
+		mDrawerLayout, /* DrawerLayout object */
+		R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
+		R.string.app_name, /* "open drawer" description for accessibility */
+		R.string.abc_action_mode_done /*
+									 * "close drawer" description for
+									 * accessibility
+									 */
+		) {
+			public void onDrawerClosed(View view) {
+				getSupportActionBar().setTitle(mTitle);
+				supportInvalidateOptionsMenu(); // creates call to
+				// onPrepareOptionsMenu()
+			}
+
+			public void onDrawerOpened(View drawerView) {
+				getSupportActionBar().setTitle(mDrawerTitle);
+				supportInvalidateOptionsMenu(); // creates call to
+				// onPrepareOptionsMenu()
+			}
+		};
+		mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+		if (savedInstanceState == null) {
+			selectItem(0);
+		}
+
 		FooterForPlayerControls footer = new FooterForPlayerControls(context);
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
@@ -213,6 +275,57 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 			}
 		});
+	}
+
+	/* The click listner for ListView in the navigation drawer */
+	private class DrawerItemClickListener implements
+			ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			selectItem(position);
+		}
+	}
+
+	private void selectItem(int position) {
+		// update the main content by replacing fragments
+		Fragment fragment = new TopTrackFragment();
+		// Bundle args = new Bundle();
+		// fragment.setArguments(args);
+
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		fragmentManager.beginTransaction()
+				.replace(R.id.content_frame, fragment).commit();
+
+		// update selected item and title, then close the drawer
+		mDrawerList.setItemChecked(position, true);
+		setTitle(listItems[position]);
+		mDrawerLayout.closeDrawer(mDrawerList);
+	}
+
+	@Override
+	public void setTitle(CharSequence title) {
+		mTitle = title;
+		getSupportActionBar().setTitle(mTitle);
+	}
+
+	/**
+	 * When using the ActionBarDrawerToggle, you must call it during
+	 * onPostCreate() and onConfigurationChanged()...
+	 */
+
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		// mDrawerToggle.syncState();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		// Pass any configuration change to the drawer toggls
+		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	private boolean isNetworkAvailable(Context context) {
@@ -428,18 +541,36 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
-//
-//		// Associate searchable configuration with the SearchView
-//		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//		SearchView searchView = (SearchView) menu.findItem(R.id.search)
-//				.getActionView();
-//		searchView.setSearchableInfo(searchManager
-//				.getSearchableInfo(getComponentName()));
+		//
+		// // Associate searchable configuration with the SearchView
+		// SearchManager searchManager = (SearchManager)
+		// getSystemService(Context.SEARCH_SERVICE);
+		// SearchView searchView = (SearchView) menu.findItem(R.id.search)
+		// .getActionView();
+		// searchView.setSearchableInfo(searchManager
+		// .getSearchableInfo(getComponentName()));
 		return true;
+	}
+
+	/* Called whenever we call invalidateOptionsMenu() */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// If the nav drawer is open, hide action items related to the content
+		// view
+		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+		menu.findItem(R.id.search).setVisible(!drawerOpen);
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+
+		// The action bar home/up action should open or close the drawer.
+		// ActionBarDrawerToggle will take care of this.
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
+
 		if (item.getItemId() == R.id.action_settings) {
 			Intent i = new Intent(context, UserSettings.class);
 			startActivity(i);
