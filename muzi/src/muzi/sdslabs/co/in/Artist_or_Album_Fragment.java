@@ -20,8 +20,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -32,7 +35,8 @@ import android.widget.Toast;
 /*if writable cursor isn't available then pass this hashmap to database file & then parse
  * it or rather use its strings to put in array*/
 
-public class FilteredList extends MyActivity implements OnItemClickListener {
+public class Artist_or_Album_Fragment extends Fragment implements
+		OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -52,9 +56,10 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 	SharedPreferences pref;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		setMyContentView(R.layout.filtered_list, this);
-		super.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.simple_list_view, container,
+				false);
 
 		/*
 		 * if (!isNetworkAvailable()) { FilteredList.this.finish();
@@ -63,29 +68,22 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		 * }
 		 */
 
-		lv = (ListView) findViewById(R.id.lvFilteredList);
+		lv = (ListView) rootView.findViewById(R.id.lvSimple);
 		lv.setFastScrollEnabled(true);
 		FilteredNamesList = new ArrayList<String>();
 		FilteredIdList = new ArrayList<String>();
-		String value1 = getIntent().getStringExtra("list_type");
+		type = getArguments().getString("list_type");
 
-		Log.i("value", value1);
-
-		if (value1.equals("Albums")) {
-			type = "album";
-			this.setTitle("Albums");
-		} else if (value1.equals("Artists")) {
-			type = "band";
-			this.setTitle("Artists");
-		} else {
-			FilteredList.this.finish();
-			Toast.makeText(FilteredList.this,
+		if (!type.equals("band") && !type.equals("album")) {
+			getActivity().finish();
+			Toast.makeText(getActivity(),
 					"Sorry, the request couldn't be executed",
 					Toast.LENGTH_LONG).show();
 		}
 
 		langList = new ArrayList<String>();
-		pref = getApplicationContext().getSharedPreferences("Lang Pref", 0);
+		pref = getActivity().getApplicationContext().getSharedPreferences(
+				"Lang Pref", 0);
 
 		if (pref.getBoolean("English", true))
 			langList.add("English");
@@ -99,6 +97,8 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		}
 
 		new LoadAllProducts().execute();
+
+		return rootView;
 	}
 
 	class LoadAllProducts extends AsyncTask<String, String, String> {
@@ -109,7 +109,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			pDialog = new ProgressDialog(FilteredList.this);
+			pDialog = new ProgressDialog(getActivity());
 			pDialog.setMessage("Loading content. Please wait...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
@@ -157,8 +157,9 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 			listFileNames();
 
 			String string = "";
-			if (fileList() == null
-					|| !Arrays.asList(fileList()).contains(type + getDate())) {
+			if (getActivity().fileList() == null
+					|| !Arrays.asList(getActivity().fileList()).contains(
+							type + getDate())) {
 				Log.i("", "deleted");
 				deleteFileList();
 
@@ -174,12 +175,12 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 					if (string != null && !string.equals("")) {
 
 						Log.i("Filtered List", " is writing in cache.");
-						FileOutputStream fos = openFileOutput(type + getDate(),
-								Context.MODE_PRIVATE);
+						FileOutputStream fos = getActivity().openFileOutput(
+								type + getDate(), Context.MODE_PRIVATE);
 						fos.write(string.getBytes());
 						fos.close();
 					} else {
-						FilteredList.this.finish();
+						getActivity().finish();
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -190,7 +191,8 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 				Log.i("Coming form local storage", "true");
 				try {
-					FileInputStream fis = openFileInput(type + getDate());
+					FileInputStream fis = getActivity().openFileInput(
+							type + getDate());
 					StringBuffer fileContent = new StringBuffer("");
 					byte[] buffer = new byte[1024];
 
@@ -216,22 +218,23 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 			int i = 0;
 
-			if (fileList().length > 0
-					&& (fileList()[0].equals("album" + getDate()) || fileList()[0]
-							.equals("artist" + getDate()))) {
+			if (getActivity().fileList().length > 0
+					&& (getActivity().fileList()[0].equals("album" + getDate()) || getActivity()
+							.fileList()[0].equals("artist" + getDate()))) {
 				i = 1;
 			}
-			while (fileList().length > i) {
-				Log.i("deleted", fileList()[i]);
-				getApplicationContext().deleteFile(fileList()[i]);
+			while (getActivity().fileList().length > i) {
+				Log.i("deleted", getActivity().fileList()[i]);
+				getActivity().getApplicationContext().deleteFile(
+						getActivity().fileList()[i]);
 			}
 		}
 
 		private void listFileNames() {
 			// TODO Auto-generated method stub
 			int i = 0;
-			while (i < fileList().length) {
-				Log.i("listing", fileList()[i]);
+			while (i < getActivity().fileList().length) {
+				Log.i("listing", getActivity().fileList()[i]);
 				i++;
 			}
 		}
@@ -257,9 +260,10 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 				lv.setAdapter(null);
 			} else {
 
-				lv.setAdapter(new MyIndexerAdapter<String>(FilteredList.this,
+				lv.setAdapter(new MyIndexerAdapter<String>(getActivity(),
 						android.R.layout.simple_list_item_1, FilteredNamesList));
-				lv.setOnItemClickListener(FilteredList.this);
+				lv.setOnItemClickListener(Artist_or_Album_Fragment.this);
+				// setOnItemClickListener(getActivity());
 			}
 		}
 
@@ -350,7 +354,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 		// For Albums
 		if (type == "album") {
-			Intent i = new Intent(FilteredList.this, SongsFromAlbums.class);
+			Intent i = new Intent(getActivity(), SongsFromAlbums.class);
 
 			i.putExtra("search_type1", type);
 			i.putExtra("search_id1", FilteredIdList.get(position));
@@ -359,7 +363,7 @@ public class FilteredList extends MyActivity implements OnItemClickListener {
 
 			// For Artists
 		} else if (type == "band") {
-			Intent i = new Intent(FilteredList.this, AlbumsFromArtists.class);
+			Intent i = new Intent(getActivity(), AlbumsFromArtists.class);
 
 			i.putExtra("search_type2", type);
 			i.putExtra("search_id2", FilteredIdList.get(position));
