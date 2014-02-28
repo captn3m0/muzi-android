@@ -1,6 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="@style/Theme.Sherlock">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="actionBarItemBackground">@drawable/selectable_background_black</item>
         <item name="popupMenuStyle">@style/PopupMenu.Black</item>
         <item name="dropDownListViewStyle">@style/DropDownListView.Black</item>
@@ -18,7 +18,7 @@
         <item name="android:imageButtonStyle">@style/ImageButtonAppTheme</item>
         <item name="android:spinnerStyle">@style/SpinnerAppTheme</item>
         <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemAppTheme</item>
-<!--         <item name="android:tabWidgetStyle">@style/TabWidgetAppTheme</item> -->
+        <!-- <item name="android:tabWidgetStyle">@style/TabWidgetAppTheme</item> -->
         <item name="android:progressBarStyleHorizontal">@style/ProgressBarAppTheme</item>
         <item name="android:seekBarStyle">@style/SeekBarAppTheme</item>
         <item name="android:ratingBarStyle">@style/RatingBarAppTheme</item>
@@ -30,53 +30,51 @@
         <item name="android:spinnerItemStyle">@style/SpinnerItemAppTheme</item>
     </style>
 
-    <style name="ActionBar.Solid.Black" parent="@style/Widget.Sherlock.ActionBar.Solid">
+    <style name="ActionBar.Solid.Black" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="background">@drawable/ab_solid_black</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_black</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_black</item>
         <item name="progressBarStyle">@style/ProgressBar.Black</item>
     </style>
 
-    <style name="ActionBar.Transparent.Black" parent="@style/Widget.Sherlock.ActionBar">
+    <style name="ActionBar.Transparent.Black" parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@drawable/ab_transparent_black</item>
         <item name="progressBarStyle">@style/ProgressBar.Black</item>
     </style>
 
-    <style name="PopupMenu.Black" parent="@style/Widget.Sherlock.ListPopupWindow">
+    <style name="PopupMenu.Black" parent="@style/Widget.AppCompat.ListPopupWindow">
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_black</item>
     </style>
 
-    <style name="DropDownListView.Black" parent="@style/Widget.Sherlock.ListView.DropDown">
+    <style name="DropDownListView.Black" parent="@style/Widget.AppCompat.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_black</item>
     </style>
 
-    <style name="ActionBarTabStyle.Black" parent="@style/Widget.Sherlock.ActionBar.TabView">
+    <style name="ActionBarTabStyle.Black" parent="@style/Widget.AppCompat.ActionBar.TabView">
         <item name="android:background">@drawable/tab_indicator_ab_black</item>
     </style>
 
-    <style name="DropDownNav.Black" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
+    <style name="DropDownNav.Black" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
         <item name="android:background">@drawable/spinner_background_ab_black</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_black</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_black</item>
     </style>
 
-    <style name="ProgressBar.Black" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
+    <style name="ProgressBar.Black" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_black</item>
     </style>
 
-    <style name="ActionButton.CloseMode.Black" parent="@style/Widget.Sherlock.ActionButton.CloseMode">
+    <style name="ActionButton.CloseMode.Black" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
         <item name="android:background">@drawable/btn_cab_done_black</item>
     </style>
 
     <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.Black.Widget" parent="@style/Theme.Sherlock">
+    <style name="Theme.Black.Widget" parent="@style/Theme.AppCompat">
         <item name="popupMenuStyle">@style/PopupMenu.Black</item>
         <item name="dropDownListViewStyle">@style/DropDownListView.Black</item>
     </style>
-    
-    
-    
-    <!--  Custom styles used  -->
+
+    <!-- Custom styles used -->
     <style name="tvAlphabets" parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">10sp</item>
@@ -107,8 +105,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
     </style>
-    
-    
 
     <!-- Other widgets -->
     <style name="EditTextAppTheme" parent="android:Widget.EditText">
