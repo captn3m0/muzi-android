@@ -3,7 +3,7 @@
 
     <item android:drawable="@drawable/play_button" android:state_checked="false" android:state_pressed="true"/>
     <item android:drawable="@drawable/play_button" android:state_checked="false" android:state_focused="false"/>
-    <item android:drawable="@drawable/pause_button" android:state_checked="true" android:state_pressed="true"/>
-    <item android:drawable="@drawable/pause_button" android:state_checked="true" android:state_focused="false"/>
+    <item android:drawable="@drawable/pause" android:state_checked="true" android:state_pressed="true"/>
+    <item android:drawable="@drawable/pause" android:state_checked="true" android:state_focused="false"/>
 
 </selector>
