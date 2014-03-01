@@ -66,7 +66,7 @@ import android.widget.ToggleButton;
 
 public class MyActivity extends ActionBarActivity implements OnClickListener {
 
-	ImageButton ibNext, ibPrevious, ibCurrentList, ibShuffle, ibRepeat;
+	ImageButton ibNext, ibPrevious; //, ibShuffle, ibRepeat; //ibCurrentList, 
 	static ToggleButton tbPlayPause;
 	public SeekBar sbSongTimer;
 	int layout_id;
@@ -284,20 +284,20 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		ibNext = (ImageButton) findViewById(R.id.ibNext);
 		ibPrevious = (ImageButton) findViewById(R.id.ibPrevious);
-		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
-		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
-		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
+//		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
+//		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
+//		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
 		tbPlayPause = (ToggleButton) findViewById(R.id.tbPlayPause);
 		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimer);
 
 		ibNext.setOnClickListener(MyActivity.this);
 		ibPrevious.setOnClickListener(MyActivity.this);
-		ibCurrentList.setOnClickListener(MyActivity.this);
-		ibShuffle.setOnClickListener(MyActivity.this);
-		ibRepeat.setOnClickListener(MyActivity.this);
+//		ibCurrentList.setOnClickListener(MyActivity.this);
+//		ibShuffle.setOnClickListener(MyActivity.this);
+//		ibRepeat.setOnClickListener(MyActivity.this);
 
 		if (context.getClass().equals(NowPlayingList.class)) {
-			ibCurrentList.setVisibility(View.GONE);
+//			ibCurrentList.setVisibility(View.GONE);
 		}
 
 		mRunnable.run();

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#222"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+
+        <SeekBar
+            android:id="@+id/sbSongTimer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="footerClickControls" />
+
+        <TextView
+            android:id="@+id/tvSongTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Let Her Go"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/ibRepeat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/repeat"
+                android:onClick="footerClickControls" />
+
+            <ImageButton
+                android:id="@+id/ibPrevious"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/prev"
+                android:onClick="footerClickControls" />
+
+            <ToggleButton
+                android:id="@+id/tbPlayPause"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/play_pause_toggle"
+                android:onClick="footerPlayToggle"
+                android:textOff=""
+                android:textOn="" />
+
+            <ImageButton
+                android:id="@+id/ibNext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/next"
+                android:onClick="footerClickControls" />
+
+            <ImageButton
+                android:id="@+id/ibShuffle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/shuffle"
+                android:onClick="footerClickControls" />
+        </LinearLayout>
+    </LinearLayout>
+
+</merge>
