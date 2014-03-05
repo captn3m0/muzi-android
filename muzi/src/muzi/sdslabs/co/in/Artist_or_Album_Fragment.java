@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -363,13 +364,23 @@ public class Artist_or_Album_Fragment extends Fragment implements
 
 			// For Artists
 		} else if (type == "band") {
-			Intent i = new Intent(getActivity(), AlbumsFromArtists.class);
+			Fragment fragment = new AlbumsFromArtistsFragment();
+			Bundle args = new Bundle();
 
-			i.putExtra("search_type2", type);
-			i.putExtra("search_id2", FilteredIdList.get(position));
-			i.putExtra("search_title2", FilteredNamesList.get(position));
+			args.putString("search_type2", type);
+			args.putString("search_id2", FilteredIdList.get(position));
+			args.putString("search_title2", FilteredNamesList.get(position));
+			fragment.setArguments(args);
 
-			startActivity(i);
+			FragmentManager fragmentManager = getActivity()
+					.getSupportFragmentManager();
+			fragmentManager.beginTransaction()
+					.replace(R.id.content_frame, fragment).commit();
+
+			// update selected item and title, then close the drawer
+			// mDrawerList.setItemChecked(position, true);
+			// setTitle(titles[position]);
+			// mDrawerLayout.closeDrawer(mDrawerList);
 		}
 	}
 }
