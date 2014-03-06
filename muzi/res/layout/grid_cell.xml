@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:padding="5dp"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
@@ -21,15 +22,27 @@
         android:textColor="@android:color/white" />
 
     <ImageButton
-        android:id="@+id/ibOptions"
+        android:id="@+id/ibGridAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/tvTitle"
         android:layout_alignRight="@id/ivEvent"
         android:background="@null"
-        android:contentDescription="Options"
+        android:contentDescription="Cross"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:src="@android:drawable/ic_menu_view" />
+        android:src="@drawable/abc_ic_clear_search_api_holo_light" />
+
+    <ImageButton
+        android:id="@+id/ibGridPlay"
+        android:layout_width="14sp"
+        android:layout_height="14sp"
+        android:layout_alignBottom="@id/ivEvent"
+        android:layout_toLeftOf="@id/ibGridAdd"
+        android:background="@null"
+        android:contentDescription="Cross"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:src="@drawable/play_button" />
 
 </RelativeLayout>

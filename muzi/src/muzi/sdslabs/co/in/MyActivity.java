@@ -66,7 +66,7 @@ import android.widget.ToggleButton;
 
 public class MyActivity extends ActionBarActivity implements OnClickListener {
 
-	ImageButton ibNext, ibPrevious; //, ibShuffle, ibRepeat; //ibCurrentList, 
+	ImageButton ibNext, ibPrevious; // , ibShuffle, ibRepeat; //ibCurrentList,
 	static ToggleButton tbPlayPause;
 	public SeekBar sbSongTimer;
 	int layout_id;
@@ -91,9 +91,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	private ActionBarDrawerToggle mDrawerToggle;
 	CharSequence mTitle, mDrawerTitle;
 
-	Integer listItems[] = { R.drawable.muzi, R.drawable.album,
-			R.drawable.artist, R.drawable.toptracks, R.drawable.topalbum,
-			R.drawable.settings };
+	Integer listItems[] = { R.drawable.muzi, R.drawable.artist,
+			R.drawable.toptracks, R.drawable.topalbum, R.drawable.settings };
 
 	String titles[] = { "Muzi", "Albums", "Artists", "Top Tracks",
 			"Top Albums", "Settings" };
@@ -284,20 +283,20 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		ibNext = (ImageButton) findViewById(R.id.ibNext);
 		ibPrevious = (ImageButton) findViewById(R.id.ibPrevious);
-//		ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
-//		ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
-//		ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
+		// ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
+		// ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
+		// ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
 		tbPlayPause = (ToggleButton) findViewById(R.id.tbPlayPause);
 		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimer);
 
 		ibNext.setOnClickListener(MyActivity.this);
 		ibPrevious.setOnClickListener(MyActivity.this);
-//		ibCurrentList.setOnClickListener(MyActivity.this);
-//		ibShuffle.setOnClickListener(MyActivity.this);
-//		ibRepeat.setOnClickListener(MyActivity.this);
+		// ibCurrentList.setOnClickListener(MyActivity.this);
+		// ibShuffle.setOnClickListener(MyActivity.this);
+		// ibRepeat.setOnClickListener(MyActivity.this);
 
 		if (context.getClass().equals(NowPlayingList.class)) {
-//			ibCurrentList.setVisibility(View.GONE);
+			// ibCurrentList.setVisibility(View.GONE);
 		}
 
 		mRunnable.run();
@@ -358,25 +357,24 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		// May be it's because of header otherwise the count starts from 0 in
 		// general
 		// if clicked on artist or album
-
+		// if (position == 1) {
+		// fragment = new Artist_or_Album_Fragment();
+		// Bundle args = new Bundle();
+		// args.putString("list_type", "album");
+		// fragment.setArguments(args);
+		// }
 		if (position == 1) {
-			fragment = new Artist_or_Album_Fragment();
-			Bundle args = new Bundle();
-			args.putString("list_type", "album");
-			fragment.setArguments(args);
-		}
-		if (position == 2) {
 			fragment = new Artist_or_Album_Fragment();
 			Bundle args = new Bundle();
 			args.putString("list_type", "band");
 			fragment.setArguments(args);
-		} else if (position == 3 || position == 0) {
+		} else if (position == 2 || position == 0) {
 			fragment = new TopTrackFragment();
+		} else if (position == 3) {
+			fragment = new TopAlbumsFragment();
 		}
-		// else if (position == 3) {
-		// Intent i = new Intent(HomeScreen.this, TopAlbums.class);
-		// startActivity(i);
-		// } else if (position == 4) {
+
+		// else if (position == 4) {
 		// Intent i = new Intent(HomeScreen.this, LangSettings.class);
 		// startActivity(i);
 		// } else if (position == 5) {

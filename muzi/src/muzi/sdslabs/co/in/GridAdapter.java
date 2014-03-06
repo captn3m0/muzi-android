@@ -42,17 +42,17 @@ public class GridAdapter extends SimpleAdapter {
 
 	public void loadBitmap(String img, ImageView imageView) {
 
-		// final Bitmap bitmap = getBitmapFromMemCache(img);
+		final Bitmap bitmap = getBitmapFromMemCache(img);
 
-		// if (bitmap != null) {
-		// imageView.setImageBitmap(bitmap);
-		// } else if (cancelPotentialWork(img, imageView)) {
-		final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-		final AsyncDrawable asyncDrawable = new AsyncDrawable(
-				mContext.getResources(), mPlaceHolderBitmap, task);
-		imageView.setImageDrawable(asyncDrawable);
-		task.execute(img);
-		// }
+		if (bitmap != null) {
+			imageView.setImageBitmap(bitmap);
+		} else if (cancelPotentialWork(img, imageView)) {
+			final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+			final AsyncDrawable asyncDrawable = new AsyncDrawable(
+					mContext.getResources(), mPlaceHolderBitmap, task);
+			imageView.setImageDrawable(asyncDrawable);
+			task.execute(img);
+		}
 	}
 
 	public static Bitmap getBitmapFromMemCache(String key) {
@@ -115,7 +115,7 @@ public class GridAdapter extends SimpleAdapter {
 
 		// Decode image in background.
 		@Override
-		protected Bitmap doInBackground(String[] params) {
+		protected Bitmap doInBackground(String... params) {
 
 			Log.i("TileAdapter: BitmapWorkerTask: doInBackground", params[0]);
 
@@ -185,7 +185,7 @@ public class GridAdapter extends SimpleAdapter {
 		try {
 			bitmap = BitmapFactory.decodeStream(
 					(InputStream) new URL(url).getContent(), null, options);
-			// addBitmapToMemoryCache(img, bitmap);
+			addBitmapToMemoryCache(img, bitmap);
 			return bitmap;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -265,7 +265,7 @@ public class GridAdapter extends SimpleAdapter {
 		TextView tv = (TextView) grid.findViewById(R.id.tvTitle);
 		ImageView iv = (ImageView) grid.findViewById(R.id.ivEvent);
 		final ImageButton ibOpt = (ImageButton) grid
-				.findViewById(R.id.ibOptions);
+				.findViewById(R.id.ibGridPlay);
 
 		Log.i("TileAdapter: getView", eventsList.get(position).get(TAG_NAME));
 		ibOpt.setOnClickListener(new OnClickListener() {
