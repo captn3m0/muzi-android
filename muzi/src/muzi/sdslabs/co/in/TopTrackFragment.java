@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,8 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.Toast;
 
 public class TopTrackFragment extends Fragment implements OnItemClickListener {
@@ -32,9 +30,13 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 	// JSON keys
 	private static final String TAG_TRACKID = "trackid";
 	private static final String TAG_TITLE = "title";
+	private static final String TAG_NAME = "name";
+	private static final String TAG_ID = "id";
 
 	JSONArray FilteredJSONArray = null;
-	ListView lv;
+	GridView gv;
+	String[] from = { TAG_ID, TAG_NAME };
+	int[] to = { R.id.iv_in_li, R.id.tv_in_li };
 	ArrayList<String> FilteredNamesList;
 
 	ArrayList<HashMap<String, String>> FilteredArrayList;
@@ -46,21 +48,9 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.simple_list_view, container,
+		View rootView = inflater.inflate(R.layout.simple_grid_view, container,
 				false);
-		/*
-		 * if (!isNetworkAvailable()) { TopTracks.this.finish();
-		 * Toast.makeText(TopTracks.this,
-		 * "Please check your Internet connection.", Toast.LENGTH_LONG) .show();
-		 * }
-		 */
-		lv = (ListView) rootView.findViewById(R.id.lvSimple);
-		lv.setFastScrollEnabled(true);
-		lv.getRootView().setBackgroundColor(
-				getResources().getColor(R.color.Black));
-		lv.setCacheColorHint(Color.TRANSPARENT);
-		lv.setFastScrollEnabled(true);
-
+		gv = (GridView) rootView.findViewById(R.id.gv);
 		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
 		new LoadAllProducts().execute();
@@ -111,6 +101,8 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 						// value
 						map.put(TAG_TRACKID, id);
 						map.put(TAG_TITLE, title);
+						map.put(TAG_NAME, title);
+						map.put(TAG_ID, c.getString("albumId"));
 
 						// adding HashList to ArrayList
 						FilteredArrayList.add(map);
@@ -132,14 +124,12 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 			// dismiss the dialog after getting all products
 			pDialog.dismiss();
 			if (FilteredArrayList.size() == 0) {
-				lv.setAdapter(null);
+				gv.setAdapter(null);
 			} else {
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), R.layout.list_item_with_one_tv,
-						R.id.tv_in_list_item_with_one_tv, FilteredNamesList);
-
-				lv.setAdapter(adapter);
-				lv.setOnItemClickListener(TopTrackFragment.this);
+				GridAdapter adapter = new GridAdapter(getActivity(),
+						FilteredArrayList, R.layout.grid_cell, from, to);
+				gv.setAdapter(adapter);
+				gv.setOnItemClickListener(TopTrackFragment.this);
 			}
 		}
 	}

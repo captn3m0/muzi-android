@@ -38,10 +38,7 @@ public class AlbumsFromArtistsFragment extends Fragment implements
 	JSONObject jsonObject;
 	LoadSongs task;
 
-	// Keys used in Hashmap
 	String[] from = { TAG_ID, TAG_NAME };
-
-	// Ids of views in listview_layout
 	int[] to = { R.id.iv_in_li, R.id.tv_in_li };
 
 	@Override
