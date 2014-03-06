@@ -15,21 +15,20 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
 
-public class TopTrackFragment extends Fragment implements OnItemClickListener {
+public class TopTrackFragment extends Fragment {
 
 	private ProgressDialog pDialog;
 	boolean artist, album;
 
 	// JSON keys
 	private static final String TAG_TRACKID = "trackid";
-	private static final String TAG_TITLE = "title";
 	private static final String TAG_NAME = "name";
 	private static final String TAG_ID = "id";
 
@@ -37,8 +36,6 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 	GridView gv;
 	String[] from = { TAG_ID, TAG_NAME };
 	int[] to = { R.id.iv_in_li, R.id.tv_in_li };
-	ArrayList<String> FilteredNamesList;
-
 	ArrayList<HashMap<String, String>> FilteredArrayList;
 
 	public TopTrackFragment() {
@@ -51,7 +48,6 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 		View rootView = inflater.inflate(R.layout.simple_grid_view, container,
 				false);
 		gv = (GridView) rootView.findViewById(R.id.gv);
-		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
 		new LoadAllProducts().execute();
 
@@ -90,9 +86,6 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 
 						// Storing each json item in variable
 						String id = c.getString(TAG_TRACKID);
-						String title = c.getString(TAG_TITLE);
-
-						FilteredNamesList.add(title);
 
 						// creating new HashMap
 						HashMap<String, String> map = new HashMap<String, String>();
@@ -100,8 +93,7 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 						// adding each child node to HashMap key =>
 						// value
 						map.put(TAG_TRACKID, id);
-						map.put(TAG_TITLE, title);
-						map.put(TAG_NAME, title);
+						map.put(TAG_NAME, c.getString("title"));
 						map.put(TAG_ID, c.getString("albumId"));
 
 						// adding HashList to ArrayList
@@ -129,25 +121,38 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 				GridAdapter adapter = new GridAdapter(getActivity(),
 						FilteredArrayList, R.layout.grid_cell, from, to);
 				gv.setAdapter(adapter);
-				gv.setOnItemClickListener(TopTrackFragment.this);
+
+				gv.setOnTouchListener(new OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent me) {
+						switch (me.getAction()) {
+						case MotionEvent.ACTION_UP:
+
+							float currentXPosition = me.getX();
+							float currentYPosition = me.getY();
+							int position = gv.pointToPosition(
+									(int) currentXPosition,
+									(int) currentYPosition);
+
+							Log.i("result ------ onTouch", position + "\n");
+
+							requestedTrackURL = GlobalVariables.api_root
+									+ "/track/?id="
+									+ FilteredArrayList.get(position).get(
+											TAG_TRACKID);
+							Log.i("Requested track id", requestedTrackURL);
+							songName = FilteredArrayList.get(position).get(
+									TAG_NAME);
+							new PlaySong().execute();
+						}
+						return false;
+					}
+				});
 			}
 		}
 	}
 
 	String requestedTrackURL, songName, songPath;
-
-	@Override
-	public void onItemClick(AdapterView<?> av, View arg1, int position,
-			long arg3) {
-		// TODO Auto-generated method stub
-
-		requestedTrackURL = GlobalVariables.api_root + "/track/?id="
-				+ FilteredArrayList.get(position).get(TAG_TRACKID);
-		Log.i("Requested track id", requestedTrackURL);
-		songName = FilteredArrayList.get(position).get(TAG_TITLE);
-		new PlaySong().execute();
-
-	}
 
 	class PlaySong extends AsyncTask<String, String, String> {
 
@@ -196,4 +201,5 @@ public class TopTrackFragment extends Fragment implements OnItemClickListener {
 			Toast.makeText(getActivity(), songName, Toast.LENGTH_SHORT).show();
 		}
 	}
+
 }

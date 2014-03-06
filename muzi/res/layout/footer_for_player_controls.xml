@@ -4,15 +4,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#CC222222"
         android:orientation="vertical"
+        android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp" >
 
         <SeekBar
             android:id="@+id/sbSongTimer"
-            android:layout_marginTop="-15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-15dp"
             android:onClick="footerClickControls" />
 
         <RelativeLayout
@@ -22,26 +24,27 @@
 
             <ImageView
                 android:id="@+id/ivAlbumArt"
-                android:layout_width="140px"
-                android:layout_height="140px"
-                android:layout_alignBottom="@+id/ibNext"
+                android:layout_width="60px"
+                android:layout_height="60px"
                 android:layout_alignParentLeft="true"
-                android:layout_alignTop="@id/ibNext"
                 android:src="@drawable/default_album_cover" />
 
             <ImageButton
-                android:id="@id/ibNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/ibNext"
+                android:layout_width="45px"
+                android:layout_height="45px"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="7px"
                 android:background="@drawable/next"
+                android:gravity="center"
                 android:onClick="footerClickControls" />
 
             <ToggleButton
                 android:id="@+id/tbPlayPause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60px"
+                android:layout_height="60px"
                 android:layout_gravity="center"
                 android:layout_toLeftOf="@id/ibNext"
                 android:background="@drawable/play_pause_toggle"
@@ -51,11 +54,14 @@
 
             <ImageButton
                 android:id="@+id/ibPrevious"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45px"
+                android:layout_height="45px"
                 android:layout_gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="7px"
                 android:layout_toLeftOf="@id/tbPlayPause"
                 android:background="@drawable/prev"
+                android:gravity="center"
                 android:onClick="footerClickControls" />
 
             <TextView
@@ -63,18 +69,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/ivAlbumArt"
+                android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@+id/ivAlbumArt"
                 android:text="Song Name"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/white" />
 
             <TextView
                 android:id="@+id/tvAlbumName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvSongTitle"
+                android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@+id/ivAlbumArt"
                 android:text="Artist"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/white" />
         </RelativeLayout>
     </LinearLayout>
 

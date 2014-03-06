@@ -23,10 +23,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class GridAdapter extends SimpleAdapter {
 	private Context mContext;
@@ -260,24 +260,32 @@ public class GridAdapter extends SimpleAdapter {
 			LayoutInflater mInflater = (LayoutInflater) mContext
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			grid = mInflater.inflate(R.layout.grid_cell, parent, false);
+			grid.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					Toast.makeText(mContext, "Yo", Toast.LENGTH_LONG).show();
+				}
+			});
 		}
 
 		TextView tv = (TextView) grid.findViewById(R.id.tvTitle);
 		ImageView iv = (ImageView) grid.findViewById(R.id.ivEvent);
-		final ImageButton ibOpt = (ImageButton) grid
-				.findViewById(R.id.ibGridPlay);
+		// final ImageButton ibOpt = (ImageButton) grid
+		// .findViewById(R.id.ibGridPlay);
 
 		Log.i("TileAdapter: getView", eventsList.get(position).get(TAG_NAME));
-		ibOpt.setOnClickListener(new OnClickListener() {
+		// ibOpt.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				int[] posXY = new int[2];
-				ibOpt.getLocationOnScreen(posXY);
-				// show_Dialog(mContext, posXY[0], posXY[1]);
-			}
-		});
+		// @Override
+		// public void onClick(View arg0) {
+		// // TODO Auto-generated method stub
+		// int[] posXY = new int[2];
+		// ibOpt.getLocationOnScreen(posXY);
+		// // show_Dialog(mContext, posXY[0], posXY[1]);
+		// }
+		// });
 
 		tv.setText(eventsList.get(position).get(TAG_NAME) + "");// .get(TAG_NAME));
 		// iv.setImageResource(R.drawable.default_album_cover);
