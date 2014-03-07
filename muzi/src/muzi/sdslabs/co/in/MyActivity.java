@@ -670,10 +670,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			return true;
 		}
 
-		if (item.getItemId() == R.id.action_settings) {
-			Intent i = new Intent(context, UserSettingsFragment.class);
-			startActivity(i);
-		} else if (item.getItemId() == android.R.id.home) {
+		if (item.getItemId() == android.R.id.home) {
 			Intent mainIntent = new Intent(getApplicationContext(),
 					MainActivity.class);
 			mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
