@@ -1,57 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    style="@style/parent_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/tvAlbumName"
-        style="@style/tv_header_for_songs_from_album"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Album Name"
-        android:textSize="@dimen/standard_text_size" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tvAlbumArtist"
-        style="@style/tv_header_for_songs_from_album"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/tvAlbumName"
-        android:text="Artist"
-        android:textSize="@dimen/standard_text_size" />
+        <FrameLayout
+            android:id="@+id/content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/tvAlbumYear"
-        style="@style/tv_header_for_songs_from_album"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/tvAlbumArtist"
-        android:text="Year"
-        android:textSize="@dimen/standard_text_size" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/ListItem"
+                android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/ivAlbumCover"
-        android:layout_width="174px"
-        android:layout_height="174px"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:contentDescription="Default Image"
-        android:src="@drawable/default_album_cover" />
+                <ImageView
+                    android:id="@+id/ivAlbumCover"
+                    android:layout_width="174px"
+                    android:layout_height="174px"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:contentDescription="Default Image"
+                    android:paddingLeft="@dimen/padding_album_cover"
+                    android:paddingTop="@dimen/padding_album_cover"
+                    android:src="@drawable/default_album_cover" />
 
-    <muzi.sdslabs.co.in.FooterForPlayerControls
-        android:id="@+id/footer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+                <TextView
+                    android:id="@+id/tvEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/ivAlbumCover"
+                    android:layout_toRightOf="@id/ivAlbumCover"
+                    android:background="@color/ListItem"
+                    android:padding="7dp"
+                    android:paddingLeft="9dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@+id/tvAlbumYear"
+                    style="@style/tv_header_for_songs_from_album"
+                    android:layout_above="@id/tvEmpty"
+                    android:layout_toRightOf="@id/ivAlbumCover"
+                    android:text="Year"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@+id/tvAlbumArtist"
+                    style="@style/tv_header_for_songs_from_album"
+                    android:layout_above="@id/tvAlbumYear"
+                    android:layout_toRightOf="@id/ivAlbumCover"
+                    android:text="Artist"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@+id/tvAlbumName"
+                    style="@style/tv_header_for_songs_from_album"
+                    android:layout_above="@id/tvAlbumArtist"
+                    android:layout_toRightOf="@id/ivAlbumCover"
+                    android:text="Album Name"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <muzi.sdslabs.co.in.FooterForPlayerControls
+                    android:id="@+id/footer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true" />
+
+                <ListView
+                    android:id="@+id/lvSongsFromAlbums"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/footer"
+                    android:layout_below="@id/tvEmpty"
+                    android:cacheColorHint="#000000"
+                    android:fadeScrollbars="true" >
+                </ListView>
+            </RelativeLayout>
+        </FrameLayout>
+
+        <muzi.sdslabs.co.in.FooterForPlayerControls
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
 
     <ListView
-        android:id="@+id/lvSongsFromAlbums"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/footer"
-        android:layout_below="@id/ivAlbumCover"
-        android:cacheColorHint="#000000"
-        android:fadeScrollbars="true" >
-    </ListView>
+        android:id="@+id/left_drawer"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#111"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="5dp"
+        android:scrollbars="none" />
 
-</RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

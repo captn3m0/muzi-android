@@ -88,6 +88,7 @@
     <style name="tv_header_for_songs_from_album" parent="@android:style/TextAppearance.Medium">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">10sp</item>
+        <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
@@ -224,5 +225,6 @@
     <color name="Black">#000</color>
     <color name="white">#FFFFFF</color>
     <color name="pressed_black">#CC222222</color>
+    <color name="ListItem">#CC222222</color>
 
 </resources>
