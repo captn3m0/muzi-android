@@ -356,7 +356,6 @@ public class Artist_or_Album_Fragment extends Fragment implements
 		// For Albums
 		if (type == "album") {
 			Intent i = new Intent(getActivity(), SongsFromAlbums.class);
-
 			i.putExtra("search_type1", type);
 			i.putExtra("search_id1", FilteredIdList.get(position));
 			i.putExtra("search_title1", FilteredNamesList.get(position));
@@ -364,19 +363,11 @@ public class Artist_or_Album_Fragment extends Fragment implements
 
 			// For Artists
 		} else if (type == "band") {
-			Fragment fragment = new AlbumsFromArtistsFragment();
-			Bundle args = new Bundle();
-
-			args.putString("search_type2", type);
-			args.putString("search_id2", FilteredIdList.get(position));
-			args.putString("search_title2", FilteredNamesList.get(position));
-			fragment.setArguments(args);
-
-			FragmentManager fragmentManager = getActivity()
-					.getSupportFragmentManager();
-			fragmentManager.beginTransaction()
-					.replace(R.id.content_frame, fragment).commit();
-
+			Intent i = new Intent(getActivity(), AlbumsFromArtists.class);
+			i.putExtra("search_type2", type);
+			i.putExtra("search_id2", FilteredIdList.get(position));
+			i.putExtra("search_title2", FilteredNamesList.get(position));
+			startActivity(i);
 			// update selected item and title, then close the drawer
 			// mDrawerList.setItemChecked(position, true);
 			// setTitle(titles[position]);
