@@ -48,6 +48,7 @@ import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -116,6 +117,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			if (resultCode == MUSIC_READY && !isApplicationVisible
 					&& MusicService.mp != null && MusicService.mp.isPlaying()) {
 				showNotification();
+			}
+			if (resultCode == MUSIC_READY && MusicService.mp != null) {
+				TextView tvSongTitle = (TextView) findViewById(R.id.tvSongTitleFooter);
+				tvSongTitle.setText(nowPlayingList.get(currentSongIndex));
 			}
 		}
 	}
@@ -284,13 +289,13 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
 
-		ibNext = (ImageButton) findViewById(R.id.ibNext);
-		ibPrevious = (ImageButton) findViewById(R.id.ibPrevious);
+		ibNext = (ImageButton) findViewById(R.id.ibNextFooter);
+		ibPrevious = (ImageButton) findViewById(R.id.ibPreviousFooter);
 		// ibCurrentList = (ImageButton) findViewById(R.id.ibCurrentList);
 		// ibShuffle = (ImageButton) findViewById(R.id.ibShuffle);
 		// ibRepeat = (ImageButton) findViewById(R.id.ibRepeat);
-		tbPlayPause = (ToggleButton) findViewById(R.id.tbPlayPause);
-		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimer);
+		tbPlayPause = (ToggleButton) findViewById(R.id.tbPlayPauseFooter);
+		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimerFooter);
 
 		ibNext.setOnClickListener(MyActivity.this);
 		ibPrevious.setOnClickListener(MyActivity.this);
@@ -355,13 +360,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		// Learnt it the hard way that position starts from 1 here
 		// May be it's because of header otherwise the count starts from 0 in
 		// general
-		// if clicked on artist or album
-		// if (position == 1) {
-		// fragment = new Artist_or_Album_Fragment();
-		// Bundle args = new Bundle();
-		// args.putString("list_type", "album");
-		// fragment.setArguments(args);
-		// }
 		if (position == 1) {
 			fragment = new Artist_or_Album_Fragment();
 			Bundle args = new Bundle();
@@ -603,7 +601,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		int id = view.getId();
 
-		if (id == R.id.tbPlayPause) {
+		if (id == R.id.tbPlayPauseFooter) {
 			boolean on = ((ToggleButton) view).isChecked();
 
 			if (on) {
@@ -690,7 +688,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		// TODO Auto-generated method stub
 
 		int id = arg0.getId();
-		if (id == R.id.ibPrevious) {
+		if (id == R.id.ibPreviousFooter) {
 
 			if (nowPlayingList.size() > 0) {
 				tempSongIndex = (currentSongIndex - 1 + nowPlayingPathsList
@@ -698,7 +696,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				startMusicService(context);
 			}
 
-		} else if (id == R.id.ibNext) {
+		} else if (id == R.id.ibNextFooter) {
 
 			if (nowPlayingList.size() > 0) {
 				tempSongIndex = (currentSongIndex + 1)
