@@ -92,10 +92,11 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	CharSequence mTitle, mDrawerTitle;
 
 	Integer listItems[] = { R.drawable.muzi, R.drawable.artist,
-			R.drawable.toptracks, R.drawable.topalbum, R.drawable.settings };
+			R.drawable.toptracks, R.drawable.topalbum, R.drawable.playlist,
+			R.drawable.settings };
 
-	String titles[] = { "Muzi", "Albums", "Artists", "Top Tracks",
-			"Top Albums", "Settings" };
+	String titles[] = { "Muzi", "Artists", "Top Tracks", "Top Albums",
+			"Now Playing List", "Settings" };
 
 	// Keys used in Hashmap
 	String[] from = { "image" };
@@ -297,10 +298,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		// ibShuffle.setOnClickListener(MyActivity.this);
 		// ibRepeat.setOnClickListener(MyActivity.this);
 
-		if (context.getClass().equals(NowPlayingList.class)) {
-			// ibCurrentList.setVisibility(View.GONE);
-		}
-
 		mRunnable.run();
 
 		Scon = new ServiceConnection() {
@@ -375,12 +372,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		} else if (position == 3) {
 			fragment = new TopAlbumsFragment();
 		} else if (position == 4) {
+			fragment = new NowPlayingListFragment();
+		} else if (position == 5) {
 			fragment = new UserSettingsFragment();
 		}
-
-		// else if (position == 4) {
-		// Intent i = new Intent(HomeScreen.this, LangSettings.class);
-		// startActivity(i);
 		// } else if (position == 5) {
 		// String email[] = { "contact+muzi@sdslabs.co.in" };
 		// Intent EmailIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -525,10 +520,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this)
-				.setSmallIcon(R.drawable.icon)
+				.setSmallIcon(R.drawable.muzi_icon)
 				.setLargeIcon(
 						BitmapFactory.decodeResource(context.getResources(),
-								R.drawable.icon))
+								R.drawable.muzi_icon))
 				// .setContentTitle("Muzi")
 				.setContent(notiView)
 				.setOngoing(true)
@@ -581,10 +576,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		// Creates an explicit intent for an Activity in your app
 
-		Intent resultIntent = new Intent(this, NowPlayingList.class);
+		Intent resultIntent = new Intent(this, MainActivity.class);
 
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		stackBuilder.addParentStack(NowPlayingList.class);
+		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(resultIntent);
 
 		Log.i("MyActivity: showNotification",
@@ -713,10 +708,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 						% nowPlayingPathsList.size();
 				startMusicService(context);
 			}
-
-		} else if (id == R.id.ibCurrentList) {
-			Intent i = new Intent(context, NowPlayingList.class);
-			startActivity(i);
 
 		} else if (id == R.id.ibShuffle) {
 			shouldShuffle = !shouldShuffle;
