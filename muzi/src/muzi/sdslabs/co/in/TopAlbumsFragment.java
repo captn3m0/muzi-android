@@ -16,14 +16,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.Toast;
 
-public class TopAlbumsFragment extends Fragment implements OnItemClickListener {
+public class TopAlbumsFragment extends Fragment implements OnTouchListener {
 
 	private ProgressDialog pDialog;
 	boolean artist, album;
@@ -33,8 +33,6 @@ public class TopAlbumsFragment extends Fragment implements OnItemClickListener {
 	private static final String TAG_TITLE = "name";
 
 	JSONArray FilteredJSONArray = null;
-	ArrayList<String> FilteredNamesList;
-
 	ArrayList<HashMap<String, String>> FilteredArrayList;
 
 	// Keys used in Hashmap
@@ -42,6 +40,13 @@ public class TopAlbumsFragment extends Fragment implements OnItemClickListener {
 
 	// Ids of views in listview_layout
 	int[] to = { R.id.iv_in_li, R.id.tv_in_li };
+
+	/* To detect itemClick using touch gestures */
+	boolean isTouch;
+	float startXPosition = -1;
+	float startYPosition = -1;
+	float endXPosition = -10;
+	float endYPosition = -10;
 
 	public TopAlbumsFragment() {
 		// Empty constructor required for fragment subclasses
@@ -55,17 +60,9 @@ public class TopAlbumsFragment extends Fragment implements OnItemClickListener {
 		View rootView = inflater.inflate(R.layout.simple_grid_view, container,
 				false);
 
-		/*
-		 * if (!isNetworkAvailable()) { TopTracks.this.finish();
-		 * Toast.makeText(TopTracks.this,
-		 * "Please check your internet connection.", Toast.LENGTH_LONG) .show();
-		 * }
-		 */
-
 		gv = (GridView) rootView.findViewById(R.id.gv);
-		gv.setOnItemClickListener(TopAlbumsFragment.this);
+		gv.setOnTouchListener(TopAlbumsFragment.this);
 
-		FilteredNamesList = new ArrayList<String>();
 		FilteredArrayList = new ArrayList<HashMap<String, String>>();
 		new LoadAlbums().execute();
 
@@ -105,7 +102,6 @@ public class TopAlbumsFragment extends Fragment implements OnItemClickListener {
 						String id = c.getString(TAG_ID);
 						String title = c.getString(TAG_TITLE);
 
-						FilteredNamesList.add(title);
 						// creating new HashMap
 						HashMap<String, String> map = new HashMap<String, String>();
 
@@ -138,30 +134,77 @@ public class TopAlbumsFragment extends Fragment implements OnItemClickListener {
 				gv.setAdapter(null);
 			} else {
 				Log.i("Size of list", FilteredArrayList.size() + "");
-				GridAdapter adapter = new GridAdapter(getActivity(),
-						FilteredArrayList, R.layout.grid_cell, from, to);
-				gv.setAdapter(adapter);
-				gv.setOnItemClickListener(TopAlbumsFragment.this);
+
+				if (getActivity() != null) {
+					GridAdapter adapter = new GridAdapter(getActivity(),
+							FilteredArrayList, R.layout.grid_cell, from, to);
+					gv.setAdapter(adapter);
+				}
 			}
 		}
 
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> av, View arg1, int position,
-			long arg3) {
+	public boolean onTouch(View v, MotionEvent me) {
+		// TODO Auto-generated method stub
 
-		for (int i = 0; i < FilteredJSONArray.length(); i++) {
-			String albumName = FilteredNamesList.get(position).toString();
-			if (FilteredArrayList.contains(albumName)) {
-				String id = FilteredArrayList.get(i).get(TAG_ID);
-				Intent intent = new Intent(getActivity(), SongsFromAlbums.class);
-				intent.putExtra("search_type1", "album");
-				intent.putExtra("search_id1", id);
-				intent.putExtra("search_title1",
-						FilteredNamesList.get(position));
-				startActivity(intent);
-			}
+		Log.i("TopTrackFragment:onPostExecute():setOnTouchListener",
+				me.getAction() + "");
+
+		Log.i("isTouch", isTouch + "");
+
+		if (!isTouch) {
+			startXPosition = -1;
+			startYPosition = -1;
 		}
+
+		if (me.getAction() == MotionEvent.ACTION_DOWN) {
+			isTouch = true;
+			startXPosition = me.getX();
+			startYPosition = me.getY();
+		} else if (me.getAction() == MotionEvent.ACTION_UP) {
+			endXPosition = me.getX();
+			endYPosition = me.getY();
+			isTouch = false;
+		}
+
+		Log.i("startXPosition = ", startXPosition + "");
+		Log.i("startYPosition = ", startYPosition + "");
+		Log.i("endXPosition = ", endXPosition + "");
+		Log.i("endYPosition = ", endYPosition + "");
+
+		if ((Math.abs(startXPosition - endXPosition) <= 0.3)
+				&& (Math.abs(startYPosition - endYPosition) <= 0.3)) {
+
+			Toast.makeText(getActivity(), "Touch Detected", Toast.LENGTH_SHORT)
+					.show();
+
+			int position = gv.pointToPosition((int) startXPosition,
+					(int) startYPosition);
+
+			Log.i("result ------ onTouch", position + "\n");
+
+//			for (int i = 0; i < FilteredJSONArray.length(); i++) {
+//				String albumName = FilteredArrayList.get(position).get(
+//						TAG_TITLE);
+//				if (FilteredArrayList.contains(albumName)) {
+					String id = FilteredArrayList.get(position).get(TAG_ID);
+					Intent intent = new Intent(getActivity(),
+							SongsFromAlbums.class);
+					intent.putExtra("search_type1", "album");
+					intent.putExtra("search_id1", id);
+					intent.putExtra("search_title1",
+							FilteredArrayList.get(position).get(TAG_TITLE));
+					startActivity(intent);
+			// }
+			// }
+
+			startXPosition = -1;
+			startYPosition = -1;
+			endXPosition = -10;
+			endYPosition = -10;
+		}
+		return false;
 	}
 }

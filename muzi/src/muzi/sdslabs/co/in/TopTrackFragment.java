@@ -38,6 +38,14 @@ public class TopTrackFragment extends Fragment {
 	int[] to = { R.id.iv_in_li, R.id.tv_in_li };
 	ArrayList<HashMap<String, String>> FilteredArrayList;
 
+	/* To detect itemClick using touch gestures */
+	boolean isTouch;
+
+	float startXPosition = -1;
+	float startYPosition = -1;
+	float endXPosition = -10;
+	float endYPosition = -10;
+
 	public TopTrackFragment() {
 		// Empty constructor required for fragment subclasses
 	}
@@ -118,36 +126,68 @@ public class TopTrackFragment extends Fragment {
 			if (FilteredArrayList.size() == 0) {
 				gv.setAdapter(null);
 			} else {
-				GridAdapter adapter = new GridAdapter(getActivity(),
-						FilteredArrayList, R.layout.grid_cell, from, to);
-				gv.setAdapter(adapter);
 
-				gv.setOnTouchListener(new OnTouchListener() {
-					@Override
-					public boolean onTouch(View v, MotionEvent me) {
-						switch (me.getAction()) {
-						case MotionEvent.ACTION_UP:
+				if (getActivity() != null) {
 
-							float currentXPosition = me.getX();
-							float currentYPosition = me.getY();
-							int position = gv.pointToPosition(
-									(int) currentXPosition,
-									(int) currentYPosition);
+					GridAdapter adapter = new GridAdapter(getActivity(),
+							FilteredArrayList, R.layout.grid_cell, from, to);
+					gv.setAdapter(adapter);
 
-							Log.i("result ------ onTouch", position + "\n");
+					gv.setOnTouchListener(new OnTouchListener() {
+						@Override
+						public boolean onTouch(View v, MotionEvent me) {
 
-							requestedTrackURL = GlobalVariables.api_root
-									+ "/track/?id="
-									+ FilteredArrayList.get(position).get(
-											TAG_TRACKID);
-							Log.i("Requested track id", requestedTrackURL);
-							songName = FilteredArrayList.get(position).get(
-									TAG_NAME);
-							new PlaySong().execute();
+							Log.i("TopTrackFragment:onPostExecute():setOnTouchListener",
+									me.getAction() + "");
+
+							Log.i("isTouch", isTouch + "");
+
+							if (!isTouch) {
+								startXPosition = -1;
+								startYPosition = -1;
+							}
+
+							if (me.getAction() == MotionEvent.ACTION_DOWN) {
+								isTouch = true;
+								startXPosition = me.getX();
+								startYPosition = me.getY();
+							} else if (me.getAction() == MotionEvent.ACTION_UP) {
+								endXPosition = me.getX();
+								endYPosition = me.getY();
+								isTouch = false;
+							}
+
+							Log.i("startXPosition = ", startXPosition + "");
+							Log.i("startYPosition = ", startYPosition + "");
+							Log.i("endXPosition = ", endXPosition + "");
+							Log.i("endYPosition = ", endYPosition + "");
+
+							if ((Math.abs(startXPosition - endXPosition) <= 0.3)
+									&& (Math.abs(startYPosition - endYPosition) <= 0.3)) {
+								int position = gv.pointToPosition(
+										(int) startXPosition,
+										(int) startYPosition);
+
+								Log.i("result ------ onTouch", position + "\n");
+
+								requestedTrackURL = GlobalVariables.api_root
+										+ "/track/?id="
+										+ FilteredArrayList.get(position).get(
+												TAG_TRACKID);
+								Log.i("Requested track id", requestedTrackURL);
+								songName = FilteredArrayList.get(position).get(
+										TAG_NAME);
+								new PlaySong().execute();
+
+								startXPosition = -1;
+								startYPosition = -1;
+								endXPosition = -10;
+								endYPosition = -10;
+							}
+							return false;
 						}
-						return false;
-					}
-				});
+					});
+				}
 			}
 		}
 	}
