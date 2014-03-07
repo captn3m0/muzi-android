@@ -135,11 +135,13 @@ public class GridAdapter extends SimpleAdapter {
 			if (imageViewReference != null && bitmap != null) {
 				final ImageView imageView = imageViewReference.get();
 				final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-				if (this == bitmapWorkerTask && imageView != null
-						&& bitmap != null) {
-					imageView.setImageBitmap(bitmap);
-				} else {
-					imageView.setImageResource(R.drawable.default_album_cover);
+				if (this == bitmapWorkerTask && imageView != null) {
+					if (bitmap != null) {
+						imageView.setImageBitmap(bitmap);
+					} else {
+						imageView
+								.setImageResource(R.drawable.default_album_cover);
+					}
 				}
 			}
 		}
