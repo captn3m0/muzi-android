@@ -19,7 +19,6 @@ public class LangSettings extends MyActivity {
 
 		setMyContentView(R.layout.lang_settings, LangSettings.this);
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.lang_settings);
 		PRIVATE_MODE = 0;
 		pref = getApplicationContext().getSharedPreferences("Lang Pref",
 				PRIVATE_MODE);

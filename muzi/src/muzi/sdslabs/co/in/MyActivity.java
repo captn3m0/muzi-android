@@ -244,7 +244,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				R.layout.drawer_list_item, from, to));
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 		// enable ActionBar app icon to behave as action to toggle nav drawer
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		getSupportActionBar().setHomeButtonEnabled(true);
 
 		// ActionBarDrawerToggle ties together the the proper interactions
@@ -273,8 +273,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 
+		// This will decide which item to show when displayed first time on the
+		// screen
 		if (savedInstanceState == null) {
-			selectItem(0);
+			// selectItem(4);
 		}
 
 		FooterForPlayerControls footer = new FooterForPlayerControls(context);
@@ -372,6 +374,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			fragment = new TopTrackFragment();
 		} else if (position == 3) {
 			fragment = new TopAlbumsFragment();
+		} else if (position == 4) {
+			fragment = new UserSettingsFragment();
 		}
 
 		// else if (position == 4) {
@@ -672,7 +676,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		}
 
 		if (item.getItemId() == R.id.action_settings) {
-			Intent i = new Intent(context, UserSettings.class);
+			Intent i = new Intent(context, UserSettingsFragment.class);
 			startActivity(i);
 		} else if (item.getItemId() == android.R.id.home) {
 			Intent mainIntent = new Intent(getApplicationContext(),
