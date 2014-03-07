@@ -10,73 +10,79 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <FrameLayout
+            android:id="@+id/content_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent" >
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <TextView
-                    style="@style/tv_lang_settings"
-                    android:text="English" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
 
-                <ToggleButton
-                    android:id="@+id/tbEnglish"
-                    android:layout_width="137px"
-                    android:layout_height="36px"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/toggleswitch"
-                    android:checked="true"
-                    android:onClick="onToggleClicked"
-                    android:textOff=""
-                    android:textOn="" />
-            </RelativeLayout>
+                    <TextView
+                        style="@style/tv_lang_settings"
+                        android:text="English" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                    <ToggleButton
+                        android:id="@+id/tbEnglish"
+                        android:layout_width="137px"
+                        android:layout_height="36px"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/toggleswitch"
+                        android:checked="true"
+                        android:onClick="onToggleClicked"
+                        android:textOff=""
+                        android:textOn="" />
+                </RelativeLayout>
 
-                <TextView
-                    style="@style/tv_lang_settings"
-                    android:text="Hindi" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
 
-                <ToggleButton
-                    android:id="@+id/tbHindi"
-                    android:layout_width="137px"
-                    android:layout_height="36px"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/toggleswitch"
-                    android:checked="true"
-                    android:textOff=""
-                    android:textOn="" />
-            </RelativeLayout>
+                    <TextView
+                        style="@style/tv_lang_settings"
+                        android:text="Hindi" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                    <ToggleButton
+                        android:id="@+id/tbHindi"
+                        android:layout_width="137px"
+                        android:layout_height="36px"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/toggleswitch"
+                        android:checked="true"
+                        android:textOff=""
+                        android:textOn="" />
+                </RelativeLayout>
 
-                <TextView
-                    style="@style/tv_lang_settings"
-                    android:text="Tamil" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
 
-                <ToggleButton
-                    android:id="@+id/tbTamil"
-                    android:layout_width="137px"
-                    android:layout_height="36px"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/toggleswitch"
-                    android:checked="true"
-                    android:onClick="onToggleClicked"
-                    android:textOff=""
-                    android:textOn="" />
-            </RelativeLayout>
-        </LinearLayout>
+                    <TextView
+                        style="@style/tv_lang_settings"
+                        android:text="Tamil" />
+
+                    <ToggleButton
+                        android:id="@+id/tbTamil"
+                        android:layout_width="137px"
+                        android:layout_height="36px"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/toggleswitch"
+                        android:checked="true"
+                        android:onClick="onToggleClicked"
+                        android:textOff=""
+                        android:textOn="" />
+                </RelativeLayout>
+            </LinearLayout>
+        </FrameLayout>
 
         <muzi.sdslabs.co.in.FooterForPlayerControls
             android:id="@+id/footer"
