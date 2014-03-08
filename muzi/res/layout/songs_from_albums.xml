@@ -25,10 +25,9 @@
                     android:id="@+id/ivAlbumCover"
                     android:layout_width="174px"
                     android:layout_height="174px"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/tvEmpty2"
                     android:contentDescription="Default Image"
-                    android:paddingLeft="@dimen/padding_album_cover"
                     android:paddingTop="@dimen/padding_album_cover"
                     android:src="@drawable/default_album_cover" />
 
@@ -39,8 +38,16 @@
                     android:layout_alignBottom="@id/ivAlbumCover"
                     android:layout_toRightOf="@id/ivAlbumCover"
                     android:background="@color/ListItem"
-                    android:padding="7dp"
-                    android:paddingLeft="9dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textSize="@dimen/standard_text_size" />
+
+                <TextView
+                    android:id="@id/tvEmpty2"
+                    android:layout_width="@dimen/padding_album_cover"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/ivAlbumCover"
+                    android:layout_alignParentLeft="true"
+                    android:background="@color/ListItem"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textSize="@dimen/standard_text_size" />
 
@@ -83,6 +90,14 @@
                     android:cacheColorHint="#000000"
                     android:fadeScrollbars="true" >
                 </ListView>
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/lvSongsFromAlbums"
+                    android:text="TextView" />
             </RelativeLayout>
         </FrameLayout>
 

@@ -112,6 +112,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	// Ids of views in listview_layout
 	int[] to = { R.id.ivTitleInDrawer };
 	ArrayList<HashMap<String, String>> listImages;
+	
+	FooterForPlayerControls footer;
 
 	private class ServiceActionReceiver extends ResultReceiver {
 		public ServiceActionReceiver(Handler handler) {
@@ -127,8 +129,13 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			}
 			if (resultCode == MUSIC_READY && MusicService.mp != null) {
 				TextView tvSongTitle = (TextView) findViewById(R.id.tvSongTitleFooter);
-				tvSongTitle.setText(nowPlayingSongList.get(tempSongIndex)
-						.get(TAG_NAME));
+				tvSongTitle.setText(nowPlayingSongList.get(tempSongIndex).get(
+						TAG_NAME));
+				
+
+				if (!nowPlayingSongList.isEmpty()) {
+					footer.setVisibility(View.VISIBLE);
+				}
 			}
 		}
 	}
@@ -295,7 +302,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			// selectItem(4);
 		}
 
-		FooterForPlayerControls footer = new FooterForPlayerControls(context);
+		footer = new FooterForPlayerControls(context);
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
 
@@ -312,6 +319,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		// ibCurrentList.setOnClickListener(MyActivity.this);
 		// ibShuffle.setOnClickListener(MyActivity.this);
 		// ibRepeat.setOnClickListener(MyActivity.this);
+
+		if (nowPlayingSongList.isEmpty()) {
+			footer.setVisibility(View.GONE);
+		}
 
 		mRunnable.run();
 
@@ -654,7 +665,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			song.put(TAG_PATH, songPath);
 			song.put(TAG_IMAGEPATH, imagePath);
 			Log.i("Requested song", GlobalVariables.music_root + songPath);
-			
+
 			tempSongIndex = nowPlayingSongList.size();
 			nowPlayingSongList.add(song);
 		} else {
