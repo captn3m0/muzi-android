@@ -4,7 +4,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#CC222222"
+        android:background="@color/footer"
         android:orientation="vertical"
         android:paddingBottom="10dp"
         android:paddingLeft="10dp"
