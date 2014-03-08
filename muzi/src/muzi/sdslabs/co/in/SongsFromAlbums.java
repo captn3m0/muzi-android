@@ -330,7 +330,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				songPath = jsonObject.getString("file");
 
 				Log.i("Song Path", songPath);
-				playSong(songName, songPath, SongsFromAlbums.this);
+				playSong(songName, songPath, jsonObject.getString("albumId"),
+						SongsFromAlbums.this);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

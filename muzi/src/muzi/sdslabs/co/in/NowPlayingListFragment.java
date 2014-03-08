@@ -1,54 +1,99 @@
 package muzi.sdslabs.co.in;
 
-import java.util.ArrayList;
-
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.GridView;
 
-public class NowPlayingListFragment extends Fragment implements OnItemClickListener {
+public class NowPlayingListFragment extends Fragment {
 
 	boolean artist, album;
 
-	ListView lv;
-	ArrayList<String> listItems;
+	GridView gv;
+	private static final String TAG_TRACKID = "trackid";
+	private static final String TAG_NAME = "name";
+	private static final String TAG_ID = "id";
+
+	String[] from = { TAG_ID, TAG_NAME };
+	int[] to = { R.id.ivEvent, R.id.tvTitle };
+
+	/* To detect itemClick using touch gestures */
+	boolean isTouch;
+
+	float startXPosition = -1;
+	float startYPosition = -1;
+	float endXPosition = -10;
+	float endYPosition = -10;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.simple_list_view, container,
+		View rootView = inflater.inflate(R.layout.simple_grid_view, container,
 				false);
-		lv = (ListView) rootView.findViewById(R.id.lvSimple);
-		lv.setFastScrollEnabled(true);
-		lv.getRootView().setBackgroundColor(
-				getResources().getColor(R.color.Black));
-		lv.setCacheColorHint(Color.TRANSPARENT);
+		gv = (GridView) rootView.findViewById(R.id.gv);
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-				R.layout.list_item_with_one_tv,
-				R.id.tv_in_list_item_with_one_tv, MyActivity.nowPlayingList);
+		GridAdapter adapter = new GridAdapter(getActivity(),
+				MyActivity.nowPlayingSongList, R.layout.grid_cell, from, to);
+		gv.setAdapter(adapter);
 
-		Log.i("Size of now playing list in NOWPLAYINGLIST",
-				MyActivity.nowPlayingList.size() + "");
-		lv.setAdapter(adapter);
-		lv.setOnItemClickListener(NowPlayingListFragment.this);
+		gv.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent me) {
+
+				// Log.i("TopTrackFragment:onPostExecute():setOnTouchListener",
+				// me.getAction() + "");
+				//
+				// Log.i("isTouch", isTouch + "");
+
+				if (!isTouch) {
+					startXPosition = -1;
+					startYPosition = -1;
+				}
+
+				if (me.getAction() == MotionEvent.ACTION_DOWN) {
+					isTouch = true;
+					startXPosition = me.getX();
+					startYPosition = me.getY();
+				} else if (me.getAction() == MotionEvent.ACTION_UP) {
+					endXPosition = me.getX();
+					endYPosition = me.getY();
+					isTouch = false;
+				}
+
+				Log.i("startXPosition = ", startXPosition + "");
+				Log.i("startYPosition = ", startYPosition + "");
+				Log.i("endXPosition = ", endXPosition + "");
+				Log.i("endYPosition = ", endYPosition + "");
+
+				if ((Math.abs(startXPosition - endXPosition) <= 0.3)
+						&& (Math.abs(startYPosition - endYPosition) <= 0.3)) {
+					int position = gv.pointToPosition((int) startXPosition,
+							(int) startYPosition);
+
+					Log.i("result ------ onTouch", position + "\n");
+
+					((MainActivity) getActivity()).playSong(
+							MyActivity.nowPlayingSongList.get(position).get(
+									MyActivity.TAG_NAME),
+							MyActivity.nowPlayingSongList.get(position).get(
+									MyActivity.TAG_PATH),
+							MyActivity.nowPlayingSongList.get(position).get(
+									MyActivity.TAG_IMAGEPATH), getActivity());
+
+					startXPosition = -1;
+					startYPosition = -1;
+					endXPosition = -10;
+					endYPosition = -10;
+				}
+				return false;
+			}
+		});
 
 		return rootView;
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> av, View arg1, int position,
-			long arg3) {
-		((MainActivity) getActivity()).playSong(
-				MyActivity.nowPlayingList.get(position),
-				MyActivity.nowPlayingPathsList.get(position), getActivity());
 	}
 }

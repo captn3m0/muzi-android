@@ -86,9 +86,10 @@ public class MusicService extends Service implements
 	void playMusic() {
 
 		Log.i("Current song index", MyActivity.currentSongIndex + "");
-		Log.i("Temp song index", MyActivity.tempSongIndex + "");
+		Log.i("Temp song index", MyActivity.tempSongIndex + " "
+				+ MyActivity.nowPlayingSongList.size());
 
-		if (MyActivity.nowPlayingList.size() > 0) {
+		if (MyActivity.nowPlayingSongList.size() > 0) {
 
 			try {
 				if (mp.isPlaying()) {
@@ -96,8 +97,10 @@ public class MusicService extends Service implements
 				}
 
 				mp.reset();
-				String song = MyActivity.nowPlayingPathsList
-						.get(MyActivity.tempSongIndex);
+				String song = GlobalVariables.music_root
+						+ MyActivity.nowPlayingSongList.get(
+								MyActivity.tempSongIndex).get(
+								MyActivity.TAG_PATH);
 
 				String[] songArray = song.split("/");
 				song = songArray[0];
@@ -196,21 +199,21 @@ public class MusicService extends Service implements
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 
 		Log.i("Music Service", "Size of now playing list is "
-				+ MyActivity.nowPlayingList.size());
+				+ MyActivity.nowPlayingSongList.size());
 
 		MyActivity.tbPlayPause.setChecked(false);
 
-		if (MyActivity.nowPlayingList.size() == 0) {
+		if (MyActivity.nowPlayingSongList.size() == 0) {
 			return true;
 		}
 
 		Toast.makeText(
 				this,
-				MyActivity.nowPlayingList.get(MyActivity.tempSongIndex)
-						+ " couldn't be loaded.", Toast.LENGTH_SHORT).show();
+				MyActivity.nowPlayingSongList.get(MyActivity.tempSongIndex)
+						.get(MyActivity.TAG_NAME) + " couldn't be loaded.",
+				Toast.LENGTH_SHORT).show();
 
-		MyActivity.nowPlayingPathsList.remove(MyActivity.tempSongIndex);
-		MyActivity.nowPlayingList.remove(MyActivity.tempSongIndex);
+		MyActivity.nowPlayingSongList.remove(MyActivity.tempSongIndex);
 		MyActivity.tempSongIndex = MyActivity.currentSongIndex;
 
 		if (mp != null) {
@@ -242,16 +245,16 @@ public class MusicService extends Service implements
 		mp.stop();
 		MyActivity.tbPlayPause.setChecked(false);
 
-		if (MyActivity.nowPlayingList.size() > 0) {
+		if (MyActivity.nowPlayingSongList.size() > 0) {
 			mp.reset();
 			if (!MyActivity.shouldShuffle) {
 				MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
-						% MyActivity.nowPlayingList.size();
+						% MyActivity.nowPlayingSongList.size();
 				playMusic();
 			} else {
 				Random randGenerator = new Random();
 				MyActivity.tempSongIndex = randGenerator
-						.nextInt(MyActivity.nowPlayingList.size());
+						.nextInt(MyActivity.nowPlayingSongList.size());
 				playMusic();
 			}
 		}

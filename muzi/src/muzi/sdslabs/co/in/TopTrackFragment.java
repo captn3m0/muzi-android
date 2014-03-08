@@ -35,7 +35,7 @@ public class TopTrackFragment extends Fragment {
 	JSONArray FilteredJSONArray = null;
 	GridView gv;
 	String[] from = { TAG_ID, TAG_NAME };
-	int[] to = { R.id.iv_in_li, R.id.tv_in_li };
+	int[] to = { R.id.ivEvent, R.id.tvTitle };
 	ArrayList<HashMap<String, String>> FilteredArrayList;
 
 	/* To detect itemClick using touch gestures */
@@ -225,7 +225,7 @@ public class TopTrackFragment extends Fragment {
 				Log.i("Song Path", songPath);
 
 				((MainActivity) getActivity()).playSong(songName, songPath,
-						getActivity());
+						jsonObject.getString("albumId"), getActivity());
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

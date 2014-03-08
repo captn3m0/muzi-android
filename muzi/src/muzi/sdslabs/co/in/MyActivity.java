@@ -80,8 +80,15 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	public static boolean shouldShuffle = false;
 	private static MusicService mServ;
 	private ServiceConnection Scon;
-	public static ArrayList<String> nowPlayingList = new ArrayList<String>(),
-			nowPlayingPathsList = new ArrayList<String>();
+
+	public static ArrayList<HashMap<String, String>> nowPlayingSongList;
+	public static String TAG_NAME = "name";
+	public static String TAG_PATH = "path";
+	public static String TAG_IMAGEPATH = "id";
+
+	// public static ArrayList<String> nowPlayingSongList = new
+	// ArrayList<String>(),
+	// nowPlayingSongList = new ArrayList<String>();
 	public static int currentSongIndex = 0, tempSongIndex = 0;
 	Context context;
 	static ResultReceiver serviceActionReceiver;
@@ -120,7 +127,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			}
 			if (resultCode == MUSIC_READY && MusicService.mp != null) {
 				TextView tvSongTitle = (TextView) findViewById(R.id.tvSongTitleFooter);
-				tvSongTitle.setText(nowPlayingList.get(currentSongIndex));
+				tvSongTitle.setText(nowPlayingSongList.get(tempSongIndex)
+						.get(TAG_NAME));
 			}
 		}
 	}
@@ -138,9 +146,9 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 			if (action == NEXT) {
 
-				if (nowPlayingList.size() > 0) {
+				if (nowPlayingSongList.size() > 0) {
 					tempSongIndex = (currentSongIndex + 1)
-							% nowPlayingPathsList.size();
+							% nowPlayingSongList.size();
 					startMusicService(context);
 				}
 			} else if (action == PLAY_PAUSE) {
@@ -154,9 +162,9 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				// }
 			} else if (action == PREVIOUS) {
 
-				if (nowPlayingList.size() > 0) {
-					tempSongIndex = (currentSongIndex - 1 + nowPlayingPathsList
-							.size()) % nowPlayingPathsList.size();
+				if (nowPlayingSongList.size() > 0) {
+					tempSongIndex = (currentSongIndex - 1 + nowPlayingSongList
+							.size()) % nowPlayingSongList.size();
 					startMusicService(context);
 				}
 			} else if (action == CLOSE) {
@@ -229,6 +237,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		Log.i("MyActivity: onCreate", isNetworkAvailable(context)
 				+ " = network availability");
+
+		nowPlayingSongList = new ArrayList<HashMap<String, String>>();
 
 		getSupportActionBar().setHomeButtonEnabled(true);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -513,8 +523,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		actionPendingIntent = PendingIntent
 				.getBroadcast(this, CLOSE, active, 0);
 		notiView.setOnClickPendingIntent(R.id.nibClose, actionPendingIntent);
-		notiView.setTextViewText(R.id.ntvTitle,
-				nowPlayingList.get(MyActivity.currentSongIndex));
+		notiView.setTextViewText(
+				R.id.ntvTitle,
+				nowPlayingSongList.get(MyActivity.currentSongIndex).get(
+						TAG_NAME));
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this)
@@ -526,8 +538,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				.setContent(notiView)
 				.setOngoing(true)
 				.setContentTitle(
-						nowPlayingList.get(MyActivity.currentSongIndex))
-				.setAutoCancel(true);
+						nowPlayingSongList.get(MyActivity.currentSongIndex)
+								.get(TAG_NAME)).setAutoCancel(true);
 		mBuilder.build().contentView = notiView;
 
 		// shows big notification in Android > 3.0 (Honeycomb)
@@ -628,21 +640,29 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		return true;
 	}
 
-	void playSong(String songName, String songPath, Context context) {
+	void playSong(String songName, String songPath, String imagePath,
+			Context context) {
 		Intent i = new Intent(context, MusicService.class);
 
-		if (!nowPlayingList.contains(songName)) {
-			nowPlayingList.add(songName);
+		HashMap<String, String> songToBeSearched = new HashMap<String, String>();
+		songToBeSearched.put(TAG_NAME, songName);
 
+		if (!nowPlayingSongList.contains(songToBeSearched)) {
+
+			HashMap<String, String> song = new HashMap<String, String>();
+			song.put(TAG_NAME, songName);
+			song.put(TAG_PATH, songPath);
+			song.put(TAG_IMAGEPATH, imagePath);
 			Log.i("Requested song", GlobalVariables.music_root + songPath);
-			nowPlayingPathsList.add(GlobalVariables.music_root + songPath);
-			tempSongIndex = nowPlayingList.size() - 1;
+			
+			tempSongIndex = nowPlayingSongList.size();
+			nowPlayingSongList.add(song);
 		} else {
-			tempSongIndex = nowPlayingList.indexOf(songName);
+			tempSongIndex = nowPlayingSongList.indexOf(songToBeSearched);
 		}
 
-		for (int j = 0; j < nowPlayingPathsList.size(); j++) {
-			Log.i("song " + j, nowPlayingPathsList.get(j));
+		for (int j = 0; j < nowPlayingSongList.size(); j++) {
+			Log.i("song " + j, nowPlayingSongList.get(j).get(TAG_PATH));
 		}
 
 		i.putExtra("RECEIVER", serviceActionReceiver);
@@ -690,17 +710,17 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		int id = arg0.getId();
 		if (id == R.id.ibPreviousFooter) {
 
-			if (nowPlayingList.size() > 0) {
-				tempSongIndex = (currentSongIndex - 1 + nowPlayingPathsList
-						.size()) % nowPlayingPathsList.size();
+			if (nowPlayingSongList.size() > 0) {
+				tempSongIndex = (currentSongIndex - 1 + nowPlayingSongList
+						.size()) % nowPlayingSongList.size();
 				startMusicService(context);
 			}
 
 		} else if (id == R.id.ibNextFooter) {
 
-			if (nowPlayingList.size() > 0) {
+			if (nowPlayingSongList.size() > 0) {
 				tempSongIndex = (currentSongIndex + 1)
-						% nowPlayingPathsList.size();
+						% nowPlayingSongList.size();
 				startMusicService(context);
 			}
 
