@@ -227,15 +227,16 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		if (Globals.nowPlayingSongList == null) {
 			Globals.nowPlayingSongList = new ArrayList<HashMap<String, String>>();
+
 		}
-		
+
+		ivAlbumFooter = (ImageView) findViewById(R.id.ivAlbumArtFooter);
+		tvSongNameFooter = (TextView) findViewById(R.id.tvSongTitleFooter);
+
 		footer = new FooterForPlayerControls(context);
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
 		setFooter();
-
-		ivAlbumFooter = (ImageView) findViewById(R.id.ivAlbumArtFooter);
-		tvSongNameFooter = (TextView) findViewById(R.id.tvSongTitleFooter);
 
 		ibNext = (ImageButton) findViewById(R.id.ibNextFooter);
 		ibPrevious = (ImageButton) findViewById(R.id.ibPreviousFooter);
@@ -257,7 +258,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		// footer.setVisibility(View.VISIBLE);
 		// }
 
-//		mRunnable.run();
+		mRunnable.run();
 
 		Scon = new ServiceConnection() {
 
@@ -492,6 +493,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
+
 		MenuItem searchItem = menu.findItem(R.id.search);
 
 		// Associate searchable configuration with the SearchView
@@ -500,7 +502,17 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				.getActionView(searchItem);
 		searchView.setSearchableInfo(searchManager
 				.getSearchableInfo(getComponentName()));
+
 		return true;
+	}
+
+	@Override
+	public boolean onSearchRequested() {
+		// TODO Auto-generated method stub
+
+		Log.e("Yes onSearchRequested() called", "true");
+
+		return super.onSearchRequested();
 	}
 
 	void playSong(String songName, String songPath, String imagePath,
@@ -553,6 +565,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
 
 		int id = arg0.getId();
 		if (id == R.id.ibPreviousFooter) {

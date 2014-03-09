@@ -16,15 +16,14 @@
         android:allowBackup="true"
         android:icon="@drawable/muzi_icon"
         android:label="@string/app_name"
-        android:logo="@drawable/menu"
         android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".SearchResults" />
+
         <activity
             android:name="muzi.sdslabs.co.in.MainActivity"
             android:label="@string/app_name" >
-            <meta-data
-                android:name="android.app.default_searchable"
-                android:value=".SearchResults" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

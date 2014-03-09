@@ -82,7 +82,8 @@ public class MainActivity extends MyActivity {
 		// This will decide which item to show when displayed first time on the
 		// screen
 		if (savedInstanceState == null) {
-			// selectItem(4);
+			selectItem(0);
+			getSupportActionBar().setLogo(R.drawable.menu);
 		}
 	}
 
@@ -130,9 +131,6 @@ public class MainActivity extends MyActivity {
 		// EmailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
 		// startActivity(EmailIntent);
 		// }
-
-		// Bundle args = new Bundle();
-		// fragment.setArguments(args);
 
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.beginTransaction()
@@ -182,13 +180,13 @@ public class MainActivity extends MyActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
+		Log.e("Search selected", "hehe");
 		// The action bar home/up action should open or close the drawer.
 		// ActionBarDrawerToggle will take care of this.
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-
-		return true;
+		return super.onOptionsItemSelected(item);
 	}
 
 	/** Code to add slider now playing screen **/
