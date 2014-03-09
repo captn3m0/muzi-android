@@ -71,7 +71,6 @@
                 android:layout_alignTop="@+id/ivAlbumArtFooter"
                 android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@+id/ivAlbumArtFooter"
-                android:text="Song Name"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@android:color/white" />
 
@@ -82,7 +81,6 @@
                 android:layout_below="@+id/tvSongTitle"
                 android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@+id/ivAlbumArtFooter"
-                android:text="Artist"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@android:color/white" />
         </RelativeLayout>

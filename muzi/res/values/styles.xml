@@ -7,7 +7,7 @@
         <item name="actionBarTabStyle">@style/ActionBarTabStyle.Black</item>
         <item name="actionDropDownStyle">@style/DropDownNav.Black</item>
         <item name="actionBarStyle">@style/ActionBar.Solid.Black</item>
-        <item name="actionModeBackground">@color/titleBar</item>
+        <!-- <item name="actionModeBackground">@color/titleBar</item> -->
         <item name="actionModeSplitBackground">@color/titleBar</item>
         <!-- <item name="actionModeBackground">@drawable/cab_background_top_black</item> -->
         <!-- <item name="actionModeSplitBackground">@drawable/cab_background_bottom_black</item> -->

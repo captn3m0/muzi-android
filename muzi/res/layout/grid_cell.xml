@@ -16,29 +16,30 @@
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/album_name_text_size"
         android:layout_alignBottom="@id/ivEvent"
         android:background="#55000000"
         android:text="TextView"
         android:textColor="@android:color/white" />
 
-    <ImageButton
-        android:id="@+id/ibGridAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/tvTitle"
-        android:layout_alignRight="@id/ivEvent"
-        android:background="@null"
-        android:contentDescription="Cross"
-        android:src="@drawable/abc_ic_clear_search_api_holo_light" />
+<!--     <ImageButton -->
+<!--         android:id="@+id/ibGridAdd" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignBottom="@id/tvTitle" -->
+<!--         android:layout_alignRight="@id/ivEvent" -->
+<!--         android:background="@null" -->
+<!--         android:contentDescription="Cross" -->
+<!--         android:src="@drawable/abc_ic_clear_search_api_holo_light" /> -->
 
-    <ImageButton
-        android:id="@+id/ibGridPlay"
-        android:layout_width="14sp"
-        android:layout_height="14sp"
-        android:layout_alignBottom="@id/ivEvent"
-        android:layout_toLeftOf="@id/ibGridAdd"
-        android:background="@null"
-        android:contentDescription="Cross"
-        android:src="@drawable/play_button" />
+<!--     <ImageButton -->
+<!--         android:id="@+id/ibGridPlay" -->
+<!--         android:layout_width="14sp" -->
+<!--         android:layout_height="14sp" -->
+<!--         android:layout_alignBottom="@id/ivEvent" -->
+<!--         android:layout_toLeftOf="@id/ibGridAdd" -->
+<!--         android:background="@null" -->
+<!--         android:contentDescription="Cross" -->
+<!--         android:src="@drawable/play_button" /> -->
 
 </RelativeLayout>

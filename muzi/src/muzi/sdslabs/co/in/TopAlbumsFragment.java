@@ -177,9 +177,6 @@ public class TopAlbumsFragment extends Fragment implements OnTouchListener {
 		if ((Math.abs(startXPosition - endXPosition) <= 0.3)
 				&& (Math.abs(startYPosition - endYPosition) <= 0.3)) {
 
-			Toast.makeText(getActivity(), "Touch Detected", Toast.LENGTH_SHORT)
-					.show();
-
 			int position = gv.pointToPosition((int) startXPosition,
 					(int) startYPosition);
 

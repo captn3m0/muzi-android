@@ -85,11 +85,10 @@ public class MusicService extends Service implements
 
 	void playMusic() {
 
-		Log.i("Current song index", MyActivity.currentSongIndex + "");
-		Log.i("Temp song index", MyActivity.tempSongIndex + " "
-				+ MyActivity.nowPlayingSongList.size());
+		Log.i("Current song index", Globals.currentSongIndex + "");
+		Log.i("Temp song index", Globals.tempSongIndex + " ");
 
-		if (MyActivity.nowPlayingSongList.size() > 0) {
+		if (Globals.nowPlayingSongList.size() > 0) {
 
 			try {
 				if (mp.isPlaying()) {
@@ -98,9 +97,8 @@ public class MusicService extends Service implements
 
 				mp.reset();
 				String song = GlobalVariables.music_root
-						+ MyActivity.nowPlayingSongList.get(
-								MyActivity.tempSongIndex).get(
-								MyActivity.TAG_PATH);
+						+ Globals.nowPlayingSongList.get(Globals.tempSongIndex)
+								.get(Globals.TAG_PATH);
 
 				String[] songArray = song.split("/");
 				song = songArray[0];
@@ -118,7 +116,7 @@ public class MusicService extends Service implements
 					public void onPrepared(MediaPlayer mp) {
 						// TODO Auto-generated method stub
 						mp.start();
-						MyActivity.currentSongIndex = MyActivity.tempSongIndex;
+						Globals.currentSongIndex = Globals.tempSongIndex;
 					}
 				});
 
@@ -199,22 +197,22 @@ public class MusicService extends Service implements
 	public boolean onError(MediaPlayer mp, int what, int extra) {
 
 		Log.i("Music Service", "Size of now playing list is "
-				+ MyActivity.nowPlayingSongList.size());
+				+ Globals.nowPlayingSongList.size());
 
 		MyActivity.tbPlayPause.setChecked(false);
 
-		if (MyActivity.nowPlayingSongList.size() == 0) {
+		if (Globals.nowPlayingSongList.size() == 0) {
 			return true;
 		}
 
 		Toast.makeText(
 				this,
-				MyActivity.nowPlayingSongList.get(MyActivity.tempSongIndex)
-						.get(MyActivity.TAG_NAME) + " couldn't be loaded.",
-				Toast.LENGTH_SHORT).show();
+				Globals.nowPlayingSongList.get(Globals.tempSongIndex).get(
+						Globals.TAG_NAME)
+						+ " couldn't be loaded.", Toast.LENGTH_SHORT).show();
 
-		MyActivity.nowPlayingSongList.remove(MyActivity.tempSongIndex);
-		MyActivity.tempSongIndex = MyActivity.currentSongIndex;
+		Globals.nowPlayingSongList.remove(Globals.tempSongIndex);
+		Globals.tempSongIndex = Globals.currentSongIndex;
 
 		if (mp != null) {
 			mp.stop();
@@ -245,16 +243,16 @@ public class MusicService extends Service implements
 		mp.stop();
 		MyActivity.tbPlayPause.setChecked(false);
 
-		if (MyActivity.nowPlayingSongList.size() > 0) {
+		if (Globals.nowPlayingSongList.size() > 0) {
 			mp.reset();
-			if (!MyActivity.shouldShuffle) {
-				MyActivity.tempSongIndex = (MyActivity.currentSongIndex + 1)
-						% MyActivity.nowPlayingSongList.size();
+			if (!Globals.shouldShuffle) {
+				Globals.tempSongIndex = (Globals.currentSongIndex + 1)
+						% Globals.nowPlayingSongList.size();
 				playMusic();
 			} else {
 				Random randGenerator = new Random();
-				MyActivity.tempSongIndex = randGenerator
-						.nextInt(MyActivity.nowPlayingSongList.size());
+				Globals.tempSongIndex = randGenerator
+						.nextInt(Globals.nowPlayingSongList.size());
 				playMusic();
 			}
 		}

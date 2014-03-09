@@ -238,7 +238,10 @@ public class TopTrackFragment extends Fragment {
 		 * After completing background task Dismiss the progress dialog
 		 * **/
 		protected void onPostExecute(String file_url) {
-			Toast.makeText(getActivity(), songName, Toast.LENGTH_SHORT).show();
+
+			if (songName != null && getActivity() != null)
+				Toast.makeText(getActivity(), songName, Toast.LENGTH_SHORT)
+						.show();
 		}
 	}
 

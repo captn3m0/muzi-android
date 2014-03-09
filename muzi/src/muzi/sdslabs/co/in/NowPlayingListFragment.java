@@ -38,7 +38,7 @@ public class NowPlayingListFragment extends Fragment {
 		gv = (GridView) rootView.findViewById(R.id.gv);
 
 		GridAdapter adapter = new GridAdapter(getActivity(),
-				MyActivity.nowPlayingSongList, R.layout.grid_cell, from, to);
+				Globals.nowPlayingSongList, R.layout.grid_cell, from, to);
 		gv.setAdapter(adapter);
 
 		gv.setOnTouchListener(new OnTouchListener() {
@@ -78,11 +78,11 @@ public class NowPlayingListFragment extends Fragment {
 					Log.i("result ------ onTouch", position + "\n");
 
 					((MainActivity) getActivity()).playSong(
-							MyActivity.nowPlayingSongList.get(position).get(
+							Globals.nowPlayingSongList.get(position).get(
 									MyActivity.TAG_NAME),
-							MyActivity.nowPlayingSongList.get(position).get(
+							Globals.nowPlayingSongList.get(position).get(
 									MyActivity.TAG_PATH),
-							MyActivity.nowPlayingSongList.get(position).get(
+							Globals.nowPlayingSongList.get(position).get(
 									MyActivity.TAG_IMAGEPATH), getActivity());
 
 					startXPosition = -1;

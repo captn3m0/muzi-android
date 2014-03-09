@@ -75,17 +75,10 @@
                     android:text="Album Name"
                     android:textSize="@dimen/standard_text_size" />
 
-                <muzi.sdslabs.co.in.FooterForPlayerControls
-                    android:id="@+id/footer"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true" />
-
                 <ListView
                     android:id="@+id/lvSongsFromAlbums"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/footer"
                     android:layout_below="@id/tvEmpty"
                     android:cacheColorHint="#000000"
                     android:fadeScrollbars="true" >
@@ -96,8 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/lvSongsFromAlbums"
-                    android:text="TextView" />
+                    android:layout_below="@id/lvSongsFromAlbums" />
             </RelativeLayout>
         </FrameLayout>
 

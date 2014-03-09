@@ -1,5 +1,7 @@
 package muzi.sdslabs.co.in;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +16,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -77,21 +81,15 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	private static boolean isApplicationVisible;
 	final static int mId = 10;
 
-	public static boolean shouldShuffle = false;
 	private static MusicService mServ;
 	private ServiceConnection Scon;
 
-	public static ArrayList<HashMap<String, String>> nowPlayingSongList;
+	Context context;
+	static ResultReceiver serviceActionReceiver;
+
 	public static String TAG_NAME = "name";
 	public static String TAG_PATH = "path";
 	public static String TAG_IMAGEPATH = "id";
-
-	// public static ArrayList<String> nowPlayingSongList = new
-	// ArrayList<String>(),
-	// nowPlayingSongList = new ArrayList<String>();
-	public static int currentSongIndex = 0, tempSongIndex = 0;
-	Context context;
-	static ResultReceiver serviceActionReceiver;
 
 	/* Navigation Drawer */
 	private DrawerLayout mDrawerLayout;
@@ -99,12 +97,11 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	private ActionBarDrawerToggle mDrawerToggle;
 	CharSequence mTitle, mDrawerTitle;
 
-	Integer listItems[] = { R.drawable.muzi, R.drawable.artist,
-			R.drawable.toptracks, R.drawable.topalbum, R.drawable.playlist,
-			R.drawable.settings };
+	Integer listItems[] = { R.drawable.muzi, R.drawable.toptracks,
+			R.drawable.topalbum, R.drawable.playlist, R.drawable.settings };
 
-	String titles[] = { "Muzi", "Artists", "Top Tracks", "Top Albums",
-			"Now Playing List", "Settings" };
+	String titles[] = { "Muzi", "Top Tracks", "Top Albums", "Now Playing List",
+			"Settings" };
 
 	// Keys used in Hashmap
 	String[] from = { "image" };
@@ -112,8 +109,11 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	// Ids of views in listview_layout
 	int[] to = { R.id.ivTitleInDrawer };
 	ArrayList<HashMap<String, String>> listImages;
-	
-	FooterForPlayerControls footer;
+
+	public static FooterForPlayerControls footer;
+
+	public static ImageView ivAlbumFooter;
+	public static TextView tvSongNameFooter;
 
 	private class ServiceActionReceiver extends ResultReceiver {
 		public ServiceActionReceiver(Handler handler) {
@@ -128,14 +128,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				showNotification();
 			}
 			if (resultCode == MUSIC_READY && MusicService.mp != null) {
-				TextView tvSongTitle = (TextView) findViewById(R.id.tvSongTitleFooter);
-				tvSongTitle.setText(nowPlayingSongList.get(tempSongIndex).get(
-						TAG_NAME));
-				
-
-				if (!nowPlayingSongList.isEmpty()) {
-					footer.setVisibility(View.VISIBLE);
-				}
+				setFooter();
+				Log.e("MyActivity", "Should set footer");
 			}
 		}
 	}
@@ -153,9 +147,9 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 			if (action == NEXT) {
 
-				if (nowPlayingSongList.size() > 0) {
-					tempSongIndex = (currentSongIndex + 1)
-							% nowPlayingSongList.size();
+				if (Globals.nowPlayingSongList.size() > 0) {
+					Globals.tempSongIndex = (Globals.currentSongIndex + 1)
+							% Globals.nowPlayingSongList.size();
 					startMusicService(context);
 				}
 			} else if (action == PLAY_PAUSE) {
@@ -169,9 +163,9 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				// }
 			} else if (action == PREVIOUS) {
 
-				if (nowPlayingSongList.size() > 0) {
-					tempSongIndex = (currentSongIndex - 1 + nowPlayingSongList
-							.size()) % nowPlayingSongList.size();
+				if (Globals.nowPlayingSongList.size() > 0) {
+					Globals.tempSongIndex = (Globals.currentSongIndex - 1 + Globals.nowPlayingSongList
+							.size()) % Globals.nowPlayingSongList.size();
 					startMusicService(context);
 				}
 			} else if (action == CLOSE) {
@@ -245,8 +239,10 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		Log.i("MyActivity: onCreate", isNetworkAvailable(context)
 				+ " = network availability");
 
-		nowPlayingSongList = new ArrayList<HashMap<String, String>>();
+		if (Globals.nowPlayingSongList == null) {
+			Globals.nowPlayingSongList = new ArrayList<HashMap<String, String>>();
 
+		}
 		getSupportActionBar().setHomeButtonEnabled(true);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -302,9 +298,13 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			// selectItem(4);
 		}
 
+		ivAlbumFooter = (ImageView) findViewById(R.id.ivAlbumArtFooter);
+		tvSongNameFooter = (TextView) findViewById(R.id.tvSongTitleFooter);
+
 		footer = new FooterForPlayerControls(context);
 		footer = (FooterForPlayerControls) findViewById(R.id.footer);
 		footer.initFooter();
+		setFooter();
 
 		ibNext = (ImageButton) findViewById(R.id.ibNextFooter);
 		ibPrevious = (ImageButton) findViewById(R.id.ibPreviousFooter);
@@ -320,9 +320,11 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		// ibShuffle.setOnClickListener(MyActivity.this);
 		// ibRepeat.setOnClickListener(MyActivity.this);
 
-		if (nowPlayingSongList.isEmpty()) {
-			footer.setVisibility(View.GONE);
-		}
+		// if (Globals.nowPlayingSongList.isEmpty()) {
+		// footer.setVisibility(View.GONE);
+		// }else{
+		// footer.setVisibility(View.VISIBLE);
+		// }
 
 		mRunnable.run();
 
@@ -380,19 +382,20 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 		// Learnt it the hard way that position starts from 1 here
 		// May be it's because of header otherwise the count starts from 0 in
-		// general
-		if (position == 1) {
-			fragment = new Artist_or_Album_Fragment();
-			Bundle args = new Bundle();
-			args.putString("list_type", "band");
-			fragment.setArguments(args);
-		} else if (position == 2 || position == 0) {
+		// // general
+		// if (position == 1) {
+		// fragment = new Artist_or_Album_Fragment();
+		// Bundle args = new Bundle();
+		// args.putString("list_type", "band");
+		// fragment.setArguments(args);
+		// } else
+		if (position == 1 || position == 0) {
 			fragment = new TopTrackFragment();
-		} else if (position == 3) {
+		} else if (position == 2) {
 			fragment = new TopAlbumsFragment();
-		} else if (position == 4) {
+		} else if (position == 3) {
 			fragment = new NowPlayingListFragment();
-		} else if (position == 5) {
+		} else if (position == 4) {
 			fragment = new UserSettingsFragment();
 		}
 		// } else if (position == 5) {
@@ -536,7 +539,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		notiView.setOnClickPendingIntent(R.id.nibClose, actionPendingIntent);
 		notiView.setTextViewText(
 				R.id.ntvTitle,
-				nowPlayingSongList.get(MyActivity.currentSongIndex).get(
+				Globals.nowPlayingSongList.get(Globals.currentSongIndex).get(
 						TAG_NAME));
 
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
@@ -549,8 +552,9 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				.setContent(notiView)
 				.setOngoing(true)
 				.setContentTitle(
-						nowPlayingSongList.get(MyActivity.currentSongIndex)
-								.get(TAG_NAME)).setAutoCancel(true);
+						Globals.nowPlayingSongList
+								.get(Globals.currentSongIndex).get(TAG_NAME))
+				.setAutoCancel(true);
 		mBuilder.build().contentView = notiView;
 
 		// shows big notification in Android > 3.0 (Honeycomb)
@@ -658,7 +662,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		HashMap<String, String> songToBeSearched = new HashMap<String, String>();
 		songToBeSearched.put(TAG_NAME, songName);
 
-		if (!nowPlayingSongList.contains(songToBeSearched)) {
+		if (!Globals.nowPlayingSongList.contains(songToBeSearched)) {
 
 			HashMap<String, String> song = new HashMap<String, String>();
 			song.put(TAG_NAME, songName);
@@ -666,14 +670,15 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			song.put(TAG_IMAGEPATH, imagePath);
 			Log.i("Requested song", GlobalVariables.music_root + songPath);
 
-			tempSongIndex = nowPlayingSongList.size();
-			nowPlayingSongList.add(song);
+			Globals.tempSongIndex = Globals.nowPlayingSongList.size();
+			Globals.nowPlayingSongList.add(song);
 		} else {
-			tempSongIndex = nowPlayingSongList.indexOf(songToBeSearched);
+			Globals.tempSongIndex = Globals.nowPlayingSongList
+					.indexOf(songToBeSearched);
 		}
 
-		for (int j = 0; j < nowPlayingSongList.size(); j++) {
-			Log.i("song " + j, nowPlayingSongList.get(j).get(TAG_PATH));
+		for (int j = 0; j < Globals.nowPlayingSongList.size(); j++) {
+			Log.i("song " + j, Globals.nowPlayingSongList.get(j).get(TAG_PATH));
 		}
 
 		i.putExtra("RECEIVER", serviceActionReceiver);
@@ -721,22 +726,94 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		int id = arg0.getId();
 		if (id == R.id.ibPreviousFooter) {
 
-			if (nowPlayingSongList.size() > 0) {
-				tempSongIndex = (currentSongIndex - 1 + nowPlayingSongList
-						.size()) % nowPlayingSongList.size();
+			if (Globals.nowPlayingSongList.size() > 0) {
+				Globals.tempSongIndex = (Globals.currentSongIndex - 1 + Globals.nowPlayingSongList
+						.size()) % Globals.nowPlayingSongList.size();
 				startMusicService(context);
 			}
 
 		} else if (id == R.id.ibNextFooter) {
 
-			if (nowPlayingSongList.size() > 0) {
-				tempSongIndex = (currentSongIndex + 1)
-						% nowPlayingSongList.size();
+			if (Globals.nowPlayingSongList.size() > 0) {
+				Globals.tempSongIndex = (Globals.currentSongIndex + 1)
+						% Globals.nowPlayingSongList.size();
 				startMusicService(context);
 			}
 
 		} else if (id == R.id.ibShuffle) {
-			shouldShuffle = !shouldShuffle;
+			Globals.shouldShuffle = !Globals.shouldShuffle;
+		}
+	}
+
+	String urlFooterCover;
+
+	public void setFooter() {
+
+		if (MusicService.mp != null && MusicService.mp.isPlaying()
+				&& Globals.nowPlayingSongList.size() > 0) {
+
+//			footer.initFooter();
+			Log.e("MyActivity", "should definitely set footer");
+
+			tvSongNameFooter = (TextView) findViewById(R.id.tvSongTitleFooter);
+			tvSongNameFooter.setText(Globals.nowPlayingSongList.get(
+					Globals.tempSongIndex).get(TAG_NAME));
+
+			String img = Globals.nowPlayingSongList.get(Globals.tempSongIndex)
+					.get(TAG_IMAGEPATH);
+
+			urlFooterCover = GlobalVariables.pic_root + img + ".jpg";
+
+			LoadAlbumCoverInFooter async = new LoadAlbumCoverInFooter();
+			async.execute();
+			if (!Globals.nowPlayingSongList.isEmpty()) {
+				footer.setVisibility(View.VISIBLE);
+			}
+		}
+	}
+
+	Bitmap bitmap = null;
+
+	class LoadAlbumCoverInFooter extends AsyncTask<String, String, String> {
+
+		/**
+		 * Before starting background thread Show Progress Dialog
+		 * */
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+		}
+
+		/**
+		 * getting All products from url
+		 * */
+		protected String doInBackground(String... args) {
+
+			String url = urlFooterCover;
+
+			// First decode with inJustDecodeBounds=true to check dimensions
+			try {
+				Log.i("TileAdapter: decodeSam***", url);
+				bitmap = BitmapFactory.decodeStream(
+						(InputStream) new URL(url).getContent(), null, null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				bitmap = BitmapFactory.decodeResource(getResources(),
+						R.drawable.default_album_cover, null);
+			}
+			return null;
+		}
+
+		/**
+		 * After completing background task Dismiss the progress dialog
+		 * **/
+		protected void onPostExecute(String file_url) {
+
+			Log.i("Album should print", "true");
+			ivAlbumFooter = (ImageView) findViewById(R.id.ivAlbumArtFooter);
+			ivAlbumFooter.setImageBitmap(bitmap);
 		}
 	}
 }
