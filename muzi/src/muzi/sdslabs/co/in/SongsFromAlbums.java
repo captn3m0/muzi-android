@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
+public class SongsFromAlbums extends Activity implements OnItemClickListener {
 
 	// url to make request
 	// remember that its album & not albums
@@ -57,9 +58,9 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setMyContentView(R.layout.songs_from_albums, this);
 		super.onCreate(savedInstanceState);
 
+		setContentView(R.layout.songs_from_albums);
 		/*------------------------style list view-----------------*/
 		{
 			lv = (ListView) findViewById(R.id.lvSongsFromAlbums);
@@ -330,8 +331,8 @@ public class SongsFromAlbums extends MyActivity implements OnItemClickListener {
 				songPath = jsonObject.getString("file");
 
 				Log.i("Song Path", songPath);
-				playSong(songName, songPath, jsonObject.getString("albumId"),
-						SongsFromAlbums.this);
+				// playSong(songName, songPath, jsonObject.getString("albumId"),
+				// SongsFromAlbums.this);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

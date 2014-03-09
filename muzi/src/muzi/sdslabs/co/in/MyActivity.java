@@ -15,7 +15,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -25,14 +24,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.ResultReceiver;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -44,10 +38,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -90,12 +82,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 	public static String TAG_NAME = "name";
 	public static String TAG_PATH = "path";
 	public static String TAG_IMAGEPATH = "id";
-
-	/* Navigation Drawer */
-	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
-	private ActionBarDrawerToggle mDrawerToggle;
-	CharSequence mTitle, mDrawerTitle;
 
 	Integer listItems[] = { R.drawable.muzi, R.drawable.toptracks,
 			R.drawable.topalbum, R.drawable.playlist, R.drawable.settings };
@@ -243,60 +229,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			Globals.nowPlayingSongList = new ArrayList<HashMap<String, String>>();
 
 		}
-		getSupportActionBar().setHomeButtonEnabled(true);
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		mDrawerTitle = mTitle = getSupportActionBar().getTitle();
-		listImages = new ArrayList<HashMap<String, String>>();
-		for (int i = 0; i < listItems.length; i++) {
-			HashMap<String, String> map = new HashMap<String, String>();
-			map.put("image", listItems[i] + "");
-			listImages.add(map);
-		}
-
-		// set a custom shadow that overlays the main content when the drawer
-		// opens
-		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-				GravityCompat.START);
-		// set up the drawer's list view with items and click listener
-		mDrawerList.setAdapter(new SimpleAdapter(this, listImages,
-				R.layout.drawer_list_item, from, to));
-		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-		// enable ActionBar app icon to behave as action to toggle nav drawer
-		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		getSupportActionBar().setHomeButtonEnabled(true);
-
-		// ActionBarDrawerToggle ties together the the proper interactions
-		// between the sliding drawer and the action bar app icon
-		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-		mDrawerLayout, /* DrawerLayout object */
-		R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-		R.string.app_name, /* "open drawer" description for accessibility */
-		R.string.abc_action_mode_done /*
-									 * "close drawer" description for
-									 * accessibility
-									 */
-		) {
-			public void onDrawerClosed(View view) {
-				getSupportActionBar().setTitle(mTitle);
-				supportInvalidateOptionsMenu(); // creates call to
-				// onPrepareOptionsMenu()
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				getSupportActionBar().setTitle(mDrawerTitle);
-				supportInvalidateOptionsMenu(); // creates call to
-				// onPrepareOptionsMenu()
-			}
-		};
-
-		mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-		// This will decide which item to show when displayed first time on the
-		// screen
-		if (savedInstanceState == null) {
-			// selectItem(4);
-		}
 
 		ivAlbumFooter = (ImageView) findViewById(R.id.ivAlbumArtFooter);
 		tvSongNameFooter = (TextView) findViewById(R.id.tvSongTitleFooter);
@@ -362,89 +294,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 			}
 		});
-	}
-
-	/* The click listner for ListView in the navigation drawer */
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			selectItem(position);
-		}
-	}
-
-	private void selectItem(int position) {
-		// update the main content by replacing fragments
-		Fragment fragment = null;
-
-		Log.i("position", position + "");
-
-		// Learnt it the hard way that position starts from 1 here
-		// May be it's because of header otherwise the count starts from 0 in
-		// // general
-		// if (position == 1) {
-		// fragment = new Artist_or_Album_Fragment();
-		// Bundle args = new Bundle();
-		// args.putString("list_type", "band");
-		// fragment.setArguments(args);
-		// } else
-		if (position == 1 || position == 0) {
-			fragment = new TopTrackFragment();
-		} else if (position == 2) {
-			fragment = new TopAlbumsFragment();
-		} else if (position == 3) {
-			fragment = new NowPlayingListFragment();
-		} else if (position == 4) {
-			fragment = new UserSettingsFragment();
-		}
-		// } else if (position == 5) {
-		// String email[] = { "contact+muzi@sdslabs.co.in" };
-		// Intent EmailIntent = new Intent(android.content.Intent.ACTION_SEND);
-		// EmailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, email);
-		// EmailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-		// "Feedback for Muzi");
-		// EmailIntent.setType("plain/Text");
-		// EmailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "");
-		// startActivity(EmailIntent);
-		// }
-
-		// Bundle args = new Bundle();
-		// fragment.setArguments(args);
-
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		fragmentManager.beginTransaction()
-				.replace(R.id.content_frame, fragment).commit();
-
-		// update selected item and title, then close the drawer
-		mDrawerList.setItemChecked(position, true);
-		setTitle(titles[position]);
-		mDrawerLayout.closeDrawer(mDrawerList);
-	}
-
-	@Override
-	public void setTitle(CharSequence title) {
-		mTitle = title;
-		getSupportActionBar().setTitle(mTitle);
-	}
-
-	/**
-	 * When using the ActionBarDrawerToggle, you must call it during
-	 * onPostCreate() and onConfigurationChanged()...
-	 */
-
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
-		// mDrawerToggle.syncState();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		// Pass any configuration change to the drawer toggls
-		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	private boolean isNetworkAvailable(Context context) {
@@ -685,24 +534,8 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		startService(i);
 	}
 
-	/* Called whenever we call invalidateOptionsMenu() */
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		// If the nav drawer is open, hide action items related to the content
-		// view
-		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-		menu.findItem(R.id.search).setVisible(!drawerOpen);
-		return super.onPrepareOptionsMenu(menu);
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
-		// The action bar home/up action should open or close the drawer.
-		// ActionBarDrawerToggle will take care of this.
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
-			return true;
-		}
 
 		if (item.getItemId() == android.R.id.home) {
 			Intent mainIntent = new Intent(getApplicationContext(),
@@ -721,7 +554,6 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
 
 		int id = arg0.getId();
 		if (id == R.id.ibPreviousFooter) {
@@ -752,7 +584,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		if (MusicService.mp != null && MusicService.mp.isPlaying()
 				&& Globals.nowPlayingSongList.size() > 0) {
 
-//			footer.initFooter();
+			// footer.initFooter();
 			Log.e("MyActivity", "should definitely set footer");
 
 			tvSongNameFooter = (TextView) findViewById(R.id.tvSongTitleFooter);
