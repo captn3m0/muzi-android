@@ -88,7 +88,7 @@ public class MusicService extends Service implements
 		Log.i("Current song index", Globals.currentSongIndex + "");
 		Log.i("Temp song index", Globals.tempSongIndex + " ");
 
-		if (Globals.nowPlayingSongList.size() > 0) {
+		if (Globals.nowPlayingSongList != null && Globals.nowPlayingSongList.size() > 0) {
 
 			try {
 				if (mp.isPlaying()) {

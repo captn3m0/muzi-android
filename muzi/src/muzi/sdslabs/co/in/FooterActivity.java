@@ -61,7 +61,7 @@ import android.widget.ToggleButton;
  *         So, it won't be called from notification.
  */
 
-public class MyActivity extends ActionBarActivity implements OnClickListener {
+public class FooterActivity extends ActionBarActivity implements OnClickListener {
 
 	ImageButton ibNext, ibPrevious; // , ibShuffle, ibRepeat; //ibCurrentList,
 	static ToggleButton tbPlayPause;
@@ -115,7 +115,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			}
 			if (resultCode == MUSIC_READY && MusicService.mp != null) {
 				setFooter();
-				Log.e("MyActivity", "Should set footer");
+				Log.e("FooterActivity", "Should set footer");
 			}
 		}
 	}
@@ -139,7 +139,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 					startMusicService(context);
 				}
 			} else if (action == PLAY_PAUSE) {
-				Log.i("MyActivity: NotificationReceiver", "play pause clicked");
+				Log.i("FooterActivity: NotificationReceiver", "play pause clicked");
 				// boolean on = tbPlayPause.isChecked();
 				//
 				// if (on) {
@@ -222,7 +222,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(layout_id);
 
-		Log.i("MyActivity: onCreate", isNetworkAvailable(context)
+		Log.i("FooterActivity: onCreate", isNetworkAvailable(context)
 				+ " = network availability");
 
 		if (Globals.nowPlayingSongList == null) {
@@ -245,11 +245,11 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		tbPlayPause = (ToggleButton) findViewById(R.id.tbPlayPauseFooter);
 		sbSongTimer = (SeekBar) findViewById(R.id.sbSongTimerFooter);
 
-		ibNext.setOnClickListener(MyActivity.this);
-		ibPrevious.setOnClickListener(MyActivity.this);
-		// ibCurrentList.setOnClickListener(MyActivity.this);
-		// ibShuffle.setOnClickListener(MyActivity.this);
-		// ibRepeat.setOnClickListener(MyActivity.this);
+		ibNext.setOnClickListener(FooterActivity.this);
+		ibPrevious.setOnClickListener(FooterActivity.this);
+		// ibCurrentList.setOnClickListener(FooterActivity.this);
+		// ibShuffle.setOnClickListener(FooterActivity.this);
+		// ibRepeat.setOnClickListener(FooterActivity.this);
 
 		// if (Globals.nowPlayingSongList.isEmpty()) {
 		// footer.setVisibility(View.GONE);
@@ -277,7 +277,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				//
-				// Log.i("MyActivity: onSeekBarChangeListener: onProgressChanged",
+				// Log.i("FooterActivity: onSeekBarChangeListener: onProgressChanged",
 				// "progress " + progress);
 
 				if (MusicService.mp != null && fromUser) {
@@ -455,7 +455,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(resultIntent);
 
-		Log.i("MyActivity: showNotification",
+		Log.i("FooterActivity: showNotification",
 				"" + stackBuilder.getIntentCount());
 
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
@@ -584,7 +584,7 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 				&& Globals.nowPlayingSongList.size() > 0) {
 
 			// footer.initFooter();
-			Log.e("MyActivity", "should definitely set footer");
+			Log.e("FooterActivity", "should definitely set footer");
 
 			tvSongNameFooter = (TextView) findViewById(R.id.tvSongTitleFooter);
 			tvSongNameFooter.setText(Globals.nowPlayingSongList.get(
