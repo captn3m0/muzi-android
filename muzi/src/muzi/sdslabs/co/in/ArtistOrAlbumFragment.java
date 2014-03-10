@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +35,7 @@ import android.widget.Toast;
 /*if writable cursor isn't available then pass this hashmap to database file & then parse
  * it or rather use its strings to put in array*/
 
-public class Artist_or_Album_Fragment extends Fragment implements
+public class ArtistOrAlbumFragment extends Fragment implements
 		OnItemClickListener {
 
 	// url to make request
@@ -263,7 +262,7 @@ public class Artist_or_Album_Fragment extends Fragment implements
 
 				lv.setAdapter(new MyIndexerAdapter<String>(getActivity(),
 						android.R.layout.simple_list_item_1, FilteredNamesList));
-				lv.setOnItemClickListener(Artist_or_Album_Fragment.this);
+				lv.setOnItemClickListener(ArtistOrAlbumFragment.this);
 				// setOnItemClickListener(getActivity());
 			}
 		}
