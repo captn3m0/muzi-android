@@ -522,22 +522,22 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 			Context context) {
 		Intent i = new Intent(context, MusicService.class);
 
-		HashMap<String, String> songToBeSearched = new HashMap<String, String>();
-		songToBeSearched.put(TAG_NAME, songName);
+		HashMap<String, String> song = new HashMap<String, String>();
+		song.put(TAG_NAME, songName);
+		song.put(TAG_PATH, songPath);
+		song.put(TAG_IMAGEPATH, imagePath);
 
-		if (!Globals.nowPlayingSongList.contains(songToBeSearched)) {
+		Log.e("Globals.nowPlayingSongList.contains(songToBeSearched)",
+				Globals.nowPlayingSongList.contains(song) + "");
 
-			HashMap<String, String> song = new HashMap<String, String>();
-			song.put(TAG_NAME, songName);
-			song.put(TAG_PATH, songPath);
-			song.put(TAG_IMAGEPATH, imagePath);
+		if (!Globals.nowPlayingSongList.contains(song)) {
+
 			Log.i("Requested song", GlobalVariables.music_root + songPath);
 
 			Globals.tempSongIndex = Globals.nowPlayingSongList.size();
 			Globals.nowPlayingSongList.add(song);
 		} else {
-			Globals.tempSongIndex = Globals.nowPlayingSongList
-					.indexOf(songToBeSearched);
+			Globals.tempSongIndex = Globals.nowPlayingSongList.indexOf(song);
 		}
 
 		for (int j = 0; j < Globals.nowPlayingSongList.size(); j++) {
