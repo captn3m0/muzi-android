@@ -57,15 +57,8 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 		}
 
 		handleIntent(getIntent());
-
-		url = GlobalVariables.api_root + "search/?search=" + query;
-		this.setTitle("Search Results for " + query);
-		Log.i("url", url);
-
+		showSearchResults();
 		th = (TabHost) findViewById(R.id.tabhost);
-		hashMap1 = new HashMap<String, String>();
-		hashMap2 = new HashMap<String, String>();
-		hashMap3 = new HashMap<String, String>();
 
 		lv1 = (ListView) findViewById(R.id.lvTab1);
 		lv2 = (ListView) findViewById(R.id.lvTab2);
@@ -92,7 +85,22 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 		specs.setContent(R.id.tab3);
 		specs.setIndicator("Songs");
 		th.addTab(specs);
+	}
 
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		query = intent.getStringExtra(SearchManager.QUERY);
+		showSearchResults();
+	}
+
+	void showSearchResults() {
+		url = GlobalVariables.api_root + "search/?search=" + query;
+		Log.i("url", url);
+		this.setTitle("Search Results for " + query);
+		hashMap1 = new HashMap<String, String>();
+		hashMap2 = new HashMap<String, String>();
+		hashMap3 = new HashMap<String, String>();
 		new LoadAllProducts().execute();
 	}
 
@@ -305,7 +313,8 @@ public class SearchResults extends MyActivity implements OnItemClickListener {
 				String songPath = jsonObject.getString("file");
 
 				Log.i("Song Path", songPath);
-				playSong(songName, songPath, jsonObject.getString("albumId"),SearchResults.this);
+				playSong(songName, songPath, jsonObject.getString("albumId"),
+						SearchResults.this);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

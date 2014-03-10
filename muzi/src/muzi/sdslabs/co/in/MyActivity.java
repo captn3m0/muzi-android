@@ -222,6 +222,9 @@ public class MyActivity extends ActionBarActivity implements OnClickListener {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(layout_id);
 
+		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 		Log.i("MyActivity: onCreate", isNetworkAvailable(context)
 				+ " = network availability");
 
