@@ -22,7 +22,6 @@ public class AlbumsFromArtists extends MyActivity implements
 		OnItemClickListener {
 
 	private static String root;
-
 	private ProgressDialog pDialog;
 
 	// JSON keys
@@ -52,12 +51,16 @@ public class AlbumsFromArtists extends MyActivity implements
 		String album_id = getIntent().getStringExtra("search_id2");
 
 		if (type != null) {
+			
+			// get album_id
 			root = GlobalVariables.api_root + type + "/albums.php?id="
 					+ album_id;
 			Log.i("request url", root);
 			AlbumsFromArtists.this.setTitle(AlbumsFromArtists.this.getIntent()
 					.getStringExtra("search_title2"));
 		} else {
+			
+			// if no album id is received then quit the activity
 			AlbumsFromArtists.this.finish();
 			Toast.makeText(AlbumsFromArtists.this,
 					"Sorry, the request couldn't be executed",
@@ -124,31 +127,12 @@ public class AlbumsFromArtists extends MyActivity implements
 
 						jsonObject = FilteredJSONArray.getJSONObject(i);
 
-						// albumList.add(jsonObject.getString(TAG_NAME));
-
 						HashMap<String, String> map = new HashMap<String, String>();
 						map.put(TAG_ID, jsonObject.getString(TAG_ID));
 						map.put(TAG_NAME, jsonObject.getString(TAG_NAME));
 
 						albumList.add(map);
-						// albumIdList.add(jsonObject.getString(TAG_ID));
-						// loadBitmap(jsonObject.getString(TAG_ID), ImageView
-						// imageView);
-						//
-						// Bitmap bitmap = BitmapFactory
-						// .decodeStream((InputStream) new URL(
-						// GlobalVariables.pic_root
-						// + jsonObject.getString(TAG_ID)
-						// + ".jpg").getContent());
-
-						// ivAlbumCover.setImageBitmap(bitmap);
-						// songsPathList.add(jsonObject.getString(TAG_FILE));
-						// creating new HashMap
-
-						// Log.i((i + 1) + "", jsonObject.getString(TAG_FILE));
 					}
-					// if php query doesn't give sorted results comment out
-					// the
 				}
 
 			} catch (Exception e) {
@@ -184,7 +168,6 @@ public class AlbumsFromArtists extends MyActivity implements
 		// TODO Auto-generated method stub
 
 		Intent i = new Intent(AlbumsFromArtists.this, SongsFromAlbums.class);
-
 		i.putExtra("search_type1", "album");
 		i.putExtra("search_id1", albumList.get(position).get(TAG_ID));
 		i.putExtra("search_title1", albumList.get(position).get(TAG_NAME));

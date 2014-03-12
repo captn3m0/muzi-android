@@ -18,6 +18,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+/**
+ * Home screen activity where all the basic elements like top tracks, albums etc
+ * are shown
+ */
 public class MainActivity extends MyActivity {
 
 	/* Navigation Drawer */

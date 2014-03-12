@@ -15,9 +15,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 /**
+ * Music service which runs in background to play music
  * 
  * @author shivam - Music doesn't stop when you call someone.
- * 
  */
 
 public class MusicService extends Service implements
@@ -88,7 +88,8 @@ public class MusicService extends Service implements
 		Log.i("Current song index", Globals.currentSongIndex + "");
 		Log.i("Temp song index", Globals.tempSongIndex + " ");
 
-		if (Globals.nowPlayingSongList != null && Globals.nowPlayingSongList.size() > 0) {
+		if (Globals.nowPlayingSongList != null
+				&& Globals.nowPlayingSongList.size() > 0) {
 
 			try {
 				if (mp.isPlaying()) {

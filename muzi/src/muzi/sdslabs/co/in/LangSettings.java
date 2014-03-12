@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ToggleButton;
 
+
+// To add language setting preferences
 public class LangSettings extends MyActivity {
 
 	SharedPreferences pref;

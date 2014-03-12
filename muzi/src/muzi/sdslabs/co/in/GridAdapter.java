@@ -34,11 +34,14 @@ public class GridAdapter extends SimpleAdapter {
 	HashMap<String, String> map = new HashMap<String, String>();
 	GridAdapter adapter = this;
 
+	/** To use lazy loading */
 	Bitmap mPlaceHolderBitmap;
 	private static LruCache<String, Bitmap> mMemoryCache;
-	int reqHeight = 60, reqWidth = 60;
+	int reqHeight = 60, reqWidth = 60; // size of cached images
 	private static final String TAG_NAME = "name";
 	private static final String TAG_IMAGE = "id";
+
+	/** variables for loading finished */
 
 	public void loadBitmap(String img, ImageView imageView) {
 
@@ -132,7 +135,7 @@ public class GridAdapter extends SimpleAdapter {
 				bitmap = null;
 			}
 
-			if (imageViewReference != null && bitmap != null) {
+			if (imageViewReference != null) {
 				final ImageView imageView = imageViewReference.get();
 				final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
 				if (this == bitmapWorkerTask && imageView != null) {

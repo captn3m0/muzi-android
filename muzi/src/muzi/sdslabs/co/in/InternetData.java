@@ -12,6 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
+/** Function to interact with internet data */
 public class InternetData {
 
 	public String getInternetData(String url_input) throws Exception {

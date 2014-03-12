@@ -56,6 +56,10 @@ import android.widget.ToggleButton;
  * */
 
 /**
+ * BaseActivity which is extended by all activities The activity has an abstract
+ * method called setMyContentView() which has to be called by all the activities
+ * which extend MyActivity
+ * 
  * @author shivam To do: Add the capability of ordering songs by dragging Note:
  *         Dynamically registered receiver works only when app is in foreground.
  *         So, it won't be called from notification.

@@ -1,10 +1,9 @@
-/**
- *  Copy this file to GlobalVariables.java
- */
 package muzi.sdslabs.co.in;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+/** Global Variables to be used in all the activities */
 
 public class Globals {
 

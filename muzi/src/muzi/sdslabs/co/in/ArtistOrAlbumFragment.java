@@ -32,9 +32,6 @@ import android.widget.ListView;
 import android.widget.SectionIndexer;
 import android.widget.Toast;
 
-/*if writable cursor isn't available then pass this hashmap to database file & then parse
- * it or rather use its strings to put in array*/
-
 public class ArtistOrAlbumFragment extends Fragment implements
 		OnItemClickListener {
 
@@ -52,7 +49,8 @@ public class ArtistOrAlbumFragment extends Fragment implements
 
 	JSONArray FilteredJSONArray = null;
 	ListView lv;
-	ArrayList<String> FilteredNamesList, FilteredIdList, langList;
+	ArrayList<String> FilteredNamesList, FilteredIdList;
+	ArrayList<String> langList;
 	SharedPreferences pref;
 
 	@Override
@@ -60,14 +58,6 @@ public class ArtistOrAlbumFragment extends Fragment implements
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.simple_list_view, container,
 				false);
-
-		/*
-		 * if (!isNetworkAvailable()) { FilteredList.this.finish();
-		 * Toast.makeText(FilteredList.this,
-		 * "Please check your internet connection.", Toast.LENGTH_LONG) .show();
-		 * }
-		 */
-
 		lv = (ListView) rootView.findViewById(R.id.lvSimple);
 		lv.setFastScrollEnabled(true);
 		FilteredNamesList = new ArrayList<String>();
@@ -82,6 +72,8 @@ public class ArtistOrAlbumFragment extends Fragment implements
 		}
 
 		langList = new ArrayList<String>();
+
+		// Check which songs have to be loaded
 		pref = getActivity().getApplicationContext().getSharedPreferences(
 				"Lang Pref", 0);
 
@@ -243,7 +235,6 @@ public class ArtistOrAlbumFragment extends Fragment implements
 			Calendar c = Calendar.getInstance();
 			return " " + c.get(Calendar.DAY_OF_MONTH) + "_"
 					+ c.get(Calendar.MONTH) + "_" + c.get(Calendar.YEAR);
-			// return null;
 		}
 
 		/**
@@ -263,7 +254,6 @@ public class ArtistOrAlbumFragment extends Fragment implements
 				lv.setAdapter(new MyIndexerAdapter<String>(getActivity(),
 						android.R.layout.simple_list_item_1, FilteredNamesList));
 				lv.setOnItemClickListener(ArtistOrAlbumFragment.this);
-				// setOnItemClickListener(getActivity());
 			}
 		}
 
@@ -367,10 +357,6 @@ public class ArtistOrAlbumFragment extends Fragment implements
 			i.putExtra("search_id2", FilteredIdList.get(position));
 			i.putExtra("search_title2", FilteredNamesList.get(position));
 			startActivity(i);
-			// update selected item and title, then close the drawer
-			// mDrawerList.setItemChecked(position, true);
-			// setTitle(titles[position]);
-			// mDrawerLayout.closeDrawer(mDrawerList);
 		}
 	}
 }

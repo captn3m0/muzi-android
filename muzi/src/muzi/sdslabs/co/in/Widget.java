@@ -19,6 +19,11 @@ public class Widget extends AppWidgetProvider {
 	 * receive-delete when u delete a widget
 	 */
 
+	/**
+	 * It gives errors when muzi is not actually running on screen. SO THIS HAS
+	 * TO BE CHECKED.
+	 */
+
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
@@ -49,7 +54,7 @@ public class Widget extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		Log.i("MusicService: DownloadReceiver", intent.getIntExtra("action", 0)
+		Log.i("MusicService: Widget", intent.getIntExtra("action", 0)
 				+ "received");
 		Toast.makeText(context, intent.getIntExtra("action", 0) + " received",
 				Toast.LENGTH_SHORT).show();

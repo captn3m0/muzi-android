@@ -3,14 +3,12 @@ package muzi.sdslabs.co.in;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 public class FooterForPlayerControls extends RelativeLayout {
 	public static final String TAG = FooterForPlayerControls.class
 			.getSimpleName();
 
-	ImageButton ibPlay, ibPause;
 	Context c;
 
 	public FooterForPlayerControls(Context context) {
