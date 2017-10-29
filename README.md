@@ -11,11 +11,11 @@ Uses
 
 Installation
 ------------
-####Requires#####
+#### Requires #####
 * Android version above Froyo (>= 2.2.1)
 * To setup on localhost: mysql, php on server side.
 
-####Procedure####
+#### Procedure ####
 1. `https://github.com/captn3m0/muzi-android.git`
 2. Setup Muzi (See #2)
 3. Rename GlobalSampleVariables to GlobalVariables & edit configuration.
